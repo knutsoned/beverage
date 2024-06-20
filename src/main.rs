@@ -1,5 +1,5 @@
 use bevy::prelude::*;
 
 fn main() {
-    App::new().run();
+    App::new().add_plugins(DefaultPlugins).run();
 }
