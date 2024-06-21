@@ -10,3 +10,4 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 bevy = { git = "https://github.com/pcwalton/bevy.git", branch = "brp", version = "0.14.0-dev" }
+sickle_ui = { git = "https://github.com/UmbraLuminosa/sickle_ui.git", branch = "theme_scaffold_ext", version = "0.1.0" }
