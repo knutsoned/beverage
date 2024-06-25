@@ -63,7 +63,7 @@ pub struct Pending;
 
 #[derive(Component, Debug)]
 pub struct RunningRequest {
-    pub task: Task<Option<Entity>>,
+    pub task: Task<()>,
 }
 
 fn main() {
@@ -192,10 +192,8 @@ impl BrpResource {
         request: Request,
         commands: &mut Commands
     ) {
-        //let balloon = self.remote_entity_dungeon.clone();
-        let thread_pool = IoTaskPool::get();
-
         let balloon = self.remote_entity_dungeon.clone();
+        let thread_pool = IoTaskPool::get();
 
         // spawn an async task for the long network op
         let task = thread_pool.spawn(async move {
@@ -217,7 +215,6 @@ impl BrpResource {
                     *balloon.lock().unwrap() = Some(remote_entity);
                 }
             });
-            None
         });
 
         commands.entity(local_entity).insert(RunningRequest { task });
