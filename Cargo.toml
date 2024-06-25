@@ -9,5 +9,71 @@ license = "MIT OR Apache-2.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = { git = "https://github.com/pcwalton/bevy.git", branch = "brp", version = "0.14.0-dev" }
-sickle_ui = { git = "https://github.com/UmbraLuminosa/sickle_ui.git", branch = "theme_scaffold_ext", version = "0.1.0" }
+bevy = { git = "https://github.com/pcwalton/bevy.git", branch = "brp", version = "0.14.0-dev", features = ["dynamic_linking", "serialize"] }
+
+# sickle is not yet compatible with 0.14.0
+# per EidLoi on discord, theming will be merged soon along with 0.14.0 support
+# this may be held up by at least 1 internal Bevy issue:
+# https://github.com/bevyengine/bevy/issues/13969
+# https://github.com/bevyengine/bevy/issues/12403
+# sickle_ui = { git = "https://github.com/knutsoned/sickle_ui.git", branch = "theme_scaffold_ext", version = "0.1.0" }
+
+# bevy_remote (BRP) examples
+anyhow = "1"
+argh = "0.1.12"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1" }
+
+# BRP basic client example
+hyper = { version = "1", features = ["full"] }
+hyper-util = { version = "0.1", features = ["full"] }
+smol = "2"
+smol-hyper = "0.1"
+smol-macros = "0.1"
+http-body-util = "0.1"
+macro_rules_attribute = "0.2.0"
+
+# BRP camera control example
+ehttp = "0.5.0"
+futures-lite = "2.3.0"
+
+[[example]]
+name = "camera_control"
+path = "examples/remote/camera_control.rs"
+doc-scrape-examples = true
+
+[package.metadata.example.camera_control]
+name = "camera_control"
+description = "A simple command line client that can control a remote Bevy camera via the BRP"
+category = "Remote Protocol"
+wasm = true
+
+[[example]]
+name = "client"
+path = "examples/remote/client.rs"
+doc-scrape-examples = true
+
+[package.metadata.example.client]
+name = "client"
+description = "A simple command line client that can control Bevy apps via the BRP"
+category = "Remote Protocol"
+wasm = true
+
+[[example]]
+name = "server"
+path = "examples/remote/server.rs"
+doc-scrape-examples = true
+
+[package.metadata.example.server]
+name = "server"
+description = "A Bevy app that you can connect to with the BRP and edit"
+category = "Remote Protocol"
+wasm = true
+
+# Enable a small amount of optimization in debug mode
+[profile.dev]
+opt-level = 1
+
+# Enable high optimizations for dependencies (incl. Bevy), but not for our code:
+[profile.dev.package."*"]
+opt-level = 3

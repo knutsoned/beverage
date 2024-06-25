@@ -1,0 +1,15 @@
+meta {
+  name: InsertTransform
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://127.0.0.1:15702
+  body: json
+  auth: none
+}
+
+body:json {
+  {"request":"INSERT","id":5,"params":{"components":{"bevy_transform::components::transform::Transform":{"rotation":[-0.22055435180664062,-0.13167093694210052,-0.03006339818239212,0.9659786224365234],"scale":[1.0,1.0,1.0],"translation":[-1.9000004529953003,4.5,9.0]}},"entity":4294967308}}
+}
