@@ -239,14 +239,13 @@ fn setup(
 
     // Use the UI builder of the root entity with styling applied via commands
     commands.ui_builder(root_entity).column(|column| {
-        column.style().width(Val::Percent(100.0)).background_color(Color::rgb(0.15, 0.155, 0.16));
+        column.style().width(Val::Percent(100.0)).background_color(Color::srgb(0.15, 0.155, 0.16));
 
         column.menu_bar(|bar| {
             bar.menu(
                 MenuConfig {
                     name: "Showcase".into(),
                     alt_code: KeyCode::KeyS.into(),
-                    ..default()
                 },
                 |menu| {
                     menu.menu_item(MenuItemConfig {
@@ -276,7 +275,6 @@ fn setup(
                 MenuConfig {
                     name: "Use case".into(),
                     alt_code: KeyCode::KeyS.into(),
-                    ..default()
                 },
                 |menu| {
                     menu.menu_item(MenuItemConfig {
@@ -371,7 +369,6 @@ fn setup(
                 MenuConfig {
                     name: "Test case".into(),
                     alt_code: KeyCode::KeyS.into(),
-                    ..default()
                 },
                 |menu| {
                     menu.menu_item(MenuItemConfig {
@@ -558,14 +555,11 @@ fn spawn_hierarchy_view(
 
     mut commands: Commands
 ) {
-    for scene_view in &q_added_scene_view {
-        let Ok(container) = q_hierarchy_panel.get_single() else {
-            return;
+    if let Some(scene_view) = (&q_added_scene_view).into_iter().next() {
+        if let Ok(container) = q_hierarchy_panel.get_single() {
+            commands.entity(container).despawn_descendants();
+            commands.ui_builder(container).hierarchy_for(scene_view.asset_root());
         };
-
-        commands.entity(container).despawn_descendants();
-        commands.ui_builder(container).hierarchy_for(scene_view.asset_root());
-        break;
     }
 }
 
@@ -578,7 +572,7 @@ fn despawn_hierarchy_view(
         return;
     };
 
-    if q_removed_scene_view.len() > 0 {
+    if !q_removed_scene_view.is_empty() {
         commands.entity(container).despawn_descendants();
     }
 }
