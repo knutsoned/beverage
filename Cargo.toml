@@ -9,9 +9,24 @@ license = "MIT OR Apache-2.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+# bevy is at 0.14.0-rc.4 which does not have BRP support, so we're just gonna use a monkeypatched branch
+# https://github.com/knutsoned/bevy/tree/brp-rc.4
+#
+# it needs to be in the same location sickle is looking for it which is 2 levels up
+#
+# when 0.14.0 comes out, we'll have to rebase on that
+#
+# hypothetically, at that point, both this project and sickle should be able to use a careful git fork of the release
+# with the BRP changes replayed on top
+#bevy = { git = "https://github.com/knutsoned/bevy/tree/brp", version = "0.14.0", features = ["bevy_remote", "dynamic_linking", "serialize"] }
 bevy = { path = "../../bevy", version = "0.14.0-rc.4", features = ["bevy_remote", "dynamic_linking", "serialize"] }
 
 # sickle is now compatible with 0.14.0
+#
+# it still needs bevy to be in a path which doesn't work when you point the dep at a repository
+#
+# when 0.14.0 comes out, there will be an official crate release
+#sickle_ui = { version = "0.2" }
 sickle_ui = { path = "../sickle_ui", version = "0.2.0" }
 
 # bevy_remote (BRP) examples
