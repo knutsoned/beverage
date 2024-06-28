@@ -1,30 +1,31 @@
 //! An example using the widget library to create a simple 3D scene view with a hierarchy browser for the scene asset.
 use bevy::prelude::*;
 
+use ease::Ease;
 use sickle_ui::{
     dev_panels::{
-        hierarchy::{ HierarchyTreeViewPlugin, UiHierarchyExt },
-        scene_view::{ SceneView, SceneViewPlugin, SpawnSceneViewPreUpdate, UiSceneViewExt },
+        hierarchy::{HierarchyTreeViewPlugin, UiHierarchyExt},
+        scene_view::{SceneView, SceneViewPlugin, SpawnSceneViewPreUpdate, UiSceneViewExt},
     },
     prelude::*,
-    ui_commands::SetCursorExt,
+    ui_commands::{SetCursorExt, UpdateStatesExt},
     SickleUiPlugin,
 };
 
 fn main() {
     App::new()
-        .add_plugins(
-            DefaultPlugins.set(WindowPlugin {
-                primary_window: Some(Window {
-                    title: "Beverage - Also Available As A T-Shirt".into(),
-                    resolution: (1280.0, 720.0).into(),
-                    ..default()
-                }),
+        .add_plugins(DefaultPlugins.set(WindowPlugin {
+            primary_window: Some(Window {
+                title: "Sickle UI -  Simple Editor".into(),
+                resolution: (1280., 720.).into(),
                 ..default()
-            })
-        )
+            }),
+            ..default()
+        }))
         .add_plugins(SickleUiPlugin)
         .add_plugins(UiFooterRootNodePlugin)
+        .add_plugins(OutlinedBlockPlugin)
+        .add_plugins(TextureAtlasInteractionPlugin)
         .init_resource::<CurrentPage>()
         .init_resource::<IconCache>()
         .init_state::<Page>()
@@ -38,7 +39,7 @@ fn main() {
         .add_systems(PreUpdate, exit_app_on_menu_item)
         .add_systems(
             PreUpdate,
-            (spawn_hierarchy_view, despawn_hierarchy_view).after(SpawnSceneViewPreUpdate)
+            (spawn_hierarchy_view, despawn_hierarchy_view).after(SpawnSceneViewPreUpdate),
         )
         .add_systems(
             Update,
@@ -49,7 +50,7 @@ fn main() {
                 handle_theme_contrast_select,
             )
                 .chain()
-                .after(WidgetLibraryUpdate)
+                .after(WidgetLibraryUpdate),
         )
         .run();
 }
@@ -60,7 +61,7 @@ pub struct UiCamera;
 #[derive(Component)]
 pub struct UiMainRootNode;
 
-// Example themed widget, generate with snipped
+// Example themed widgets, generated with snipped
 pub struct UiFooterRootNodePlugin;
 
 impl Plugin for UiFooterRootNodePlugin {
@@ -91,7 +92,7 @@ impl UiFooterRootNode {
 
         style_builder
             .justify_content(JustifyContent::SpaceBetween)
-            .width(Val::Percent(100.0))
+            .width(Val::Percent(100.))
             .height(Val::Px(theme_spacing.areas.medium))
             .border(UiRect::top(Val::Px(theme_spacing.borders.extra_small)))
             .border_color(colors.accent(Accent::Shadow))
@@ -106,16 +107,196 @@ impl UiFooterRootNode {
 pub trait UiUiFooterRootNodeExt {
     fn ui_footer(
         &mut self,
-        spawn_children: impl FnOnce(&mut UiBuilder<Entity>)
+        spawn_children: impl FnOnce(&mut UiBuilder<Entity>),
     ) -> UiBuilder<Entity>;
 }
 
 impl UiUiFooterRootNodeExt for UiBuilder<'_, Entity> {
     fn ui_footer(
         &mut self,
-        spawn_children: impl FnOnce(&mut UiBuilder<Entity>)
+        spawn_children: impl FnOnce(&mut UiBuilder<Entity>),
     ) -> UiBuilder<Entity> {
-        self.container((UiFooterRootNode::frame(), UiFooterRootNode), spawn_children)
+        self.container(
+            (UiFooterRootNode::frame(), UiFooterRootNode),
+            spawn_children,
+        )
+    }
+}
+
+pub struct OutlinedBlockPlugin;
+
+impl Plugin for OutlinedBlockPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_plugins(ComponentThemePlugin::<OutlinedBlock>::default());
+    }
+}
+
+#[derive(Component, Clone, Debug, Default, Reflect, UiContext)]
+#[reflect(Component)]
+pub struct OutlinedBlock;
+
+impl DefaultTheme for OutlinedBlock {
+    fn default_theme() -> Option<Theme<OutlinedBlock>> {
+        OutlinedBlock::theme().into()
+    }
+}
+
+impl OutlinedBlock {
+    pub fn theme() -> Theme<OutlinedBlock> {
+        let base_theme = PseudoTheme::deferred(None, OutlinedBlock::primary_style);
+        Theme::new(vec![base_theme])
+    }
+
+    fn primary_style(style_builder: &mut StyleBuilder, theme_data: &ThemeData) {
+        let theme_spacing = theme_data.spacing;
+        let colors = theme_data.colors();
+
+        style_builder
+            .size(Val::Px(100.))
+            .align_self(AlignSelf::Center)
+            .justify_self(JustifySelf::Center)
+            .margin(UiRect::all(Val::Px(30.)))
+            .background_color(colors.accent(Accent::Primary))
+            .padding(UiRect::all(Val::Px(theme_spacing.gaps.small)))
+            .animated()
+            .outline_width(AnimatedVals {
+                idle: Val::Px(0.),
+                hover: Val::Px(10.).into(),
+                ..default()
+            })
+            .copy_from(theme_data.interaction_animation);
+
+        style_builder
+            .animated()
+            .outline_color(AnimatedVals {
+                idle: colors.accent(Accent::Outline),
+                hover: colors.accent(Accent::OutlineVariant).into(),
+                hover_alt: colors.accent(Accent::Outline).into(),
+                ..default()
+            })
+            .copy_from(theme_data.interaction_animation)
+            .hover(
+                0.3,
+                Ease::InOutBounce,
+                0.5,
+                0.,
+                AnimationLoop::PingPongContinous,
+            );
+
+        style_builder
+            .animated()
+            .outline_offset(AnimatedVals {
+                idle: Val::Px(0.),
+                press: Val::Px(10.).into(),
+                press_alt: Val::Px(12.).into(),
+                ..default()
+            })
+            .copy_from(theme_data.interaction_animation)
+            .pressed(
+                0.3,
+                Ease::InOutBounce,
+                0.5,
+                0.,
+                AnimationLoop::PingPongContinous,
+            );
+    }
+
+    fn frame() -> impl Bundle {
+        (
+            Name::new("Outlined Block"),
+            NodeBundle::default(),
+            Outline::default(),
+        )
+    }
+}
+
+pub trait UiOutlinedBlockExt {
+    fn outlined_block(&mut self) -> UiBuilder<Entity>;
+}
+
+impl UiOutlinedBlockExt for UiBuilder<'_, Entity> {
+    fn outlined_block(&mut self) -> UiBuilder<Entity> {
+        self.spawn((OutlinedBlock::frame(), OutlinedBlock))
+    }
+}
+
+pub struct TextureAtlasInteractionPlugin;
+
+impl Plugin for TextureAtlasInteractionPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_plugins(ComponentThemePlugin::<TextureAtlasInteraction>::default());
+    }
+}
+
+#[derive(Component, Clone, Debug, Default, Reflect, UiContext)]
+#[reflect(Component)]
+pub struct TextureAtlasInteraction;
+
+impl DefaultTheme for TextureAtlasInteraction {
+    fn default_theme() -> Option<Theme<TextureAtlasInteraction>> {
+        TextureAtlasInteraction::theme().into()
+    }
+}
+
+impl TextureAtlasInteraction {
+    pub fn theme() -> Theme<TextureAtlasInteraction> {
+        let base_theme = PseudoTheme::deferred(None, TextureAtlasInteraction::primary_style);
+        Theme::new(vec![base_theme])
+    }
+
+    fn primary_style(style_builder: &mut StyleBuilder, theme_data: &ThemeData) {
+        let theme_spacing = theme_data.spacing;
+        let colors = theme_data.colors();
+
+        style_builder
+            .size(Val::Px(96.))
+            .align_self(AlignSelf::Center)
+            .justify_self(JustifySelf::Center)
+            .margin(UiRect::all(Val::Px(30.)))
+            .background_color(colors.accent(Accent::OutlineVariant))
+            .outline(Outline {
+                width: Val::Px(5.),
+                color: colors.accent(Accent::Primary),
+                ..default()
+            })
+            .padding(UiRect::all(Val::Px(theme_spacing.gaps.small)))
+            .animated()
+            .atlas_index(AnimatedVals {
+                enter_from: Some(0),
+                idle: 7,
+                idle_alt: Some(11),
+                hover: Some(12),
+                hover_alt: Some(16),
+                press: Some(29),
+                ..default()
+            })
+            .copy_from(theme_data.interaction_animation)
+            .enter(0.8, Ease::Linear, 1.)
+            .idle(0.5, Ease::Linear, 0., 0., AnimationLoop::PingPongContinous)
+            .hover(0.5, Ease::Linear, 0., 0., AnimationLoop::PingPongContinous)
+            .press(1.3, Ease::Linear, 0.)
+            .cancel(0.5, Ease::Linear, 0.);
+    }
+
+    fn frame() -> impl Bundle {
+        (Name::new("TextureAtlasInteraction"), ImageBundle::default())
+    }
+}
+
+pub trait UiTextureAtlasInteractionExt {
+    fn atlas_example(&mut self) -> UiBuilder<Entity>;
+}
+
+impl UiTextureAtlasInteractionExt for UiBuilder<'_, Entity> {
+    fn atlas_example(&mut self) -> UiBuilder<Entity> {
+        let mut result = self.spawn((TextureAtlasInteraction::frame(), TextureAtlasInteraction));
+        // TODO: Replace with sharable asset
+        result.style().image(ImageSource::Atlas(
+            String::from("examples/30FPS_ASLight_05_Sparkle.png"),
+            TextureAtlasLayout::from_grid(UVec2::splat(192), 5, 6, None, None),
+        ));
+
+        result
     }
 }
 // ^^^^^^^^^^^^
@@ -127,6 +308,7 @@ pub struct UiStartupSet;
 #[reflect(Component)]
 enum Page {
     #[default]
+    None,
     Layout,
     Playground,
 }
@@ -160,7 +342,7 @@ pub struct ThemeContrastSelect;
 fn setup(
     asset_server: Res<AssetServer>,
     mut icon_cache: ResMut<IconCache>,
-    mut commands: Commands
+    mut commands: Commands,
 ) {
     // Workaround for disappearing icons when they are despawned and spawned back in during the same frame
     // Should be fixed in Bevy > 0.13
@@ -174,7 +356,7 @@ fn setup(
         "embedded://sickle_ui/icons/exit_white.png",
         "embedded://sickle_ui/icons/popout_white.png",
         "embedded://sickle_ui/icons/redo_white.png",
-        "embedded://sickle_ui/icons/submenu_white.png"
+        "embedded://sickle_ui/icons/submenu_white.png",
     ];
 
     for icon in icons_to_cache.iter() {
@@ -190,10 +372,8 @@ fn setup(
                     clear_color: Color::BLACK.into(),
                     ..default()
                 },
-                transform: Transform::from_translation(Vec3::new(0.0, 30.0, 0.0)).looking_at(
-                    Vec3::ZERO,
-                    Vec3::Y
-                ),
+                transform: Transform::from_translation(Vec3::new(0., 30., 0.))
+                    .looking_at(Vec3::ZERO, Vec3::Y),
                 ..Default::default()
             },
             UiCamera,
@@ -234,12 +414,15 @@ fn setup(
                 .id();
 
             container.ui_footer(|_| {});
-        }
+        },
     );
 
     // Use the UI builder of the root entity with styling applied via commands
     commands.ui_builder(root_entity).column(|column| {
-        column.style().width(Val::Percent(100.0)).background_color(Color::srgb(0.15, 0.155, 0.16));
+        column
+            .style()
+            .width(Val::Percent(100.))
+            .background_color(Color::srgb(0.15, 0.155, 0.16));
 
         column.menu_bar(|bar| {
             bar.menu(
@@ -253,13 +436,15 @@ fn setup(
                         shortcut: vec![KeyCode::KeyL].into(),
                         alt_code: KeyCode::KeyL.into(),
                         ..default()
-                    }).insert(Page::Layout);
+                    })
+                    .insert(Page::Layout);
                     menu.menu_item(MenuItemConfig {
                         name: "Interactions".into(),
                         shortcut: vec![KeyCode::ControlLeft, KeyCode::KeyI].into(),
                         alt_code: KeyCode::KeyI.into(),
                         ..default()
-                    }).insert(Page::Playground);
+                    })
+                    .insert(Page::Playground);
 
                     menu.separator();
 
@@ -268,8 +453,9 @@ fn setup(
                         name: "Exit".into(),
                         leading_icon: icons.exit_to_app,
                         ..default()
-                    }).insert(ExitAppButton);
-                }
+                    })
+                    .insert(ExitAppButton);
+                },
             );
             bar.menu(
                 MenuConfig {
@@ -285,7 +471,7 @@ fn setup(
                         name: "Menu item with leading icon".into(),
                         leading_icon: IconData::Image(
                             "embedded://sickle_ui/icons/details_menu.png".into(),
-                            Color::WHITE
+                            Color::WHITE,
                         ),
                         ..default()
                     });
@@ -293,7 +479,7 @@ fn setup(
                         name: "Menu item with trailing icon".into(),
                         trailing_icon: IconData::Image(
                             "embedded://sickle_ui/icons/tiles_menu.png".into(),
-                            Color::WHITE
+                            Color::WHITE,
                         ),
                         ..default()
                     });
@@ -302,11 +488,11 @@ fn setup(
                         name: "Menu item with both icons".into(),
                         leading_icon: IconData::Image(
                             "embedded://sickle_ui/icons/details_menu.png".into(),
-                            Color::WHITE
+                            Color::WHITE,
                         ),
                         trailing_icon: IconData::Image(
                             "embedded://sickle_ui/icons/tiles_menu.png".into(),
-                            Color::WHITE
+                            Color::WHITE,
                         ),
                         ..default()
                     });
@@ -327,7 +513,7 @@ fn setup(
                         name: "Toggle item with trailing icon".into(),
                         trailing_icon: IconData::Image(
                             "embedded://sickle_ui/icons/tiles_menu.png".into(),
-                            Color::WHITE
+                            Color::WHITE,
                         ),
                         ..default()
                     });
@@ -348,7 +534,7 @@ fn setup(
                                 name: "Menu item with leading icon".into(),
                                 leading_icon: IconData::Image(
                                     "embedded://sickle_ui/icons/details_menu.png".into(),
-                                    Color::WHITE
+                                    Color::WHITE,
                                 ),
                                 ..default()
                             });
@@ -356,13 +542,13 @@ fn setup(
                                 name: "Menu item with trailing icon".into(),
                                 trailing_icon: IconData::Image(
                                     "embedded://sickle_ui/icons/tiles_menu.png".into(),
-                                    Color::WHITE
+                                    Color::WHITE,
                                 ),
                                 ..default()
                             });
-                        }
+                        },
                     );
-                }
+                },
             );
 
             bar.menu(
@@ -379,7 +565,7 @@ fn setup(
                         name: "Menu item with leading icon".into(),
                         leading_icon: IconData::Image(
                             "embedded://sickle_ui/icons/details_menu.png".into(),
-                            Color::WHITE
+                            Color::WHITE,
                         ),
                         ..default()
                     });
@@ -387,7 +573,7 @@ fn setup(
                         name: "Menu item with trailing icon".into(),
                         trailing_icon: IconData::Image(
                             "embedded://sickle_ui/icons/tiles_menu.png".into(),
-                            Color::WHITE
+                            Color::WHITE,
                         ),
                         ..default()
                     });
@@ -396,11 +582,11 @@ fn setup(
                         name: "Menu item with both icons".into(),
                         leading_icon: IconData::Image(
                             "embedded://sickle_ui/icons/details_menu.png".into(),
-                            Color::WHITE
+                            Color::WHITE,
                         ),
                         trailing_icon: IconData::Image(
                             "embedded://sickle_ui/icons/tiles_menu.png".into(),
-                            Color::WHITE
+                            Color::WHITE,
                         ),
                         ..default()
                     });
@@ -421,7 +607,7 @@ fn setup(
                         name: "Toggle item with trailing icon".into(),
                         trailing_icon: IconData::Image(
                             "embedded://sickle_ui/icons/tiles_menu.png".into(),
-                            Color::WHITE
+                            Color::WHITE,
                         ),
                         ..default()
                     });
@@ -442,7 +628,7 @@ fn setup(
                                 name: "Menu item with leading icon".into(),
                                 leading_icon: IconData::Image(
                                     "embedded://sickle_ui/icons/details_menu.png".into(),
-                                    Color::WHITE
+                                    Color::WHITE,
                                 ),
                                 ..default()
                             });
@@ -450,7 +636,7 @@ fn setup(
                                 name: "Menu item with trailing icon".into(),
                                 trailing_icon: IconData::Image(
                                     "embedded://sickle_ui/icons/tiles_menu.png".into(),
-                                    Color::WHITE
+                                    Color::WHITE,
                                 ),
                                 ..default()
                             });
@@ -460,7 +646,7 @@ fn setup(
                                     name: "Submenu with lead icon".into(),
                                     leading_icon: IconData::Image(
                                         "embedded://sickle_ui/icons/details_menu.png".into(),
-                                        Color::WHITE
+                                        Color::WHITE,
                                     ),
                                     ..default()
                                 },
@@ -473,7 +659,7 @@ fn setup(
                                         name: "Menu item with leading icon".into(),
                                         leading_icon: IconData::Image(
                                             "embedded://sickle_ui/icons/details_menu.png".into(),
-                                            Color::WHITE
+                                            Color::WHITE,
                                         ),
                                         ..default()
                                     });
@@ -481,26 +667,28 @@ fn setup(
                                         name: "Menu item with trailing icon".into(),
                                         trailing_icon: IconData::Image(
                                             "embedded://sickle_ui/icons/tiles_menu.png".into(),
-                                            Color::WHITE
+                                            Color::WHITE,
                                         ),
                                         ..default()
                                     });
-                                }
+                                },
                             );
-                        }
+                        },
                     );
-                }
+                },
             );
 
             bar.separator();
 
             bar.extra_menu(|extra| {
-                extra.radio_group(vec!["Light", "Dark"], 1, false).insert(ThemeSwitch);
+                extra
+                    .radio_group(vec!["Light", "Dark"], 1, false)
+                    .insert(ThemeSwitch);
                 extra
                     .dropdown(vec!["Standard", "Medium Contrast", "High Contrast"], 0)
                     .insert(ThemeContrastSelect)
                     .style()
-                    .width(Val::Px(150.0));
+                    .width(Val::Px(150.));
             });
         });
 
@@ -508,15 +696,17 @@ fn setup(
             .row(|_| {})
             .insert((ShowcaseContainer, UiContextRoot))
             .style()
-            .height(Val::Percent(100.0))
+            .height(Val::Percent(100.))
             .background_color(Color::NONE);
     });
+
+    commands.next_state(Page::Layout);
 }
 
 fn exit_app_on_menu_item(
     q_menu_items: Query<&MenuItem, (With<ExitAppButton>, Changed<MenuItem>)>,
     q_windows: Query<Entity, With<Window>>,
-    mut commands: Commands
+    mut commands: Commands,
 ) {
     let Ok(item) = q_menu_items.get_single() else {
         return;
@@ -531,7 +721,7 @@ fn exit_app_on_menu_item(
 
 fn update_current_page(
     mut next_state: ResMut<NextState<Page>>,
-    q_menu_items: Query<(&Page, &MenuItem), Changed<MenuItem>>
+    q_menu_items: Query<(&Page, &MenuItem), Changed<MenuItem>>,
 ) {
     for (menu_type, menu_item) in &q_menu_items {
         if menu_item.interacted() {
@@ -542,7 +732,7 @@ fn update_current_page(
 
 fn clear_content_on_menu_change(
     root_node: Query<Entity, With<ShowcaseContainer>>,
-    mut commands: Commands
+    mut commands: Commands,
 ) {
     let root_entity = root_node.single();
     commands.entity(root_entity).despawn_descendants();
@@ -553,20 +743,22 @@ fn spawn_hierarchy_view(
     q_added_scene_view: Query<&SceneView, Added<SceneView>>,
     q_hierarchy_panel: Query<Entity, With<HierarchyPanel>>,
 
-    mut commands: Commands
+    mut commands: Commands,
 ) {
     if let Some(scene_view) = (&q_added_scene_view).into_iter().next() {
-        if let Ok(container) = q_hierarchy_panel.get_single() {
-            commands.entity(container).despawn_descendants();
-            commands.ui_builder(container).hierarchy_for(scene_view.asset_root());
+        let Ok(container) = q_hierarchy_panel.get_single() else {
+            return;
         };
+
+        commands.entity(container).despawn_descendants();
+        commands.ui_builder(container).hierarchy_for(scene_view.asset_root());
     }
 }
 
 fn despawn_hierarchy_view(
     q_hierarchy_panel: Query<Entity, With<HierarchyPanel>>,
     q_removed_scene_view: RemovedComponents<SceneView>,
-    mut commands: Commands
+    mut commands: Commands,
 ) {
     let Ok(container) = q_hierarchy_panel.get_single() else {
         return;
@@ -585,19 +777,19 @@ fn layout_showcase(root_node: Query<Entity, With<ShowcaseContainer>>, mut comman
         .row(|row| {
             row.docking_zone_split(
                 SizedZoneConfig {
-                    size: 75.0,
+                    size: 75.,
                     ..default()
                 },
                 |left_side| {
                     left_side.docking_zone_split(
                         SizedZoneConfig {
-                            size: 75.0,
+                            size: 75.,
                             ..default()
                         },
                         |left_side_top| {
                             left_side_top.docking_zone(
                                 SizedZoneConfig {
-                                    size: 25.0,
+                                    size: 25.,
                                     ..default()
                                 },
                                 true,
@@ -611,11 +803,11 @@ fn layout_showcase(root_node: Query<Entity, With<ShowcaseContainer>>, mut comman
                                             ..default()
                                         });
                                     });
-                                }
+                                },
                             );
                             left_side_top.docking_zone(
                                 SizedZoneConfig {
-                                    size: 75.0,
+                                    size: 75.,
                                     ..default()
                                 },
                                 false,
@@ -635,14 +827,14 @@ fn layout_showcase(root_node: Query<Entity, With<ShowcaseContainer>>, mut comman
                                             ..default()
                                         });
                                     });
-                                }
+                                },
                             );
-                        }
+                        },
                     );
 
                     left_side.docking_zone(
                         SizedZoneConfig {
-                            size: 25.0,
+                            size: 25.,
                             ..default()
                         },
                         true,
@@ -659,25 +851,27 @@ fn layout_showcase(root_node: Query<Entity, With<ShowcaseContainer>>, mut comman
                                     ..default()
                                 });
                             });
-                        }
+                        },
                     );
-                }
+                },
             );
 
             row.docking_zone_split(
                 SizedZoneConfig {
-                    size: 25.0,
+                    size: 25.,
                     ..default()
                 },
                 |right_side| {
                     right_side.docking_zone(
                         SizedZoneConfig {
-                            size: 25.0,
+                            size: 25.,
                             ..default()
                         },
                         true,
                         |tab_container| {
                             tab_container.add_tab("Placeholder".into(), |placeholder| {
+                                placeholder.style().padding(UiRect::all(Val::Px(10.)));
+
                                 placeholder.row(|row| {
                                     row.checkbox(None, false);
                                     row.radio_group(vec!["Light", "Dark"], 1, false);
@@ -689,49 +883,23 @@ fn layout_showcase(root_node: Query<Entity, With<ShowcaseContainer>>, mut comman
                                         vec![
                                             "Standard",
                                             "Medium Contrast",
-                                            "High Contrast - High Contrast"
+                                            "High Contrast - High Contrast",
                                         ],
-                                        None
+                                        None,
                                     );
 
                                     row.dropdown(
                                         vec![
                                             "Standard",
                                             "Medium Contrast",
-                                            "High Contrast - High Contrast"
+                                            "High Contrast - High Contrast",
                                         ],
-                                        None
+                                        None,
                                     );
                                 });
 
-                                placeholder.scroll_view(None, |scroll_view| {
-                                    for _ in 0..10 {
-                                        scroll_view.row(|row| {
-                                            for _ in 0..10 {
-                                                row.container(
-                                                    NodeBundle {
-                                                        style: Style {
-                                                            height: Val::Px(50.0),
-                                                            flex_shrink: 0.0,
-                                                            border: UiRect::all(Val::Px(1.0)),
-                                                            ..default()
-                                                        },
-                                                        background_color: Color::WHITE.into(),
-                                                        border_color: Color::BLACK.into(),
-                                                        ..default()
-                                                    },
-                                                    |container| {
-                                                        container.label(LabelConfig {
-                                                            label: "Test Node".into(),
-                                                            color: Color::BLACK,
-                                                            ..default()
-                                                        });
-                                                    }
-                                                );
-                                            }
-                                        });
-                                    }
-                                });
+                                placeholder.outlined_block();
+                                placeholder.atlas_example();
 
                                 placeholder.row(|row| {
                                     row.style().justify_content(JustifyContent::SpaceBetween);
@@ -739,18 +907,18 @@ fn layout_showcase(root_node: Query<Entity, With<ShowcaseContainer>>, mut comman
                                         vec![
                                             "Standard",
                                             "Medium Contrast",
-                                            "High Contrast - High Contrast"
+                                            "High Contrast - High Contrast",
                                         ],
-                                        None
+                                        None,
                                     );
                                     row.checkbox(None, false);
                                     row.dropdown(
                                         vec![
                                             "Standard",
                                             "Medium Contrast",
-                                            "High Contrast - High Contrast"
+                                            "High Contrast - High Contrast",
                                         ],
-                                        None
+                                        None,
                                     );
                                 });
                             });
@@ -758,92 +926,78 @@ fn layout_showcase(root_node: Query<Entity, With<ShowcaseContainer>>, mut comman
                             tab_container.add_tab("Sliders".into(), |slider_tab| {
                                 slider_tab
                                     .row(|row| {
-                                        row.slider(
-                                            SliderConfig::vertical(
-                                                String::from("Slider"),
-                                                0.0,
-                                                5.0,
-                                                2.0,
-                                                true
-                                            )
-                                        );
+                                        row.slider(SliderConfig::vertical(
+                                            String::from("Slider"),
+                                            0.,
+                                            5.,
+                                            2.,
+                                            true,
+                                        ));
 
-                                        row.slider(
-                                            SliderConfig::vertical(None, 0.0, 5.0, 2.0, true)
-                                        );
+                                        row.slider(SliderConfig::vertical(None, 0., 5., 2., true));
 
-                                        row.slider(
-                                            SliderConfig::vertical(
-                                                String::from("Slider"),
-                                                0.0,
-                                                5.0,
-                                                2.0,
-                                                false
-                                            )
-                                        );
+                                        row.slider(SliderConfig::vertical(
+                                            String::from("Slider"),
+                                            0.,
+                                            5.,
+                                            2.,
+                                            false,
+                                        ));
 
-                                        row.slider(
-                                            SliderConfig::vertical(None, 0.0, 5.0, 2.0, false)
-                                        );
+                                        row.slider(SliderConfig::vertical(None, 0., 5., 2., false));
                                     })
                                     .style()
-                                    .height(Val::Percent(50.0));
+                                    .height(Val::Percent(50.));
 
                                 slider_tab
                                     .column(|row| {
-                                        row.slider(
-                                            SliderConfig::horizontal(
-                                                String::from("Slider"),
-                                                0.0,
-                                                5.0,
-                                                2.0,
-                                                true
-                                            )
-                                        );
-                                        row.slider(
-                                            SliderConfig::horizontal(None, 0.0, 5.0, 2.0, true)
-                                        );
-                                        row.slider(
-                                            SliderConfig::horizontal(
-                                                String::from("Slider"),
-                                                0.0,
-                                                5.0,
-                                                2.0,
-                                                false
-                                            )
-                                        );
-                                        row.slider(
-                                            SliderConfig::horizontal(None, 0.0, 5.0, 2.0, false)
-                                        );
+                                        row.slider(SliderConfig::horizontal(
+                                            String::from("Slider"),
+                                            0.,
+                                            5.,
+                                            2.,
+                                            true,
+                                        ));
+                                        row.slider(SliderConfig::horizontal(
+                                            None, 0., 5., 2., true,
+                                        ));
+                                        row.slider(SliderConfig::horizontal(
+                                            String::from("Slider"),
+                                            0.,
+                                            5.,
+                                            2.,
+                                            false,
+                                        ));
+                                        row.slider(SliderConfig::horizontal(
+                                            None, 0., 5., 2., false,
+                                        ));
                                     })
                                     .style()
                                     .justify_content(JustifyContent::End)
-                                    .height(Val::Percent(50.0))
-                                    .width(Val::Percent(100.0));
+                                    .height(Val::Percent(50.))
+                                    .width(Val::Percent(100.));
                             });
-                        }
+                        },
                     );
-                }
+                },
             );
         })
         .style()
-        .height(Val::Percent(100.0));
+        .height(Val::Percent(100.));
 }
 
 fn interaction_showcase(root_node: Query<Entity, With<ShowcaseContainer>>, mut commands: Commands) {
     let root_entity = root_node.single();
 
-    commands.ui_builder(root_entity).column(
-        |_column| {
-            // Test here simply by calling methods on the `column`
-        }
-    );
+    commands.ui_builder(root_entity).column(|_column| {
+        // Test here simply by calling methods on the `column`
+    });
 }
 
 fn handle_theme_data_update(
     theme_data: Res<ThemeData>,
     mut q_theme_switch: Query<&mut RadioGroup, With<ThemeSwitch>>,
-    mut q_theme_contrast_select: Query<&mut Dropdown, With<ThemeContrastSelect>>
+    mut q_theme_contrast_select: Query<&mut Dropdown, With<ThemeContrastSelect>>,
 ) {
     if theme_data.is_changed() {
         let Ok(mut theme_switch) = q_theme_switch.get_single_mut() else {
@@ -861,7 +1015,7 @@ fn handle_theme_data_update(
                     Contrast::Standard => theme_contrast_select.set_value(0),
                     Contrast::Medium => theme_contrast_select.set_value(1),
                     Contrast::High => theme_contrast_select.set_value(2),
-                }
+                };
             }
             Scheme::Dark(contrast) => {
                 theme_switch.select(1);
@@ -869,7 +1023,7 @@ fn handle_theme_data_update(
                     Contrast::Standard => theme_contrast_select.set_value(0),
                     Contrast::Medium => theme_contrast_select.set_value(1),
                     Contrast::High => theme_contrast_select.set_value(2),
-                }
+                };
             }
         };
     }
@@ -877,7 +1031,7 @@ fn handle_theme_data_update(
 fn handle_theme_switch(
     mut theme_data: ResMut<ThemeData>,
     q_theme_switch: Query<&RadioGroup, (With<ThemeSwitch>, Changed<RadioGroup>)>,
-    q_theme_contrast_select: Query<&Dropdown, With<ThemeContrastSelect>>
+    q_theme_contrast_select: Query<&Dropdown, With<ThemeContrastSelect>>,
 ) {
     let Ok(theme_switch) = q_theme_switch.get_single() else {
         return;
@@ -897,7 +1051,7 @@ fn handle_theme_switch(
 fn handle_theme_contrast_select(
     mut theme_data: ResMut<ThemeData>,
     q_theme_switch: Query<&RadioGroup, With<ThemeSwitch>>,
-    q_theme_contrast_select: Query<&Dropdown, (With<ThemeContrastSelect>, Changed<Dropdown>)>
+    q_theme_contrast_select: Query<&Dropdown, (With<ThemeContrastSelect>, Changed<Dropdown>)>,
 ) {
     let Ok(theme_contrast_select) = q_theme_contrast_select.get_single() else {
         return;
@@ -916,16 +1070,15 @@ fn handle_theme_contrast_select(
 
 fn get_selected_scheme(
     theme_switch: &RadioGroup,
-    theme_contrast_select: &Dropdown
+    theme_contrast_select: &Dropdown,
 ) -> Option<Scheme> {
     let contrast = match theme_contrast_select.value() {
-        Some(index) =>
-            match index {
-                0 => Contrast::Standard,
-                1 => Contrast::Medium,
-                2 => Contrast::High,
-                _ => Contrast::Standard,
-            }
+        Some(index) => match index {
+            0 => Contrast::Standard,
+            1 => Contrast::Medium,
+            2 => Contrast::High,
+            _ => Contrast::Standard,
+        },
         None => Contrast::Standard,
     };
 

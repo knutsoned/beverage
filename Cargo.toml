@@ -9,22 +9,16 @@ license = "MIT OR Apache-2.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = { path = "../../bevy", version = "0.14.0-dev", features = ["bevy_remote", "dynamic_linking", "serialize"] }
+bevy = { path = "../../bevy", version = "0.14.0-rc.4", features = ["bevy_remote", "dynamic_linking", "serialize"] }
 
-# sickle is not yet compatible with 0.14.0
-# per EidLoi on discord, theming will be merged soon along with 0.14.0 support
-# this may be held up by at least 1 internal Bevy issue:
-# https://github.com/bevyengine/bevy/issues/13969
-# https://github.com/bevyengine/bevy/issues/12403
-#sickle_ui = { path = "../sickle_ui", version = "0.2.0" }
+# sickle is now compatible with 0.14.0
+sickle_ui = { path = "../sickle_ui", version = "0.2.0" }
 
 # bevy_remote (BRP) examples
 anyhow = "1"
 argh = "0.1.12"
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1" }
-
-# BRP basic client example
 hyper = { version = "1", features = ["full"] }
 hyper-util = { version = "0.1", features = ["full"] }
 smol = "2"
@@ -70,16 +64,16 @@ description = "A Bevy app that you can connect to with the BRP and edit"
 category = "Remote Protocol"
 wasm = true
 
-#[[example]]
-#name = "sickle_editor"
-#path = "examples/sickle_editor.rs"
-#doc-scrape-examples = true
+[[example]]
+name = "sickle_editor"
+path = "examples/sickle_editor.rs"
+doc-scrape-examples = true
 
-#[package.metadata.example.sickle_editor]
-#name = "sickle_editor"
-#description = "An example editor UI made with sickle_ui"
-#category = "Sickle UI"
-#wasm = true
+[package.metadata.example.sickle_editor]
+name = "sickle_editor"
+description = "An example editor UI made with sickle_ui"
+category = "Sickle UI"
+wasm = true
 
 # Enable a small amount of optimization in debug mode
 [profile.dev]
