@@ -1,15 +1,18 @@
 use bevy::prelude::*;
 
-use menu::build_menu;
+use bevy_fluent::Localization;
+
 use sickle_ui::{ prelude::*, ui_commands::UpdateStatesExt };
 
 use crate::{ framework::*, layout::footer::UiUiFooterRootNodeExt };
 
 pub mod menu;
+use menu::build_menu;
 
-pub fn setup(
+pub fn on_load(
     asset_server: Res<AssetServer>,
     mut icon_cache: ResMut<IconCache>,
+    l10n: Res<Localization>,
     mut commands: Commands
 ) {
     // Workaround for disappearing icons when they are despawned and spawned back in during the same frame
@@ -52,6 +55,8 @@ pub fn setup(
 
     // Use the UI builder with plain bundles and direct setting of bundle props
     let mut root_entity = Entity::PLACEHOLDER;
+
+    // top level container
     commands.ui_builder(UiRoot).container(
         (
             NodeBundle {
@@ -83,13 +88,35 @@ pub fn setup(
                 ))
                 .id();
 
-            // ui_footer comes from beverage::layout::footer::UiUiFooterRootNodeExt
-            container.ui_footer(|_| {});
+            container.ui_footer(
+                |_builder| {
+                    /*
+                    builder
+                        .label(LabelConfig {
+                            label: "Footer".into(),
+                            ..default()
+                        })
+                        .style()
+                        .width(Val::Px(80.0));
+                    */
+                }
+            );
         }
     );
 
     // Use the UI builder of the root entity with styling applied via commands
-    build_menu(root_entity, &mut commands);
+    commands.ui_builder(root_entity).column(|builder| {
+        // add the menu bar
+        build_menu(builder, &l10n);
 
-    commands.next_state(Page::Layout);
+        // set up the main editor container
+        builder
+            .row(|_| {})
+            .insert((EditorContainer, UiContextRoot))
+            .style()
+            .height(Val::Percent(100.0))
+            .background_color(Color::NONE);
+    });
+
+    commands.next_state(Page::SceneEditor);
 }

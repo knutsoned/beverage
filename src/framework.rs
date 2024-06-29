@@ -1,5 +1,10 @@
 use bevy::prelude::*;
 
+pub trait Translator {
+    fn lbl(&self, str: &str) -> String;
+    fn t(&self, string: String) -> String;
+}
+
 #[derive(Component)]
 pub struct UiCamera;
 
@@ -14,7 +19,7 @@ pub struct UiStartupSet;
 pub enum Page {
     #[default]
     None,
-    Layout,
+    SceneEditor,
     Playground,
 }
 
@@ -37,6 +42,9 @@ pub struct CurrentPage(Page);
 #[derive(Resource, Debug, Default, Reflect)]
 #[reflect(Resource)]
 pub struct IconCache(pub Vec<Handle<Image>>);
+
+#[derive(Component, Debug)]
+pub struct LocaleSelect;
 
 #[derive(Component, Debug)]
 pub struct ThemeSwitch;

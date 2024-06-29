@@ -21,13 +21,18 @@ license = "MIT OR Apache-2.0"
 #bevy = { git = "https://github.com/knutsoned/bevy/tree/brp", version = "0.14.0", features = ["bevy_remote", "dynamic_linking", "serialize"] }
 bevy = { path = "../../bevy", version = "0.14.0-rc.4", features = ["bevy_remote", "dynamic_linking", "serialize"] }
 
-# sickle is now compatible with 0.14.0
+# sickle is now compatible with 0.14.0(-rc.4)
 #
 # it still needs bevy to be in a path which doesn't work when you point the dep at a repository
 #
 # when 0.14.0 comes out, there will be an official crate release
-#sickle_ui = { version = "0.2" }
+#sickle_ui = { version = "0.2.0" }
 sickle_ui = { path = "../sickle_ui", version = "0.2.0" }
+
+# i18n
+bevy_fluent = { path = "../bevy_fluent", version = "0.9.0" }
+fluent_content = "0.0.5"
+unic-langid = { version = "0.9.4", features = ["macros"] }
 
 # bevy_remote (BRP) examples
 anyhow = "1"
