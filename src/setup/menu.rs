@@ -60,16 +60,19 @@ pub fn build_menu(column: &mut UiBuilder<'_, Entity>, l10n: &Res<Localization>) 
                 .insert(ThemeContrastSelect)
                 .style()
                 .width(Val::Px(150.0));
+            /*
         });
 
         bar.extra_menu(|extra| {
+            */
             extra
                 .label(LabelConfig {
                     label: l10n.lbl("Language"),
                     ..default()
                 })
                 .style()
-                .width(Val::Px(80.0));
+                .width(Val::Px(70.0))
+                .margin(UiRect::new(Val::Px(50.0), Val::Px(0.0), Val::Px(0.0), Val::Px(0.0)));
 
             // do NOT translate this
 
