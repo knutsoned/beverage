@@ -1,13 +1,14 @@
 //! An example using the widget library to create a simple 3D scene view with a hierarchy browser for the scene asset.
 use bevy::prelude::*;
 
+use ease::Ease;
 use sickle_ui::{
     dev_panels::{
         hierarchy::{ HierarchyTreeViewPlugin, UiHierarchyExt },
         scene_view::{ SceneView, SceneViewPlugin, SpawnSceneViewPreUpdate, UiSceneViewExt },
     },
     prelude::*,
-    ui_commands::SetCursorExt,
+    ui_commands::{ SetCursorExt, UpdateStatesExt },
     SickleUiPlugin,
 };
 
@@ -16,7 +17,7 @@ fn main() {
         .add_plugins(
             DefaultPlugins.set(WindowPlugin {
                 primary_window: Some(Window {
-                    title: "Beverage - Also Available As A T-Shirt".into(),
+                    title: "Sickle UI -  Simple Editor".into(),
                     resolution: (1280.0, 720.0).into(),
                     ..default()
                 }),
@@ -25,6 +26,8 @@ fn main() {
         )
         .add_plugins(SickleUiPlugin)
         .add_plugins(UiFooterRootNodePlugin)
+        .add_plugins(OutlinedBlockPlugin)
+        .add_plugins(TextureAtlasInteractionPlugin)
         .init_resource::<CurrentPage>()
         .init_resource::<IconCache>()
         .init_state::<Page>()
@@ -60,7 +63,7 @@ pub struct UiCamera;
 #[derive(Component)]
 pub struct UiMainRootNode;
 
-// Example themed widget, generate with snipped
+// Example themed widgets, generated with snipped
 pub struct UiFooterRootNodePlugin;
 
 impl Plugin for UiFooterRootNodePlugin {
@@ -118,6 +121,171 @@ impl UiUiFooterRootNodeExt for UiBuilder<'_, Entity> {
         self.container((UiFooterRootNode::frame(), UiFooterRootNode), spawn_children)
     }
 }
+
+pub struct OutlinedBlockPlugin;
+
+impl Plugin for OutlinedBlockPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_plugins(ComponentThemePlugin::<OutlinedBlock>::default());
+    }
+}
+
+#[derive(Component, Clone, Debug, Default, Reflect, UiContext)]
+#[reflect(Component)]
+pub struct OutlinedBlock;
+
+impl DefaultTheme for OutlinedBlock {
+    fn default_theme() -> Option<Theme<OutlinedBlock>> {
+        OutlinedBlock::theme().into()
+    }
+}
+
+impl OutlinedBlock {
+    pub fn theme() -> Theme<OutlinedBlock> {
+        let base_theme = PseudoTheme::deferred(None, OutlinedBlock::primary_style);
+        Theme::new(vec![base_theme])
+    }
+
+    fn primary_style(style_builder: &mut StyleBuilder, theme_data: &ThemeData) {
+        let theme_spacing = theme_data.spacing;
+        let colors = theme_data.colors();
+
+        style_builder
+            .size(Val::Px(100.0))
+            .align_self(AlignSelf::Center)
+            .justify_self(JustifySelf::Center)
+            .margin(UiRect::all(Val::Px(30.0)))
+            .background_color(colors.accent(Accent::Primary))
+            .padding(UiRect::all(Val::Px(theme_spacing.gaps.small)))
+            .animated()
+            .outline_width(AnimatedVals {
+                idle: Val::Px(0.0),
+                hover: Val::Px(10.0).into(),
+                ..default()
+            })
+            .copy_from(theme_data.interaction_animation);
+
+        style_builder
+            .animated()
+            .outline_color(AnimatedVals {
+                idle: colors.accent(Accent::Outline),
+                hover: colors.accent(Accent::OutlineVariant).into(),
+                hover_alt: colors.accent(Accent::Outline).into(),
+                ..default()
+            })
+            .copy_from(theme_data.interaction_animation)
+            .hover(0.3, Ease::InOutBounce, 0.5, 0.0, AnimationLoop::PingPongContinous);
+
+        style_builder
+            .animated()
+            .outline_offset(AnimatedVals {
+                idle: Val::Px(0.0),
+                press: Val::Px(10.0).into(),
+                press_alt: Val::Px(12.0).into(),
+                ..default()
+            })
+            .copy_from(theme_data.interaction_animation)
+            .pressed(0.3, Ease::InOutBounce, 0.5, 0.0, AnimationLoop::PingPongContinous);
+    }
+
+    fn frame() -> impl Bundle {
+        (Name::new("Outlined Block"), NodeBundle::default(), Outline::default())
+    }
+}
+
+pub trait UiOutlinedBlockExt {
+    fn outlined_block(&mut self) -> UiBuilder<Entity>;
+}
+
+impl UiOutlinedBlockExt for UiBuilder<'_, Entity> {
+    fn outlined_block(&mut self) -> UiBuilder<Entity> {
+        self.spawn((OutlinedBlock::frame(), OutlinedBlock))
+    }
+}
+
+pub struct TextureAtlasInteractionPlugin;
+
+impl Plugin for TextureAtlasInteractionPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_plugins(ComponentThemePlugin::<TextureAtlasInteraction>::default());
+    }
+}
+
+#[derive(Component, Clone, Debug, Default, Reflect, UiContext)]
+#[reflect(Component)]
+pub struct TextureAtlasInteraction;
+
+impl DefaultTheme for TextureAtlasInteraction {
+    fn default_theme() -> Option<Theme<TextureAtlasInteraction>> {
+        TextureAtlasInteraction::theme().into()
+    }
+}
+
+impl TextureAtlasInteraction {
+    pub fn theme() -> Theme<TextureAtlasInteraction> {
+        let base_theme = PseudoTheme::deferred(None, TextureAtlasInteraction::primary_style);
+        Theme::new(vec![base_theme])
+    }
+
+    fn primary_style(style_builder: &mut StyleBuilder, theme_data: &ThemeData) {
+        let theme_spacing = theme_data.spacing;
+        let colors = theme_data.colors();
+
+        style_builder
+            .size(Val::Px(96.0))
+            .align_self(AlignSelf::Center)
+            .justify_self(JustifySelf::Center)
+            .margin(UiRect::all(Val::Px(30.0)))
+            .background_color(colors.accent(Accent::OutlineVariant))
+            .outline(Outline {
+                width: Val::Px(5.0),
+                color: colors.accent(Accent::Primary),
+                ..default()
+            })
+            .padding(UiRect::all(Val::Px(theme_spacing.gaps.small)))
+            .animated()
+            .atlas_index(AnimatedVals {
+                enter_from: Some(0),
+                idle: 7,
+                idle_alt: Some(11),
+                hover: Some(12),
+                hover_alt: Some(16),
+                press: Some(29),
+                ..default()
+            })
+            .copy_from(theme_data.interaction_animation)
+            .enter(0.8, Ease::Linear, 1.0)
+            .idle(0.5, Ease::Linear, 0.0, 0.0, AnimationLoop::PingPongContinous)
+            .hover(0.5, Ease::Linear, 0.0, 0.0, AnimationLoop::PingPongContinous)
+            .press(1.3, Ease::Linear, 0.0)
+            .cancel(0.5, Ease::Linear, 0.0);
+    }
+
+    fn frame() -> impl Bundle {
+        (Name::new("TextureAtlasInteraction"), ImageBundle::default())
+    }
+}
+
+pub trait UiTextureAtlasInteractionExt {
+    fn atlas_example(&mut self) -> UiBuilder<Entity>;
+}
+
+impl UiTextureAtlasInteractionExt for UiBuilder<'_, Entity> {
+    fn atlas_example(&mut self) -> UiBuilder<Entity> {
+        let mut result = self.spawn((TextureAtlasInteraction::frame(), TextureAtlasInteraction));
+        // TODO: Replace with sharable asset
+        result
+            .style()
+            .image(
+                ImageSource::Atlas(
+                    String::from("examples/30FPS_ASLight_05_Sparkle.png"),
+                    TextureAtlasLayout::from_grid(UVec2::splat(192), 5, 6, None, None)
+                )
+            );
+
+        result
+    }
+}
 // ^^^^^^^^^^^^
 
 #[derive(SystemSet, Clone, Hash, Debug, Eq, PartialEq)]
@@ -127,6 +295,7 @@ pub struct UiStartupSet;
 #[reflect(Component)]
 enum Page {
     #[default]
+    None,
     Layout,
     Playground,
 }
@@ -511,6 +680,8 @@ fn setup(
             .height(Val::Percent(100.0))
             .background_color(Color::NONE);
     });
+
+    commands.next_state(Page::Layout);
 }
 
 fn exit_app_on_menu_item(
@@ -556,10 +727,12 @@ fn spawn_hierarchy_view(
     mut commands: Commands
 ) {
     if let Some(scene_view) = (&q_added_scene_view).into_iter().next() {
-        if let Ok(container) = q_hierarchy_panel.get_single() {
-            commands.entity(container).despawn_descendants();
-            commands.ui_builder(container).hierarchy_for(scene_view.asset_root());
+        let Ok(container) = q_hierarchy_panel.get_single() else {
+            return;
         };
+
+        commands.entity(container).despawn_descendants();
+        commands.ui_builder(container).hierarchy_for(scene_view.asset_root());
     }
 }
 
@@ -678,6 +851,8 @@ fn layout_showcase(root_node: Query<Entity, With<ShowcaseContainer>>, mut comman
                         true,
                         |tab_container| {
                             tab_container.add_tab("Placeholder".into(), |placeholder| {
+                                placeholder.style().padding(UiRect::all(Val::Px(10.0)));
+
                                 placeholder.row(|row| {
                                     row.checkbox(None, false);
                                     row.radio_group(vec!["Light", "Dark"], 1, false);
@@ -704,34 +879,8 @@ fn layout_showcase(root_node: Query<Entity, With<ShowcaseContainer>>, mut comman
                                     );
                                 });
 
-                                placeholder.scroll_view(None, |scroll_view| {
-                                    for _ in 0..10 {
-                                        scroll_view.row(|row| {
-                                            for _ in 0..10 {
-                                                row.container(
-                                                    NodeBundle {
-                                                        style: Style {
-                                                            height: Val::Px(50.0),
-                                                            flex_shrink: 0.0,
-                                                            border: UiRect::all(Val::Px(1.0)),
-                                                            ..default()
-                                                        },
-                                                        background_color: Color::WHITE.into(),
-                                                        border_color: Color::BLACK.into(),
-                                                        ..default()
-                                                    },
-                                                    |container| {
-                                                        container.label(LabelConfig {
-                                                            label: "Test Node".into(),
-                                                            color: Color::BLACK,
-                                                            ..default()
-                                                        });
-                                                    }
-                                                );
-                                            }
-                                        });
-                                    }
-                                });
+                                placeholder.outlined_block();
+                                placeholder.atlas_example();
 
                                 placeholder.row(|row| {
                                     row.style().justify_content(JustifyContent::SpaceBetween);

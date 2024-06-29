@@ -3,6 +3,7 @@
 use std::sync::{ Arc, Mutex };
 
 use bevy::{
+    ecs::event::EventWriter,
     prelude::*,
     remote::{
         builtin_verbs::{ BrpInsertRequest, BrpQuery, BrpQueryRequest, BrpQueryRow },
