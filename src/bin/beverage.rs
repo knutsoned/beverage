@@ -26,8 +26,7 @@ use beverage::{
 };
 
 fn main() {
-    let default_li = "fr-FR".parse::<LanguageIdentifier>().expect(
-        //DEFAULT_LOCALE.parse::<LanguageIdentifier>().expect(
+    let default_li = DEFAULT_LOCALE.parse::<LanguageIdentifier>().expect(
         "Invalid default LanguageIdentifier"
     );
     App::new()
