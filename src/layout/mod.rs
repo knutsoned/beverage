@@ -1,2 +1,2 @@
 pub mod footer;
-pub mod root;
+pub mod editor;

@@ -20,7 +20,7 @@ use winit::window::Icon;
 use beverage::{
     framework::*,
     l10n::{ self, handle_locale_select },
-    layout::root::layout_editor,
+    layout::editor,
     prelude::DEFAULT_LOCALE,
     setup,
     theme::{ handle_theme_contrast_select, handle_theme_data_update, handle_theme_switch },
@@ -55,7 +55,7 @@ fn main() {
         .add_systems(OnEnter(EditorState::SwitchLocale), l10n::switch_locale)
         .add_systems(OnExit(EditorState::SwitchLocale), setup::on_rebuild)
         .add_systems(Update, l10n::update.run_if(in_state(EditorState::Loading)))
-        .add_systems(OnEnter(Page::SceneEditor), layout_editor)
+        .add_systems(OnEnter(Page::SceneEditor), editor::layout)
         .add_systems(OnExit(Page::SceneEditor), clear_content_on_menu_change)
         .add_systems(PreUpdate, exit_app_on_menu_item)
         .add_systems(
@@ -170,14 +170,4 @@ fn despawn_hierarchy_view(
         commands.entity(container).despawn_descendants();
     }
 }
-
-/*
-fn interaction_showcase(root_node: Query<Entity, With<EditorContainer>>, mut commands: Commands) {
-    let root_entity = root_node.single();
-
-    commands.ui_builder(root_entity).column(|_column| {
-        // Test here simply by calling methods on the `column`
-    });
-}
-*/
 // END: sickle editor example internal systems

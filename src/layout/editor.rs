@@ -6,7 +6,7 @@ use sickle_ui::{ dev_panels::scene_view::UiSceneViewExt, prelude::* };
 
 use crate::framework::*;
 
-pub fn layout_editor(
+pub fn layout(
     root_node: Query<Entity, With<EditorContainer>>,
     l10n: Res<Localization>,
     mut commands: Commands
