@@ -450,6 +450,7 @@ dependencies = [
 [[package]]
 name = "bevy"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_dylib",
  "bevy_internal",
@@ -458,6 +459,7 @@ dependencies = [
 [[package]]
 name = "bevy_a11y"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "accesskit",
  "bevy_app",
@@ -468,6 +470,7 @@ dependencies = [
 [[package]]
 name = "bevy_animation"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -496,6 +499,7 @@ dependencies = [
 [[package]]
 name = "bevy_app"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_derive",
  "bevy_ecs",
@@ -512,6 +516,7 @@ dependencies = [
 [[package]]
 name = "bevy_asset"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "async-broadcast",
  "async-fs",
@@ -542,6 +547,7 @@ dependencies = [
 [[package]]
 name = "bevy_asset_macros"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_macro_utils",
  "proc-macro2",
@@ -552,6 +558,7 @@ dependencies = [
 [[package]]
 name = "bevy_audio"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -569,6 +576,7 @@ dependencies = [
 [[package]]
 name = "bevy_color"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_math",
  "bevy_reflect",
@@ -582,6 +590,7 @@ dependencies = [
 [[package]]
 name = "bevy_core"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -595,6 +604,7 @@ dependencies = [
 [[package]]
 name = "bevy_core_pipeline"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -618,6 +628,7 @@ dependencies = [
 [[package]]
 name = "bevy_derive"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_macro_utils",
  "quote",
@@ -627,6 +638,7 @@ dependencies = [
 [[package]]
 name = "bevy_diagnostic"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_app",
  "bevy_core",
@@ -641,6 +653,7 @@ dependencies = [
 [[package]]
 name = "bevy_dylib"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_internal",
 ]
@@ -648,6 +661,7 @@ dependencies = [
 [[package]]
 name = "bevy_ecs"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "arrayvec",
  "bevy_ecs_macros",
@@ -667,6 +681,7 @@ dependencies = [
 [[package]]
 name = "bevy_ecs_macros"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_macro_utils",
  "proc-macro2",
@@ -677,6 +692,7 @@ dependencies = [
 [[package]]
 name = "bevy_encase_derive"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_macro_utils",
  "encase_derive_impl",
@@ -685,6 +701,7 @@ dependencies = [
 [[package]]
 name = "bevy_fluent"
 version = "0.9.0"
+source = "git+https://github.com/knutsoned/bevy_fluent#e85985847818cc222e25b800ae40e8fa26245572"
 dependencies = [
  "bevy",
  "fluent",
@@ -705,6 +722,7 @@ dependencies = [
 [[package]]
 name = "bevy_gilrs"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -718,6 +736,7 @@ dependencies = [
 [[package]]
 name = "bevy_gizmos"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -739,6 +758,7 @@ dependencies = [
 [[package]]
 name = "bevy_gizmos_macros"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_macro_utils",
  "proc-macro2",
@@ -749,6 +769,7 @@ dependencies = [
 [[package]]
 name = "bevy_gltf"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "base64 0.22.1",
  "bevy_animation",
@@ -778,6 +799,7 @@ dependencies = [
 [[package]]
 name = "bevy_hierarchy"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_app",
  "bevy_core",
@@ -790,6 +812,7 @@ dependencies = [
 [[package]]
 name = "bevy_input"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -804,6 +827,7 @@ dependencies = [
 [[package]]
 name = "bevy_internal"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_a11y",
  "bevy_animation",
@@ -844,6 +868,7 @@ dependencies = [
 [[package]]
 name = "bevy_log"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "android_log-sys",
  "bevy_app",
@@ -857,6 +882,7 @@ dependencies = [
 [[package]]
 name = "bevy_macro_utils"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -867,6 +893,7 @@ dependencies = [
 [[package]]
 name = "bevy_math"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_reflect",
  "glam",
@@ -879,6 +906,7 @@ dependencies = [
 [[package]]
 name = "bevy_mikktspace"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "glam",
 ]
@@ -886,6 +914,7 @@ dependencies = [
 [[package]]
 name = "bevy_pbr"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -911,10 +940,12 @@ dependencies = [
 [[package]]
 name = "bevy_ptr"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 
 [[package]]
 name = "bevy_reflect"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_ptr",
  "bevy_reflect_derive",
@@ -933,6 +964,7 @@ dependencies = [
 [[package]]
 name = "bevy_reflect_derive"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_macro_utils",
  "proc-macro2",
@@ -944,6 +976,7 @@ dependencies = [
 [[package]]
 name = "bevy_remote"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "anyhow",
  "bevy_app",
@@ -965,6 +998,7 @@ dependencies = [
 [[package]]
 name = "bevy_render"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "async-channel",
  "bevy_app",
@@ -1011,6 +1045,7 @@ dependencies = [
 [[package]]
 name = "bevy_render_macros"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_macro_utils",
  "proc-macro2",
@@ -1021,6 +1056,7 @@ dependencies = [
 [[package]]
 name = "bevy_scene"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -1039,6 +1075,7 @@ dependencies = [
 [[package]]
 name = "bevy_sprite"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -1063,6 +1100,7 @@ dependencies = [
 [[package]]
 name = "bevy_state"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -1075,6 +1113,7 @@ dependencies = [
 [[package]]
 name = "bevy_state_macros"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_macro_utils",
  "proc-macro2",
@@ -1085,6 +1124,7 @@ dependencies = [
 [[package]]
 name = "bevy_tasks"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "async-channel",
  "async-executor",
@@ -1096,6 +1136,7 @@ dependencies = [
 [[package]]
 name = "bevy_text"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "ab_glyph",
  "bevy_app",
@@ -1117,6 +1158,7 @@ dependencies = [
 [[package]]
 name = "bevy_time"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -1130,6 +1172,7 @@ dependencies = [
 [[package]]
 name = "bevy_transform"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -1143,6 +1186,7 @@ dependencies = [
 [[package]]
 name = "bevy_ui"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_a11y",
  "bevy_app",
@@ -1172,6 +1216,7 @@ dependencies = [
 [[package]]
 name = "bevy_utils"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "ahash",
  "bevy_utils_proc_macros",
@@ -1185,6 +1230,7 @@ dependencies = [
 [[package]]
 name = "bevy_utils_proc_macros"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1194,6 +1240,7 @@ dependencies = [
 [[package]]
 name = "bevy_window"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "bevy_a11y",
  "bevy_app",
@@ -1209,6 +1256,7 @@ dependencies = [
 [[package]]
 name = "bevy_winit"
 version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#b67d7c85cfb1accdecec63d0a864a359e87bfeff"
 dependencies = [
  "accesskit_winit",
  "approx",
@@ -3745,6 +3793,7 @@ checksum = "0fda2ff0d084019ba4d7c6f371c95d8fd75ce3524c3cb8fb653a3023f6323e64"
 [[package]]
 name = "sickle_macros"
 version = "0.1.0"
+source = "git+https://github.com/knutsoned/sickle_ui?branch=bevy_014_upgrade#8459262c1344e3dc6496d3b831944ad16c2d6f6c"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3754,6 +3803,7 @@ dependencies = [
 [[package]]
 name = "sickle_math"
 version = "0.1.0"
+source = "git+https://github.com/knutsoned/sickle_ui?branch=bevy_014_upgrade#8459262c1344e3dc6496d3b831944ad16c2d6f6c"
 dependencies = [
  "bevy",
  "serde",
@@ -3762,6 +3812,7 @@ dependencies = [
 [[package]]
 name = "sickle_ui"
 version = "0.2.0"
+source = "git+https://github.com/knutsoned/sickle_ui?branch=bevy_014_upgrade#8459262c1344e3dc6496d3b831944ad16c2d6f6c"
 dependencies = [
  "bevy",
  "bevy_ecs_macros",
@@ -3775,6 +3826,7 @@ dependencies = [
 [[package]]
 name = "sickle_ui_scaffold"
 version = "0.1.0"
+source = "git+https://github.com/knutsoned/sickle_ui?branch=bevy_014_upgrade#8459262c1344e3dc6496d3b831944ad16c2d6f6c"
 dependencies = [
  "bevy",
  "bevy_reflect",
