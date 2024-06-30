@@ -52,6 +52,8 @@ macro_rules_attribute = "0.2.0"
 # BRP camera control example
 ehttp = "0.5.0"
 futures-lite = "2.3.0"
+winit = "0.30.3"
+image = "0.25.1"
 
 # sickle needs this until it is published as a crate
 [patch.crates-io]

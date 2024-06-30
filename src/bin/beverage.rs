@@ -1,6 +1,6 @@
 // The mothership.
 
-use bevy::prelude::*;
+use bevy::{ prelude::*, winit::WinitWindows };
 
 use bevy_fluent::{ FluentPlugin, Locale };
 use unic_langid::LanguageIdentifier;
@@ -14,6 +14,8 @@ use sickle_ui::{
     ui_commands::SetCursorExt,
     SickleUiPlugin,
 };
+
+use winit::window::Icon;
 
 use beverage::{
     framework::*,
@@ -47,6 +49,7 @@ fn main() {
         .init_state::<Page>()
         .add_plugins(HierarchyTreeViewPlugin)
         .add_plugins(SceneViewPlugin)
+        //.add_systems(PreStartup, set_window_icon)
         .add_systems(OnEnter(EditorState::Loading), l10n::setup)
         .add_systems(OnExit(EditorState::Loading), setup::on_load.in_set(UiStartupSet))
         .add_systems(OnEnter(EditorState::SwitchLocale), l10n::switch_locale)
@@ -75,6 +78,30 @@ fn main() {
                 .run_if(in_state(EditorState::Running))
         )
         .run();
+}
+
+// from https://bevy-cheatbook.github.io/window/icon.html
+fn set_window_icon(
+    // we have to use `NonSend` here
+    windows: NonSend<WinitWindows>
+) {
+    // here we use the `image` crate to load our icon data from a png file
+    // this is not a very bevy-native solution, but it will do
+    let (icon_rgba, icon_width, icon_height) = {
+        let image = image
+            ::open("textures/bevy.svg")
+            .expect("Failed to open icon path")
+            .into_rgba8();
+        let (width, height) = image.dimensions();
+        let rgba = image.into_raw();
+        (rgba, width, height)
+    };
+    let icon = Icon::from_rgba(icon_rgba, icon_width, icon_height).unwrap();
+
+    // do it for all windows
+    for window in windows.windows.values() {
+        window.set_window_icon(Some(icon.clone()));
+    }
 }
 
 // BEGIN: sickle editor example systems
