@@ -1,5 +1,3 @@
-use bevy::state::state::States;
-
 use sickle_ui::prelude::Dropdown;
 
 pub const DEFAULT_LOCALE: &str = "en-US";
@@ -28,11 +26,4 @@ fn get_selected_locale(locale_select: &Dropdown) -> String {
         Some(1) => "fr-FR".to_string(),
         _ => DEFAULT_LOCALE.to_string(),
     }
-}
-
-#[derive(Clone, Copy, Debug, Default, Eq, Hash, PartialEq, States)]
-pub enum EditorState {
-    #[default]
-    Loading,
-    Running,
 }

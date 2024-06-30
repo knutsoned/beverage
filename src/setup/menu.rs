@@ -7,7 +7,11 @@ use sickle_ui::prelude::*;
 use crate::framework::*;
 use super::{ ExitAppButton, LocaleSelect, Page, ThemeContrastSelect, ThemeSwitch };
 
-pub fn build_menu(column: &mut UiBuilder<'_, Entity>, l10n: &Res<Localization>) {
+pub fn build_menu(
+    column: &mut UiBuilder<'_, Entity>,
+    l10n: &Res<Localization>,
+    locale_index: usize
+) {
     column.style().width(Val::Percent(100.0)).background_color(Color::srgb(0.15, 0.155, 0.16));
 
     column.menu_bar(|bar| {
@@ -52,19 +56,15 @@ pub fn build_menu(column: &mut UiBuilder<'_, Entity>, l10n: &Res<Localization>) 
                 .dropdown(
                     vec![
                         l10n.lbl("Standard"),
-                        l10n.lbl("Medium Contrast"),
-                        l10n.lbl("High Contrast")
+                        l10n.lbl("MediumContrast"),
+                        l10n.lbl("HighContrast")
                     ],
                     0
                 )
                 .insert(ThemeContrastSelect)
                 .style()
                 .width(Val::Px(150.0));
-            /*
-        });
 
-        bar.extra_menu(|extra| {
-            */
             extra
                 .label(LabelConfig {
                     label: l10n.lbl("Language"),
@@ -74,11 +74,9 @@ pub fn build_menu(column: &mut UiBuilder<'_, Entity>, l10n: &Res<Localization>) 
                 .width(Val::Px(70.0))
                 .margin(UiRect::new(Val::Px(50.0), Val::Px(0.0), Val::Px(0.0), Val::Px(0.0)));
 
-            // do NOT translate this
-
-            // the user should be able to find the native name of their language
+            // UX: do NOT translate this -- the user should always be able to find the native name of their language
             extra
-                .dropdown(vec!["English", "Français"], 0)
+                .dropdown(vec!["English", "Français"], locale_index)
                 .insert(LocaleSelect)
                 .style()
                 .width(Val::Px(150.0));

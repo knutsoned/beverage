@@ -22,7 +22,6 @@ use beverage::{
     prelude::DEFAULT_LOCALE,
     setup,
     theme::{ handle_theme_contrast_select, handle_theme_data_update, handle_theme_switch },
-    EditorState,
 };
 
 fn main() {
@@ -43,19 +42,18 @@ fn main() {
             SickleUiPlugin,
         ))
         .init_resource::<CurrentPage>()
-        .init_resource::<IconCache>()
         .insert_resource(Locale::new(default_li))
         .init_state::<EditorState>()
         .init_state::<Page>()
         .add_plugins(HierarchyTreeViewPlugin)
         .add_plugins(SceneViewPlugin)
         .add_systems(OnEnter(EditorState::Loading), l10n::setup)
+        .add_systems(OnExit(EditorState::Loading), setup::on_load.in_set(UiStartupSet))
+        .add_systems(OnEnter(EditorState::SwitchLocale), l10n::switch_locale)
+        .add_systems(OnExit(EditorState::SwitchLocale), setup::on_rebuild)
         .add_systems(Update, l10n::update.run_if(in_state(EditorState::Loading)))
-        .add_systems(OnEnter(EditorState::Running), setup::on_load.in_set(UiStartupSet))
         .add_systems(OnEnter(Page::SceneEditor), layout_editor)
         .add_systems(OnExit(Page::SceneEditor), clear_content_on_menu_change)
-        //.add_systems(OnEnter(Page::Playground), interaction_showcase)
-        //.add_systems(OnExit(Page::Playground), clear_content_on_menu_change)
         .add_systems(PreUpdate, exit_app_on_menu_item)
         .add_systems(
             PreUpdate,
