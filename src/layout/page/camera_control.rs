@@ -535,7 +535,6 @@ pub trait UiCameraControlExt {
 
 impl UiCameraControlExt for UiBuilder<'_, Entity> {
     fn camera_control(&mut self) -> UiBuilder<Entity> {
-        warn!("camera_control command");
         let column = self
             .column(|_| {})
             .insert((Name::new("Camera Control"), SpawnCameraControl))

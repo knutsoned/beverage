@@ -1,6 +1,6 @@
 // The mothership.
 
-use bevy::{ prelude::*, winit::WinitWindows };
+use bevy::prelude::*; //, winit::WinitWindows };
 
 use bevy_fluent::{ FluentPlugin, Locale };
 use unic_langid::LanguageIdentifier;
@@ -15,7 +15,7 @@ use sickle_ui::{
     SickleUiPlugin,
 };
 
-use winit::window::Icon;
+//use winit::window::Icon;
 
 use beverage::{
     framework::*,
@@ -58,6 +58,10 @@ fn main() {
         .add_systems(Update, l10n::update.run_if(in_state(EditorState::Loading)))
         .add_systems(OnEnter(Page::CameraControl), editor::layout)
         .add_systems(OnExit(Page::CameraControl), clear_content_on_menu_change)
+        // TODO needs to be a way to just layout the content area and not the entire editor
+        // at minimum, need to figure out if a hierarchy view and scene view both represent the same data,
+        // if the scene editor is swapped with another widget, what happens?
+        // also need to support adding new tabs to the containers and removing them
         .add_systems(OnEnter(Page::SceneEditor), editor::layout)
         .add_systems(OnExit(Page::SceneEditor), clear_content_on_menu_change)
         .add_systems(PreUpdate, exit_app_on_menu_item)
@@ -84,6 +88,7 @@ fn main() {
 }
 
 // from https://bevy-cheatbook.github.io/window/icon.html
+/*
 fn set_window_icon(
     // we have to use `NonSend` here
     windows: NonSend<WinitWindows>
@@ -91,10 +96,11 @@ fn set_window_icon(
     // here we use the `image` crate to load our icon data from a png file
     // this is not a very bevy-native solution, but it will do
     let (icon_rgba, icon_width, icon_height) = {
-        let image = image
-            ::open("textures/bevy.svg")
-            .expect("Failed to open icon path")
-            .into_rgba8();
+        // FIXME this may not work, especially when packaged for release
+        //let path = std::env::current_dir().unwrap().join("assets/textures/ic_launcher.png");
+        //warn!("PATH: {}", path.display());
+        let path = "assets/textures/ic_launcher.png";
+        let image = image::open(path).expect("Failed to open icon path").into_rgba8();
         let (width, height) = image.dimensions();
         let rgba = image.into_raw();
         (rgba, width, height)
@@ -106,6 +112,7 @@ fn set_window_icon(
         window.set_window_icon(Some(icon.clone()));
     }
 }
+*/
 
 // BEGIN: sickle editor example systems
 fn exit_app_on_menu_item(

@@ -18,28 +18,41 @@ license = "MIT OR Apache-2.0"
 #
 # hypothetically, at that point, both this project and sickle should be able to use a careful git fork of the release
 # with the BRP changes replayed on top
-#bevy = { path = "../../bevy", version = "0.14.0-rc.4", features = ["bevy_remote", "dynamic_linking", "serialize"] }
+#bevy = { path = "../../bevy", version = "0.14.0", features = ["bevy_remote", "dynamic_linking", "serialize"] }
 bevy = { version = "0.14.0-rc.4", features = ["bevy_remote", "dynamic_linking", "serialize"] }
+
+# editor core (Rust)
+anyhow = "1"
+serde = { version = "1", features = ["derive"] }
+
+# editor core (ecosystem)
+aery = { version = "0.7.0", git = "https://github.com/iiYese/aery.git", branch = "014" }
+#haalka = "0.2.0-defer"
+leafwing-input-manager = { version = "0.14.0-rc", git = "https://github.com/knutsoned/leafwing-input-manager.git" }
+
+# not sure if this is a placeholder
+#bevy_console = "0.11.1"
+
+# TODO some kind of error involving NoOpHash from bevy_animation not implementing Reflect, check back in a bit
+#bevy_defer = { version = "0.13.0", git = "https://github.com/mintlu8/bevy_defer.git", branch = "0.14" }
+
+# should be behind a scripting feature
+#bevy_mod_scripting = "0.6.0"
 
 # sickle is now compatible with 0.14.0(-rc.4)
 #
 # it still needs bevy to be in a path which doesn't work when you point the dep at a repository
 #
 # when 0.14.0 comes out, there will be an official crate release
-#sickle_ui = { version = "0.2.0" }
-#sickle_ui = { path = "../sickle_ui", version = "0.2.0" }
 sickle_ui = { git = "https://github.com/knutsoned/sickle_ui", branch = "bevy_014_upgrade", version = "0.2.0" }
 
 # i18n
-#bevy_fluent = { path = "../bevy_fluent", version = "0.9.0" }
 bevy_fluent = { git = "https://github.com/knutsoned/bevy_fluent", version = "0.9.0" }
 fluent_content = "0.0.5"
 unic-langid = { version = "0.9.4", features = ["macros"] }
 
-# bevy_remote (BRP) examples
-anyhow = "1"
+# bevy_remote (BRP) core deps
 argh = "0.1.12"
-serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1" }
 hyper = { version = "1", features = ["full"] }
 hyper-util = { version = "0.1", features = ["full"] }
@@ -52,8 +65,10 @@ macro_rules_attribute = "0.2.0"
 # BRP camera control example
 ehttp = "0.5.0"
 futures-lite = "2.3.0"
-winit = "0.30.3"
-image = "0.25.1"
+
+# app icon
+#image = "0.25.1"
+#winit = "0.30.3"
 
 # sickle needs this until it is published as a crate
 [patch.crates-io]
