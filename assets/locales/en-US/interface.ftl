@@ -22,3 +22,4 @@ lbl_Natural = Natural
 lbl_Dim = Dim
 lbl_Night = Night
 lbl_Placeholder = Placeholder
+lbl_CameraControl = CameraControl

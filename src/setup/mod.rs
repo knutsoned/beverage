@@ -144,5 +144,7 @@ fn build(commands: &mut Commands, l10n: &Res<Localization>, context: &Entity, lo
     });
 
     commands.next_state(EditorState::Running);
-    commands.next_state(Page::SceneEditor);
+
+    // this is where to set the default start page for the editor content area
+    commands.next_state(Page::CameraControl);
 }

@@ -22,3 +22,4 @@ lbl_Natural = Naturelle
 lbl_Dim = Terne
 lbl_Night = Nuit
 lbl_Placeholder = Espace Réservé
+lbl_CameraControl = Contrôle de la Caméra

@@ -26,7 +26,7 @@ pub fn build_menu(
                     shortcut: vec![KeyCode::KeyL].into(),
                     alt_code: KeyCode::KeyL.into(),
                     ..default()
-                }).insert(Page::SceneEditor);
+                }).insert(Page::CameraControl);
 
                 menu.separator();
 

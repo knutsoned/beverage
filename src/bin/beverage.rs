@@ -20,7 +20,7 @@ use winit::window::Icon;
 use beverage::{
     framework::*,
     l10n::{ self, handle_locale_select },
-    layout::editor,
+    layout::{ editor, page::camera_control::CameraControlPlugin },
     prelude::DEFAULT_LOCALE,
     setup,
     theme::{ handle_theme_contrast_select, handle_theme_data_update, handle_theme_switch },
@@ -47,6 +47,7 @@ fn main() {
         .insert_resource(Locale::new(default_li))
         .init_state::<EditorState>()
         .init_state::<Page>()
+        .add_plugins(CameraControlPlugin)
         .add_plugins(HierarchyTreeViewPlugin)
         .add_plugins(SceneViewPlugin)
         //.add_systems(PreStartup, set_window_icon)
@@ -55,6 +56,8 @@ fn main() {
         .add_systems(OnEnter(EditorState::SwitchLocale), l10n::switch_locale)
         .add_systems(OnExit(EditorState::SwitchLocale), setup::on_rebuild)
         .add_systems(Update, l10n::update.run_if(in_state(EditorState::Loading)))
+        .add_systems(OnEnter(Page::CameraControl), editor::layout)
+        .add_systems(OnExit(Page::CameraControl), clear_content_on_menu_change)
         .add_systems(OnEnter(Page::SceneEditor), editor::layout)
         .add_systems(OnExit(Page::SceneEditor), clear_content_on_menu_change)
         .add_systems(PreUpdate, exit_app_on_menu_item)

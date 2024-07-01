@@ -37,6 +37,7 @@ pub enum EditorState {
 pub enum Page {
     #[default]
     None,
+    CameraControl,
     SceneEditor,
     Playground,
 }

@@ -2,9 +2,9 @@ use bevy::prelude::*;
 
 use bevy_fluent::Localization;
 
-use sickle_ui::{ dev_panels::scene_view::UiSceneViewExt, prelude::* };
+use sickle_ui::prelude::*;
 
-use crate::framework::*;
+use crate::{ framework::*, layout::page::camera_control::UiCameraControlExt };
 
 pub fn layout(
     root_node: Query<Entity, With<EditorContainer>>,
@@ -48,8 +48,8 @@ pub fn layout(
                                 },
                                 false,
                                 |tab_container| {
-                                    tab_container.add_tab(l10n.lbl("SceneView"), |panel| {
-                                        panel.scene_view("examples/Low_poly_scene.gltf#Scene0");
+                                    tab_container.add_tab(l10n.lbl("CameraControl"), |panel| {
+                                        panel.camera_control();
                                     });
                                 }
                             );
