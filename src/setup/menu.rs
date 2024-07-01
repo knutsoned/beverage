@@ -22,9 +22,9 @@ pub fn build_menu(
             },
             |menu| {
                 menu.menu_item(MenuItemConfig {
-                    name: l10n.lbl("Scene"),
-                    shortcut: vec![KeyCode::KeyL].into(),
-                    alt_code: KeyCode::KeyL.into(),
+                    name: l10n.lbl("CameraControl"),
+                    shortcut: vec![KeyCode::KeyC].into(),
+                    alt_code: KeyCode::KeyC.into(),
                     ..default()
                 }).insert(Page::CameraControl);
 
