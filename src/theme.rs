@@ -1,3 +1,5 @@
+// this is all from the sickle simple_editor example.
+
 use bevy::prelude::*;
 
 use sickle_ui::prelude::*;

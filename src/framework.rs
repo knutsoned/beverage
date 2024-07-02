@@ -1,4 +1,5 @@
 use bevy::{ asset::LoadedFolder, prelude::* };
+use leafwing_input_manager::Actionlike;
 
 pub trait Translator {
     fn lbl(&self, str: &str) -> String;
@@ -30,6 +31,13 @@ pub enum EditorState {
     // 4) that system switches to the Running state after completing its work
     Building,
     Running,
+}
+
+// This is the list of "things in the game I want to be able to do based on input"
+#[derive(Actionlike, PartialEq, Eq, Hash, Clone, Copy, Debug, Reflect)]
+pub enum InputAction {
+    CameraRotateYIncrease,
+    CameraRotateYDecrease,
 }
 
 #[derive(Component, Clone, Copy, Debug, Default, PartialEq, Eq, Reflect, States, Hash)]

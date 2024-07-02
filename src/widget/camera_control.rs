@@ -1,5 +1,6 @@
 use bevy::{
     color::palettes,
+    ecs::storage::SparseSet,
     prelude::*,
     render::{
         camera::RenderTarget,
@@ -17,6 +18,7 @@ use bevy::{
 
 use bevy_fluent::Localization;
 
+use leafwing_input_manager::{ action_state::ActionState, input_map::InputMap, InputManagerBundle };
 use sickle_ui::{ prelude::*, widgets::inputs::slider::SliderAxis };
 
 use crate::framework::*;
@@ -92,6 +94,16 @@ fn layout(
     commands: &mut Commands
 ) {
     warn!("layout");
+
+    // for the Camera Control demo, KeyA and KeyD rotate around Y in opposite directions
+    let mut input_map = InputMap::new([
+        (InputAction::CameraRotateYDecrease, KeyCode::KeyA),
+        (InputAction::CameraRotateYIncrease, KeyCode::KeyD),
+    ]);
+
+    // we will also accept West and East
+    input_map.insert(InputAction::CameraRotateYDecrease, GamepadButtonType::West);
+    input_map.insert(InputAction::CameraRotateYIncrease, GamepadButtonType::East);
 
     // sample scene objects
     // circular base
@@ -193,6 +205,7 @@ fn layout(
                 light: scene_light,
             },
             CameraControlSettings::default(),
+            InputManagerBundle::with_map(input_map),
             UiImage::new(image_handle),
             UiImageSize::default(),
         ))
@@ -381,27 +394,64 @@ fn process_camera_control_controls(
 
 fn update_camera_controls(
     time: Res<Time>,
-    q_camera_controls: Query<(&CameraControl, Ref<CameraControlSettings>)>,
+    q_action: Query<(Entity, &ActionState<InputAction>), With<CameraControl>>,
+    q_camera_controls: Query<(Entity, &CameraControl, Ref<CameraControlSettings>)>,
     mut ambient_light: ResMut<AmbientLight>,
     mut q_directional_light: Query<&mut DirectionalLight>,
     mut q_fog_settings: Query<&mut FogSettings>,
     mut q_transform: Query<&mut Transform>
 ) {
-    for (camera_control, settings) in &q_camera_controls {
+    // pause automatic rotation if the user is controlling
+    let mut manual_rotation = SparseSet::<Entity, i32>::new();
+    for (entity, action_state) in &q_action {
+        let left = action_state.pressed(&InputAction::CameraRotateYIncrease);
+        let right = action_state.pressed(&InputAction::CameraRotateYDecrease);
+        if right {
+            manual_rotation.insert(entity, 1);
+        } else if left {
+            manual_rotation.insert(entity, -1);
+        } else {
+            manual_rotation.insert(entity, 0);
+        }
+    }
+
+    for (entity, camera_control, settings) in &q_camera_controls {
         let Ok(mut transform) = q_transform.get_mut(camera_control.camera()) else {
             continue;
         };
+        if settings.rotation_speed != 0.0 {
+            let manual_rotation = manual_rotation.get(entity);
+            match manual_rotation {
+                Some(0) => {
+                    // auto-rotation based on the Rotate Scene checkbox
+                    if settings.do_rotate {
+                        transform.rotate_around(
+                            Vec3::ZERO,
+                            Quat::from_euler(
+                                EulerRot::default(),
+                                -time.delta_seconds() * settings.rotation_speed,
+                                0.0,
+                                0.0
+                            )
+                        );
+                    }
+                }
+                Some(direction) => {
+                    let direction = *direction as f32;
 
-        if settings.do_rotate && settings.rotation_speed != 0.0 {
-            transform.rotate_around(
-                Vec3::ZERO,
-                Quat::from_euler(
-                    EulerRot::default(),
-                    -time.delta_seconds() * settings.rotation_speed,
-                    0.0,
-                    0.0
-                )
-            );
+                    // manual rotation from inputs
+                    transform.rotate_around(
+                        Vec3::ZERO,
+                        Quat::from_euler(
+                            EulerRot::default(),
+                            -time.delta_seconds() * settings.rotation_speed * direction,
+                            0.0,
+                            0.0
+                        )
+                    );
+                }
+                _ => {}
+            }
         }
 
         if settings.is_changed() {

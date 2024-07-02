@@ -1,5 +1,7 @@
 // Literally from the bevy_fluent UI example
 
+// main difference is we don't store the locales in a hash. we just ask the AssetServer for the next one.
+
 use bevy::{ asset::LoadState, prelude::* };
 
 use bevy_fluent::*;
@@ -8,7 +10,7 @@ use unic_langid::LanguageIdentifier;
 
 use sickle_ui::{ prelude::Dropdown, ui_commands::UpdateStatesExt };
 
-use crate::{ get_selected_locale, prelude::* };
+use crate::prelude::*;
 
 pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     warn!("setup");
@@ -41,7 +43,11 @@ pub fn update(
         // create the main resource for i18n in UI template code
         let localization = localization_builder.build(&locale_folder.0);
 
-        // I think this crashes
+        // we can't remove the LocaleFolder like in the example, otherwise we'd crash on locale switch
+
+        // however this does mean hot reloading will work
+        // NOTE: hot reloading is triggered lazily, so your changes won't currently show up until you
+        //       trigger a reload by selecting a different language with the dropdown
         //commands.remove_resource::<LocaleFolder>();
         commands.insert_resource(localization);
 
@@ -49,6 +55,19 @@ pub fn update(
         commands.next_state(EditorState::Running);
     }
 }
+
+// the following describes a more dynamic approach to assigning the updated strings
+
+/* TODO (from @koe on discord):
+Afaict the best design for localization is to add a `LocalizedText` component to all entities with localized text.
+This component contains `SmallVec<[(Option<LanguageIdentifier>, String); 1]>`, which is a vector of localization
+templates for all the text sections on the entity, and settings like `sentence_case`. You need to store the
+localization templates for the case where the user changes the game language at runtime and you need to replace all text.
+It also buffers the templates for dynamic text so you can update the template without allocating (and then use the
+main text section string to write the final localized text). On top of that, you need to store the language ID in case
+you need it to replace certain fonts when swapping languages. In my code I have a `TextEditor` system parameter that
+lets you write to a `Text` component directly without allocating, and localization integrates nicely with that.
+*/
 
 // handle language selection dropdown change
 pub fn handle_locale_select(
@@ -70,7 +89,6 @@ pub fn handle_locale_select(
         if locale_resource.requested.to_string() != langid.to_string() {
             info!("Switching language to '{}'", langid);
             // replace the current requested language with the new one
-            //commands.insert_resource(locale);
             locale_resource.requested = langid.clone();
 
             // ...and add the default if it's not the default
@@ -95,16 +113,17 @@ fn concat(prefix: &str, str: &str) -> String {
     prefix.to_string() + str
 }
 
-// convenience function so the resource can be called with a short, arbitrarily-named method
 impl Translator for Localization {
-    fn lbl(&self, str: &str) -> String {
-        self.t(concat("lbl_", str))
-    }
-
+    // we also add a t function to the Localization resource. this style is familiar to many developers who work with i18n and l10n.
     fn t(&self, string: String) -> String {
         match self.content(&string) {
             Some(string) => string,
             None => "XX".to_string(),
         }
+    }
+
+    // convenience function so the resource can be called with a short, arbitrarily-named method
+    fn lbl(&self, str: &str) -> String {
+        self.t(concat("lbl_", str))
     }
 }

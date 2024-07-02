@@ -3,6 +3,7 @@
 use bevy::prelude::*; //, winit::WinitWindows };
 
 use bevy_fluent::{ FluentPlugin, Locale };
+use leafwing_input_manager::plugin::InputManagerPlugin;
 use unic_langid::LanguageIdentifier;
 
 use sickle_ui::{ prelude::*, ui_commands::SetCursorExt, SickleUiPlugin };
@@ -40,6 +41,9 @@ fn main() {
         .insert_resource(Locale::new(default_li))
         .init_state::<EditorState>()
         .init_state::<Page>()
+        // This plugin maps inputs to an input-type agnostic action-state
+        // We need to provide it with an enum which stores the possible actions a player could take
+        .add_plugins(InputManagerPlugin::<InputAction>::default())
         // sickle plugin for the remote camera demo
         .add_plugins(CameraControlPlugin)
         // sickle plugin for the FPO tree view on the left side

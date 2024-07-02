@@ -4,6 +4,7 @@ pub const DEFAULT_LOCALE: &str = "en-US";
 
 pub mod construct;
 pub mod framework;
+pub mod input;
 pub mod l10n;
 pub mod layout;
 pub mod remote;
@@ -17,10 +18,11 @@ pub mod widget;
 pub mod prelude {
     pub use crate::framework::*;
     pub use crate::DEFAULT_LOCALE;
+    pub use crate::get_selected_locale;
 }
 
 // map each language switcher dropdown option to a locale
-fn get_selected_locale(locale_select: &Dropdown) -> String {
+pub fn get_selected_locale(locale_select: &Dropdown) -> String {
     match locale_select.value() {
         // this is the single source of truth for the locales the app is claiming to support on the backend
 
