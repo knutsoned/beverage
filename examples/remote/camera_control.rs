@@ -14,17 +14,10 @@ use bevy::{
     ecs::event::EventWriter,
     prelude::*,
     remote::{
-        builtin_verbs::{
-            BrpInsertRequest,
-            BrpQuery,
-            BrpQueryRequest,
-            BrpQueryRow,
-            //BrpSpawnRequest,
-        },
+        builtin_verbs::{ BrpInsertRequest, BrpQuery, BrpQueryRequest, BrpQueryResponse },
         BrpRequest,
         DEFAULT_PORT,
     },
-    render::primitives::Aabb,
     tasks::{ IoTaskPool, Task },
     utils::HashMap,
 };
@@ -33,7 +26,6 @@ use anyhow::anyhow;
 use argh::FromArgs;
 use ehttp::Request;
 use futures_lite::future;
-use serde::{ Deserialize, Serialize };
 use serde_json::Value;
 
 use sickle_ui::ui_commands::UpdateStatesExt;
@@ -43,47 +35,14 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .init_resource::<BrpResource>()
         .init_state::<CameraState>()
-        .init_state::<RemoteState>()
         .add_systems(Startup, setup_scene)
         .add_systems(Update, on_press.run_if(in_state(CameraState::Disconnected)))
-        // step 1
-        .add_systems(
-            Update,
-            (check_remote_scene, connect_to_remote_server).run_if(in_state(RemoteState::Connecting))
-        )
-        // step 2
-        .add_systems(Update, (init_remote_scene,).run_if(in_state(RemoteState::Uninitialized)))
-
-        // step 3
         .add_systems(
             Update,
             (connect_to_camera, poll_responses).run_if(in_state(CameraState::Connecting))
         )
-        // step 4
         .add_systems(Update, sync_camera.run_if(in_state(CameraState::Connected)))
         .run();
-}
-
-// The response to a `QUERY` request.
-// (this was private in the bevy_remote crate)
-#[derive(Serialize, Deserialize, Clone)]
-struct BrpQueryResponse {
-    /// All results of the query: the entities and the requested components.
-    rows: Vec<BrpQueryRow>,
-}
-
-// ehttp builder
-struct EhttpBuilder {}
-
-impl RemoteRequestBuilder for EhttpBuilder {
-    fn post(&self, url: String, body: String) -> ehttp::Request {
-        ehttp::Request::post(url, body.into())
-    }
-}
-
-trait RemoteRequestBuilder: Send + Sync + 'static {
-    // TODO accept callback closure instead of returning ehttp::Request
-    fn post(&self, url: String, body: String) -> ehttp::Request;
 }
 
 /// TODO
@@ -97,6 +56,18 @@ struct Args {
     port: u16,
 }
 
+// ehttp builder
+struct EhttpBuilder {}
+trait RemoteRequestBuilder: Send + Sync + 'static {
+    // TODO accept callback closure instead of returning ehttp::Request
+    fn post(&self, url: String, body: String) -> ehttp::Request;
+}
+impl RemoteRequestBuilder for EhttpBuilder {
+    fn post(&self, url: String, body: String) -> ehttp::Request {
+        ehttp::Request::post(url, body.into())
+    }
+}
+
 // marker for an entity with updates that can't be sent yet
 // (probably because the previous update is still running)
 #[derive(Component)]
@@ -106,18 +77,6 @@ pub struct Pending;
 pub struct RunningRequest {
     pub task: Task<()>,
 }
-
-// query args to find meshes to be sent to the server
-type SpawnRemoteMeshArgs<'a> = (
-    &'a Transform,
-    &'a GlobalTransform,
-    &'a Visibility,
-    &'a InheritedVisibility,
-    &'a ViewVisibility,
-    &'a Handle<Mesh>,
-    &'a Handle<StandardMaterial>,
-    &'a Aabb,
-);
 
 // query args to help remotely query or update an entity's transform
 type TransformRequestArgs<'a> = (
@@ -138,32 +97,13 @@ enum CameraState {
     Connected,
 }
 
-// these states allow querying the server and sending local meshes over the wire if need be
-#[derive(States, Default, Debug, Clone, PartialEq, Eq, Hash)]
-enum RemoteState {
-    #[default]
-    Disconnected,
-    // querying the remote state
-    Connecting,
-    // connected to the server, no data returned, so send some
-    Uninitialized,
-    // meshes detected or scene sent to remote
-    Initialized,
-}
-
 // container for HTTP request task spawner
 #[derive(Resource)]
 struct BrpResource {
     // id seq
     last_id: u32,
-    // a list of components that identify a PbrBundle or compatible
-    mesh_components: Vec<String>,
     // where we store the bits of the remote camera EntityId
     remote_entity_dungeon: Arc<Mutex<Option<Entity>>>,
-    // in case we want to do this another way
-    request_builder: Box<dyn RemoteRequestBuilder>,
-    // server URL http://host:port
-    url: String,
 
     // TODO can we derive the next two from the RemoteState?
     // (probably not because these are for HTTP responses and we can't change state inside a task)
@@ -173,6 +113,11 @@ struct BrpResource {
     remote_initialized: Arc<Mutex<bool>>,
     // the remote server needs to be initialized, so spawn the task to make that happen
     remote_needs_init: Arc<Mutex<bool>>,
+
+    // in case we want to do this another way
+    request_builder: Box<dyn RemoteRequestBuilder>,
+    // server URL http://host:port
+    url: String,
 }
 
 impl Default for BrpResource {
@@ -186,17 +131,6 @@ impl Default for BrpResource {
 
         Self {
             last_id: 0,
-            // this needs to match the list of types in SpawnRemoteMeshArgs
-            mesh_components: vec![
-                "bevy_transform::components::transform::Transform".to_string(),
-                "bevy_transform::components::global_transform::GlobalTransform".to_string(),
-                "bevy_render::view::visibility::Visibility".to_string(),
-                "bevy_render::view::visibility::InheritedVisibility".to_string(),
-                "bevy_render::view::visibility::ViewVisibility".to_string(),
-                "bevy_asset::handle::Handle<bevy_render::mesh::mesh::Mesh>".to_string(),
-                "bevy_asset::handle::Handle<bevy_pbr::pbr_material::StandardMaterial>".to_string(),
-                "bevy_render::primitives::Aabb".to_string()
-            ],
             remote_entity_dungeon: Arc::new(Mutex::new(Option::<Entity>::None)),
             remote_initialized: Arc::new(Mutex::new(false)),
             remote_needs_init: Arc::new(Mutex::new(false)),
@@ -233,30 +167,6 @@ impl BrpResource {
         let request = self.request_builder.as_ref().post(self.url.to_string(), request);
 
         self.spawn_task(request_id, entity, true, request, commands);
-
-        Ok(())
-    }
-
-    fn fetch_remote_entities(&mut self, commands: &mut Commands) -> anyhow::Result<()> {
-        let request_id = self.next_id();
-
-        let request = BrpQueryRequest {
-            data: BrpQuery {
-                components: self.mesh_components.clone(),
-                ..default()
-            },
-            filter: default(),
-        };
-        let request = serde_json::to_value(request)?;
-        let request = BrpRequest {
-            request: "QUERY".to_string(),
-            id: request_id.into(),
-            params: request,
-        };
-        let request = serde_json::to_string(&request)?;
-        let request = self.request_builder.as_ref().post(self.url.to_string(), request);
-
-        self.spawn_task(request_id, Entity::PLACEHOLDER, false, request, commands);
 
         Ok(())
     }
@@ -304,41 +214,6 @@ impl BrpResource {
             None => Err(anyhow!("no remote camera entity found")),
         }
     }
-
-    // convenience function to make a SPAWN request
-    /*
-    fn spawn_entity(&mut self, components: HashMap<String, Value>) -> anyhow::Result<()> {
-        let request_id = self.next_id();
-        let thread_pool = IoTaskPool::get();
-
-        let request = BrpSpawnRequest {
-            components,
-        };
-        let request = serde_json::to_value(request)?;
-
-        let request = BrpRequest {
-            request: "SPAWN".to_string(),
-            id: request_id.into(),
-            params: request,
-        };
-        let request = serde_json::to_string(&request)?;
-        info!("spawn request: {}", request);
-        let request = self.request_builder.as_ref().post(self.url.to_string(), request);
-
-        thread_pool
-            .spawn(async move {
-                ehttp::fetch(request, move |response: ehttp::Result<ehttp::Response>| {
-                    match response {
-                        Ok(response) => info!("Received response: {:?}", response),
-                        Err(error) => error!("BRP error response sending entity: {:?}", error),
-                    }
-                });
-            })
-            .detach();
-
-        Ok(())
-    }
-    */
 
     // convenience function to use ehttp to spawn an HTTP request in a Bevy task
     // TODO replace request arg with closure that generates and handles a request
@@ -409,7 +284,7 @@ impl BrpResource {
     }
 }
 
-// step 0: wait for a key press
+// step 1: wait for a key press
 fn on_press(keyboard_input: Res<ButtonInput<KeyCode>>, mut commands: Commands) {
     if keyboard_input.pressed(KeyCode::KeyA) || keyboard_input.pressed(KeyCode::KeyD) {
         // try to sync client camera to server
@@ -417,77 +292,7 @@ fn on_press(keyboard_input: Res<ButtonInput<KeyCode>>, mut commands: Commands) {
     }
 }
 
-// step 1: see if there are any remote entities
-fn connect_to_remote_server(mut brp: ResMut<BrpResource>, mut commands: Commands) {
-    // spawn a task to connect to the remote server
-    match brp.fetch_remote_entities(&mut commands) {
-        Ok(_) => {
-            // the HTTP client sets transfer values in the BrpResource
-
-            // all we do here is aadvance to the next state where a system checks for those values to change
-            commands.next_state(RemoteState::Uninitialized);
-        }
-        Err(error) => error!("Could not spawn task to get remote camera: {}", error),
-    }
-}
-
-// step 2a: update the state to reflect resource changes from BRP responses
-fn check_remote_scene(brp: ResMut<BrpResource>, mut commands: Commands) {
-    let mut initialized = *brp.remote_initialized.lock().unwrap();
-    let needs_init = *brp.remote_needs_init.lock().unwrap();
-    if needs_init {
-        // start sending the scene to the server
-        *brp.remote_needs_init.lock().unwrap() = false;
-
-        // we don't do any retrying or anything here
-        initialized = true;
-    }
-
-    // either the HTTP client or this fn sets this to true above
-    if initialized {
-        commands.next_state(RemoteState::Initialized);
-    }
-}
-
-// step 2b: stop everything and send any local entity with a Transform to the server
-// (this won't work because we can't really serialize a handle)
-fn init_remote_scene(world: &mut World, _transforms: &mut QueryState<SpawnRemoteMeshArgs>) {
-    /*
-    warn!("sending local entities to the server");
-    world.resource_scope(|world, mut brp: Mut<BrpResource>| {
-        for (
-            transform,
-            global_transform,
-            _visibility,
-            _inherited_visibility,
-            _view_visibility,
-            _handle_mesh,
-            _handle_material,
-            _aabb,
-        ) in transforms.iter(world) {
-            let mut hash = HashMap::<String, Value>::new();
-            let keys = brp.mesh_components.clone();
-            hash.insert(keys[0].clone(), serde_json::to_value(transform).unwrap());
-            hash.insert(keys[1].clone(), serde_json::to_value(global_transform).unwrap());
-            hash.insert(keys[2].clone(), serde_json::to_value(visibility).unwrap());
-            hash.insert(keys[3].clone(), serde_json::to_value(inherited_visibility).unwrap());
-            hash.insert(keys[4].clone(), serde_json::to_value(view_visibility).unwrap());
-            hash.insert(keys[5].clone(), serde_json::to_value(handle_mesh).unwrap());
-            hash.insert(keys[6].clone(), serde_json::to_value(handle_material).unwrap());
-            hash.insert(keys[7].clone(), serde_json::to_value(aabb).unwrap());
-
-            let _ = brp.spawn_entity(hash).map_err(|error| {
-                error!("BRP error sending an entity: {:?}", error);
-            });
-        }
-    });
-    */
-    world.resource_scope(|_world, mut next_state: Mut<NextState<RemoteState>>| {
-        next_state.set(RemoteState::Connecting);
-    });
-}
-
-// step 3a: run a query to get the entity ID of the remote camera
+// step 2: run a query to get the entity ID of the remote camera
 fn connect_to_camera(
     mut camera: Query<TransformRequestArgs, With<Camera>>,
     mut brp: ResMut<BrpResource>,
@@ -505,7 +310,7 @@ fn connect_to_camera(
     }
 }
 
-// step 3b: see if the Camera entity has returned yet
+// step 3: see if the Camera entity has returned yet
 fn poll_responses(mut camera: Query<TransformRequestArgs, With<Camera>>, mut commands: Commands) {
     match camera.get_single_mut() {
         Ok(camera) => {
