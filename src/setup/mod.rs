@@ -4,10 +4,7 @@ use bevy_fluent::Localization;
 
 use sickle_ui::{ prelude::*, ui_commands::UpdateStatesExt };
 
-use crate::{
-    framework::*,
-    //layout::footer::UiUiFooterRootNodeExt
-};
+use crate::{ framework::*, layout::footer::{ UiFooterRootNode, UiUiFooterRootNodeExt } };
 
 pub mod menu;
 use menu::build_menu;
@@ -53,7 +50,6 @@ pub fn on_load(l10n: Res<Localization>, mut commands: Commands) {
                 LocaleRoot,
                 TargetCamera(main_camera),
             ),
-            // is this how to do this?
             |_| {}
         )
         .id();
@@ -62,27 +58,35 @@ pub fn on_load(l10n: Res<Localization>, mut commands: Commands) {
 }
 
 pub fn on_rebuild(
+    footer_root: Query<Entity, With<UiFooterRootNode>>,
     locale_root: Query<Entity, With<LocaleRoot>>,
     locale_select: Query<&Dropdown, With<LocaleSelect>>,
-    ui_main_root_node: Query<Entity, With<UiMainRootNode>>,
+    ui_main_root: Query<Entity, With<UiMainRootNode>>,
     l10n: Res<Localization>,
     mut commands: Commands
 ) {
-    warn!("setup::rebuild");
+    warn!("rebuild");
 
     // trigger update of the UI text
     if let Ok(locale_root) = locale_root.get_single() {
-        if let Ok(ui_main_root_node) = ui_main_root_node.get_single() {
+        if let Ok(ui_main_root) = ui_main_root.get_single() {
             if let Ok(locale_select) = locale_select.get_single() {
-                info!("tear down this UI");
-                commands.entity(ui_main_root_node).despawn_recursive();
+                if let Ok(footer_root) = footer_root.get_single() {
+                    // despawn everything in the top level container
+                    commands.entity(ui_main_root).despawn_recursive();
 
-                build(
-                    &mut commands,
-                    &l10n,
-                    &locale_root,
-                    locale_select.value().expect("No selected locale in dropdown")
-                );
+                    // despawn the footer that floats on top
+                    commands.entity(footer_root).despawn_recursive();
+
+                    build(
+                        &mut commands,
+                        &l10n,
+                        &locale_root,
+                        locale_select.value().expect("No selected locale in dropdown")
+                    );
+                } else {
+                    error!("No UiFooterRootNode");
+                }
             } else {
                 error!("No LocaleSelect");
             }
@@ -95,10 +99,11 @@ pub fn on_rebuild(
 }
 
 fn build(commands: &mut Commands, l10n: &Res<Localization>, context: &Entity, locale_index: usize) {
-    warn!("(setup::build)");
+    warn!("(build)");
+    let context = *context;
 
     let root_entity = commands
-        .ui_builder(*context)
+        .ui_builder(context)
         .spawn((
             NodeBundle {
                 style: Style {
@@ -114,20 +119,16 @@ fn build(commands: &mut Commands, l10n: &Res<Localization>, context: &Entity, lo
         ))
         .id();
 
-    /*
-    // FIXME
-    commands.ui_builder(container).ui_footer(
-        |_builder| {
-                    builder
-                        .label(LabelConfig {
-                            label: "Footer".into(),
-                            ..default()
-                        })
-                        .style()
-                        .width(Val::Px(80.0));
-        }
-    );
-    */
+    commands.ui_builder(context).ui_footer(|builder| {
+        builder
+            .label(LabelConfig {
+                label: l10n.lbl("Status"),
+                ..default()
+            })
+            .style()
+            .margin(UiRect::all(Val::Px(5.0)))
+            .width(Val::Px(80.0));
+    });
 
     // Use the UI builder of the root entity with styling applied via commands
     commands.ui_builder(root_entity).column(|builder| {

@@ -24,3 +24,4 @@ lbl_Night = Night
 lbl_Placeholder = Placeholder
 lbl_CameraControl = Camera Control
 lbl_Console = Console
+lbl_Status = Status

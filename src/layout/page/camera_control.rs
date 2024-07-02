@@ -81,7 +81,7 @@ fn layout(
     images: &mut ResMut<Assets<Image>>,
     commands: &mut Commands
 ) {
-    warn!("camera_control::layout");
+    warn!("layout");
     // This is the texture that will be rendered to.
     let mut image = Image {
         texture_descriptor: TextureDescriptor {

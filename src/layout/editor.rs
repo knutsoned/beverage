@@ -11,7 +11,7 @@ pub fn layout(
     l10n: Res<Localization>,
     mut commands: Commands
 ) {
-    warn!("editor::layout");
+    warn!("layout");
     let root_entity = root_node.single();
 
     commands

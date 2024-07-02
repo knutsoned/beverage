@@ -24,3 +24,4 @@ lbl_Night = Nuit
 lbl_Placeholder = Espace Réservé
 lbl_CameraControl = Contrôle de la Caméra
 lbl_Console = Console
+lbl_Status = Situation

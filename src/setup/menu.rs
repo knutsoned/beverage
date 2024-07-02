@@ -12,6 +12,7 @@ pub fn build_menu(
     l10n: &Res<Localization>,
     locale_index: usize
 ) {
+    warn!("build_menu");
     column.style().width(Val::Percent(100.0)).background_color(Color::srgb(0.15, 0.155, 0.16));
 
     column.menu_bar(|bar| {

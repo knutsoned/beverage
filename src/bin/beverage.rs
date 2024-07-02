@@ -47,16 +47,27 @@ fn main() {
         .insert_resource(Locale::new(default_li))
         .init_state::<EditorState>()
         .init_state::<Page>()
+        // sickle plugin for the remote camera demo
         .add_plugins(CameraControlPlugin)
+        // sickle plugin for the FPO tree view on the left side
         .add_plugins(HierarchyTreeViewPlugin)
+        // sickle plugin for the FPO scene viewer
         .add_plugins(SceneViewPlugin)
+        // FIXME why doesn't this work?
         //.add_systems(PreStartup, set_window_icon)
+        // init fluent l10n
         .add_systems(OnEnter(EditorState::Loading), l10n::setup)
+        // spawn UI camera and top-level UI container
         .add_systems(OnExit(EditorState::Loading), setup::on_load.in_set(UiStartupSet))
+        // handle selecting a new locale from the language switcher
         .add_systems(OnEnter(EditorState::SwitchLocale), l10n::switch_locale)
+        // rebuild the entire contents of the top-level UI container after changing the locale
         .add_systems(OnExit(EditorState::SwitchLocale), setup::on_rebuild)
+        // check to see if the AssetServer is done loading the locales folder
         .add_systems(Update, l10n::update.run_if(in_state(EditorState::Loading)))
+        // layout the editor content when a page is selected
         .add_systems(OnEnter(Page::CameraControl), editor::layout)
+        // clean up after a different page is selected
         .add_systems(OnExit(Page::CameraControl), clear_content_on_menu_change)
         // TODO needs to be a way to just layout the content area and not the entire editor
         // at minimum, need to figure out if a hierarchy view and scene view both represent the same data,
@@ -64,13 +75,16 @@ fn main() {
         // also need to support adding new tabs to the containers and removing them
         .add_systems(OnEnter(Page::SceneEditor), editor::layout)
         .add_systems(OnExit(Page::SceneEditor), clear_content_on_menu_change)
+        // handle selecting Exit from the Editor menu
         .add_systems(PreUpdate, exit_app_on_menu_item)
+        // sickle internals
         .add_systems(
             PreUpdate,
             (spawn_hierarchy_view, despawn_hierarchy_view)
                 .after(SpawnSceneViewPreUpdate)
                 .run_if(in_state(EditorState::Running))
         )
+        // update_current_page checks the menu for updates while the rest handle radios and dropdowns
         .add_systems(
             Update,
             (
