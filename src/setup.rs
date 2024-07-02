@@ -10,7 +10,7 @@ pub mod menu;
 use menu::build_menu;
 
 pub fn on_load(l10n: Res<Localization>, mut commands: Commands) {
-    warn!("setup::on_load");
+    warn!("on_load");
     // The main camera which will render UI
     let main_camera = commands
         .spawn((
@@ -75,7 +75,7 @@ pub fn on_rebuild(
                     // despawn everything in the top level container
                     commands.entity(ui_main_root).despawn_recursive();
 
-                    // despawn the footer that floats on top
+                    // despawn the footer that floats on top (at the bottom?)
                     commands.entity(footer_root).despawn_recursive();
 
                     build(

@@ -5,25 +5,18 @@ use bevy::prelude::*; //, winit::WinitWindows };
 use bevy_fluent::{ FluentPlugin, Locale };
 use unic_langid::LanguageIdentifier;
 
-use sickle_ui::{
-    dev_panels::{
-        hierarchy::{ HierarchyTreeViewPlugin, UiHierarchyExt },
-        scene_view::{ SceneView, SceneViewPlugin, SpawnSceneViewPreUpdate },
-    },
-    prelude::*,
-    ui_commands::SetCursorExt,
-    SickleUiPlugin,
-};
+use sickle_ui::{ prelude::*, ui_commands::SetCursorExt, SickleUiPlugin };
 
 //use winit::window::Icon;
 
 use beverage::{
     framework::*,
     l10n::{ self, handle_locale_select },
-    layout::{ editor, page::camera_control::CameraControlPlugin },
+    layout::editor,
     prelude::DEFAULT_LOCALE,
     setup,
     theme::{ handle_theme_contrast_select, handle_theme_data_update, handle_theme_switch },
+    widget::camera_control::{ CameraControl, CameraControlPlugin, SpawnCameraControlPreUpdate },
 };
 
 fn main() {
@@ -50,9 +43,9 @@ fn main() {
         // sickle plugin for the remote camera demo
         .add_plugins(CameraControlPlugin)
         // sickle plugin for the FPO tree view on the left side
-        .add_plugins(HierarchyTreeViewPlugin)
+        //.add_plugins(HierarchyTreeViewPlugin)
         // sickle plugin for the FPO scene viewer
-        .add_plugins(SceneViewPlugin)
+        //.add_plugins(SceneViewPlugin)
         // FIXME why doesn't this work?
         //.add_systems(PreStartup, set_window_icon)
         // init fluent l10n
@@ -73,15 +66,27 @@ fn main() {
         // at minimum, need to figure out if a hierarchy view and scene view both represent the same data,
         // if the scene editor is swapped with another widget, what happens?
         // also need to support adding new tabs to the containers and removing them
-        .add_systems(OnEnter(Page::SceneEditor), editor::layout)
-        .add_systems(OnExit(Page::SceneEditor), clear_content_on_menu_change)
+        //.add_systems(OnEnter(Page::SceneEditor), editor::layout)
+        //.add_systems(OnExit(Page::SceneEditor), clear_content_on_menu_change)
         // handle selecting Exit from the Editor menu
         .add_systems(PreUpdate, exit_app_on_menu_item)
-        // sickle internals
+        // this opens a tree view on the left to go with the scene editor
+
+        // need a better way to group views in different containers that work together
+
+        // also need a view to save a snapshot of the current editor arrangement as a "preset"
+        /*
         .add_systems(
             PreUpdate,
-            (spawn_hierarchy_view, despawn_hierarchy_view)
+            (spawn_tree_view, despawn_tree_view)
                 .after(SpawnSceneViewPreUpdate)
+                .run_if(in_state(EditorState::Running))
+        )
+        */
+        .add_systems(
+            PreUpdate,
+            despawn_camera_tree_view
+                /*, spawn_camera_tree_view*/ .after(SpawnCameraControlPreUpdate)
                 .run_if(in_state(EditorState::Running))
         )
         // update_current_page checks the menu for updates while the rest handle radios and dropdowns
@@ -128,7 +133,7 @@ fn set_window_icon(
 }
 */
 
-// BEGIN: sickle editor example systems
+// BEGIN: sickle editor example systems (menu navigation)
 fn exit_app_on_menu_item(
     q_menu_items: Query<&MenuItem, (With<ExitAppButton>, Changed<MenuItem>)>,
     q_windows: Query<Entity, With<Window>>,
@@ -165,25 +170,27 @@ fn clear_content_on_menu_change(
     commands.set_cursor(CursorIcon::Default);
 }
 
-fn spawn_hierarchy_view(
-    q_added_scene_view: Query<&SceneView, Added<SceneView>>,
-    q_hierarchy_panel: Query<Entity, With<HierarchyPanel>>,
+/*
+fn spawn_camera_tree_view(
+    q_added_camera_control: Query<&CameraControl, Added<CameraControl>>,
+    q_tree_view_panel: Query<Entity, With<TreeViewPanel>>,
 
     mut commands: Commands
 ) {
-    if let Some(scene_view) = (&q_added_scene_view).into_iter().next() {
-        let Ok(container) = q_hierarchy_panel.get_single() else {
+    if let Some(camera_control) = (&q_added_camera_control).into_iter().next() {
+        let Ok(container) = q_tree_view_panel.get_single() else {
             return;
         };
 
         commands.entity(container).despawn_descendants();
-        commands.ui_builder(container).hierarchy_for(scene_view.asset_root());
+        commands.ui_builder(container).tree_for(camera_control.asset_root());
     }
 }
+*/
 
-fn despawn_hierarchy_view(
+fn despawn_camera_tree_view(
     q_hierarchy_panel: Query<Entity, With<HierarchyPanel>>,
-    q_removed_scene_view: RemovedComponents<SceneView>,
+    q_removed_scene_view: RemovedComponents<CameraControl>,
     mut commands: Commands
 ) {
     let Ok(container) = q_hierarchy_panel.get_single() else {

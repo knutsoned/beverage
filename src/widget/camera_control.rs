@@ -55,13 +55,24 @@ pub struct SpawnCameraControlPreUpdate;
 #[derive(SystemSet, Clone, Eq, Debug, Hash, PartialEq)]
 pub struct SpawnCameraControlUpdate;
 
-fn spawn_camera_control(
-    q_spawn_camera_control: Query<Entity, Added<SpawnCameraControl>>,
-    l10n: Res<Localization>,
-    mut active_camera_controls: ResMut<ActiveCameraControls>,
-    mut images: ResMut<Assets<Image>>,
-    mut commands: Commands
-) {
+type CameraControlResources<'a> = (
+    ResMut<'a, ActiveCameraControls>,
+    ResMut<'a, Assets<Image>>,
+    ResMut<'a, Assets<Mesh>>,
+    ResMut<'a, Assets<StandardMaterial>>,
+);
+
+fn spawn_camera_control((
+    q_spawn_camera_control,
+    mut camera_control_resources,
+    l10n,
+    mut commands,
+): (
+    Query<Entity, Added<SpawnCameraControl>>,
+    CameraControlResources,
+    Res<Localization>,
+    Commands,
+)) {
     for container in &q_spawn_camera_control {
         let size = Extent3d {
             width: 512,
@@ -69,7 +80,7 @@ fn spawn_camera_control(
             ..default()
         };
 
-        layout(container, size, &l10n, &mut active_camera_controls, &mut images, &mut commands);
+        layout(container, size, &l10n, &mut camera_control_resources, &mut commands);
     }
 }
 
@@ -77,11 +88,33 @@ fn layout(
     container: Entity,
     size: Extent3d,
     l10n: &Res<Localization>,
-    active_camera_controls: &mut ResMut<ActiveCameraControls>,
-    images: &mut ResMut<Assets<Image>>,
+    (active_camera_controls, images, meshes, materials): &mut CameraControlResources,
     commands: &mut Commands
 ) {
     warn!("layout");
+
+    // sample scene objects
+    // circular base
+    let scene_ground = commands
+        .spawn(PbrBundle {
+            mesh: meshes.add(Circle::new(4.0)),
+            material: materials.add(Color::WHITE),
+            transform: Transform::from_rotation(
+                Quat::from_rotation_x(-std::f32::consts::FRAC_PI_2)
+            ),
+            ..default()
+        })
+        .id();
+    // cube
+    let scene_cube = commands
+        .spawn(PbrBundle {
+            mesh: meshes.add(Cuboid::new(1.0, 1.0, 1.0)),
+            material: materials.add(Color::srgb_u8(124, 144, 255)),
+            transform: Transform::from_xyz(0.0, 0.5, 0.0),
+            ..default()
+        })
+        .id();
+
     // This is the texture that will be rendered to.
     let mut image = Image {
         texture_descriptor: TextureDescriptor {
@@ -155,6 +188,8 @@ fn layout(
         .insert((
             CameraControl {
                 camera: scene_camera,
+                cube: scene_cube,
+                ground: scene_ground,
                 light: scene_light,
             },
             CameraControlSettings::default(),
@@ -210,6 +245,8 @@ fn layout(
 
     active_camera_controls.camera_controls.insert(container, CameraControl {
         camera: scene_camera,
+        cube: scene_cube,
+        ground: scene_ground,
         light: scene_light,
     });
 }
@@ -489,6 +526,8 @@ struct SpawnCameraControl;
 #[reflect(Component)]
 pub struct CameraControl {
     camera: Entity,
+    cube: Entity,
+    ground: Entity,
     light: Entity,
 }
 
@@ -496,6 +535,8 @@ impl Default for CameraControl {
     fn default() -> Self {
         Self {
             camera: Entity::PLACEHOLDER,
+            cube: Entity::PLACEHOLDER,
+            ground: Entity::PLACEHOLDER,
             light: Entity::PLACEHOLDER,
         }
     }

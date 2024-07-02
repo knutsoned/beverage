@@ -4,7 +4,7 @@ use bevy_fluent::Localization;
 
 use sickle_ui::prelude::*;
 
-use crate::{ framework::*, layout::page::camera_control::UiCameraControlExt };
+use crate::{ framework::*, widget::camera_control::UiCameraControlExt };
 
 pub fn layout(
     root_node: Query<Entity, With<EditorContainer>>,

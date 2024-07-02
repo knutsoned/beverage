@@ -59,7 +59,6 @@ pub struct HierarchyPanel;
 pub struct CurrentPage(Page);
 
 // l10n stuff
-
 #[derive(Resource)]
 pub struct LocaleFolder(pub Handle<LoadedFolder>);
 

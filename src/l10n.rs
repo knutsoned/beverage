@@ -11,7 +11,7 @@ use sickle_ui::{ prelude::Dropdown, ui_commands::UpdateStatesExt };
 use crate::{ get_selected_locale, prelude::* };
 
 pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
-    warn!("l10n::setup");
+    warn!("setup");
     // recursively load all the files in assets/locales
     let handle = asset_server.load_folder("locales");
     commands.insert_resource(LocaleFolder(handle));
@@ -22,11 +22,11 @@ pub fn switch_locale(
     locale_folder: Res<LocaleFolder>,
     localization_builder: LocalizationBuilder
 ) {
-    warn!("l10n::switch_locale");
+    warn!("switch_locale");
     let localization = localization_builder.build(&locale_folder.0);
     commands.insert_resource(localization);
 
-    // done switching, now rebuild
+    // done switching, now rebuild UI
     commands.next_state(EditorState::Building);
 }
 
@@ -41,6 +41,7 @@ pub fn update(
         // create the main resource for i18n in UI template code
         let localization = localization_builder.build(&locale_folder.0);
 
+        // I think this crashes
         //commands.remove_resource::<LocaleFolder>();
         commands.insert_resource(localization);
 
@@ -76,7 +77,7 @@ pub fn handle_locale_select(
             if langid.to_string() == *DEFAULT_LOCALE {
                 locale_resource.default = None;
             } else {
-                info!("-setting fallback locale");
+                info!("-setting fallback locale '{}'", DEFAULT_LOCALE);
                 locale_resource.default = Some(
                     DEFAULT_LOCALE.parse::<LanguageIdentifier>().unwrap()
                 );
