@@ -2,6 +2,7 @@ use sickle_ui::prelude::Dropdown;
 
 pub const DEFAULT_LOCALE: &str = "en-US";
 
+pub mod a11y;
 pub mod construct;
 pub mod framework;
 pub mod input;
@@ -10,6 +11,7 @@ pub mod layout;
 pub mod remote;
 pub mod router;
 pub mod setup;
+pub mod signals;
 pub mod theme;
 pub mod undo;
 pub mod widget;
