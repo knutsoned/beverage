@@ -622,7 +622,7 @@ pub trait UiCameraControlExt {
 impl UiCameraControlExt for UiBuilder<'_, Entity> {
     fn camera_control(&mut self) -> UiBuilder<Entity> {
         let column = self
-            .column(|_| {})
+            //.column(|_| {})
             .insert((Name::new("Camera Control"), SpawnCameraControl))
             .style() // Needed until UiImage stops depending on background color
             .background_color(Color::WHITE)

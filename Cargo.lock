@@ -92,7 +92,7 @@ checksum = "f26201604c87b1e01bd3d98f8d5d9a8fcbb815e8cedb41ffccbeb4bf593a35fe"
 [[package]]
 name = "aery"
 version = "0.7.0"
-source = "git+https://github.com/iiYese/aery.git?branch=014#1d0c86a0e0718aa4d077a633405c192ea89e8444"
+source = "git+https://github.com/iiYese/aery?branch=014#1d0c86a0e0718aa4d077a633405c192ea89e8444"
 dependencies = [
  "aery_macros",
  "aquamarine",
@@ -109,7 +109,7 @@ dependencies = [
 [[package]]
 name = "aery_macros"
 version = "0.3.0-dev"
-source = "git+https://github.com/iiYese/aery.git?branch=014#1d0c86a0e0718aa4d077a633405c192ea89e8444"
+source = "git+https://github.com/iiYese/aery?branch=014#1d0c86a0e0718aa4d077a633405c192ea89e8444"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -473,6 +473,7 @@ dependencies = [
  "argh",
  "bevy",
  "bevy-async-ecs",
+ "bevy_dev_tools",
  "bevy_fluent",
  "bevy_simple_text_input",
  "ehttp",
@@ -486,6 +487,7 @@ dependencies = [
  "macro_rules_attribute",
  "serde",
  "serde_json",
+ "sickle_example",
  "sickle_ui",
  "smol",
  "smol-hyper",
@@ -737,6 +739,33 @@ dependencies = [
  "bevy_macro_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "quote",
  "syn 2.0.68",
+]
+
+[[package]]
+name = "bevy_dev_tools"
+version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
+dependencies = [
+ "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_asset",
+ "bevy_color",
+ "bevy_core 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_core_pipeline",
+ "bevy_diagnostic",
+ "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_gizmos",
+ "bevy_hierarchy 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_input",
+ "bevy_math",
+ "bevy_reflect",
+ "bevy_render",
+ "bevy_state",
+ "bevy_text",
+ "bevy_time",
+ "bevy_transform",
+ "bevy_ui",
+ "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_window",
 ]
 
 [[package]]
@@ -1505,7 +1534,7 @@ dependencies = [
  "bitflags 2.6.0",
  "cexpr",
  "clang-sys",
- "itertools 0.12.1",
+ "itertools 0.10.5",
  "lazy_static",
  "lazycell",
  "proc-macro2",
@@ -2873,15 +2902,6 @@ dependencies = [
 
 [[package]]
 name = "itertools"
-version = "0.12.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ba291022dbbd398a455acf126c1e341954079855bc60dfdda641363bd6922569"
-dependencies = [
- "either",
-]
-
-[[package]]
-name = "itertools"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "413ee7dfc52ee1a4949ceeb7dbc8a33f2d6c088194d9f922fb8318faf1f01186"
@@ -2976,7 +2996,7 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
 [[package]]
 name = "leafwing-input-manager"
 version = "0.14.0-rc"
-source = "git+https://github.com/knutsoned/leafwing-input-manager.git#b532dad62639d61bae3d6238e75adbb18a1fec86"
+source = "git+https://github.com/knutsoned/leafwing-input-manager#b532dad62639d61bae3d6238e75adbb18a1fec86"
 dependencies = [
  "bevy",
  "derive_more",
@@ -2993,7 +3013,7 @@ dependencies = [
 [[package]]
 name = "leafwing_input_manager_macros"
 version = "0.14.0"
-source = "git+https://github.com/knutsoned/leafwing-input-manager.git#b532dad62639d61bae3d6238e75adbb18a1fec86"
+source = "git+https://github.com/knutsoned/leafwing-input-manager#b532dad62639d61bae3d6238e75adbb18a1fec86"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -4181,9 +4201,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0fda2ff0d084019ba4d7c6f371c95d8fd75ce3524c3cb8fb653a3023f6323e64"
 
 [[package]]
+name = "sickle_example"
+version = "0.2.0"
+dependencies = [
+ "bevy",
+ "sickle_ui",
+]
+
+[[package]]
 name = "sickle_macros"
 version = "0.1.0"
-source = "git+https://github.com/knutsoned/sickle_ui?branch=bevy_014_upgrade#8459262c1344e3dc6496d3b831944ad16c2d6f6c"
+source = "git+https://github.com/knutsoned/sickle_ui?branch=014rc4#bd845547d99bf9460eda9e1090ab64981d48a287"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -4193,7 +4221,7 @@ dependencies = [
 [[package]]
 name = "sickle_math"
 version = "0.1.0"
-source = "git+https://github.com/knutsoned/sickle_ui?branch=bevy_014_upgrade#8459262c1344e3dc6496d3b831944ad16c2d6f6c"
+source = "git+https://github.com/knutsoned/sickle_ui?branch=014rc4#bd845547d99bf9460eda9e1090ab64981d48a287"
 dependencies = [
  "bevy",
  "serde",
@@ -4202,7 +4230,7 @@ dependencies = [
 [[package]]
 name = "sickle_ui"
 version = "0.2.0"
-source = "git+https://github.com/knutsoned/sickle_ui?branch=bevy_014_upgrade#8459262c1344e3dc6496d3b831944ad16c2d6f6c"
+source = "git+https://github.com/knutsoned/sickle_ui?branch=014rc4#bd845547d99bf9460eda9e1090ab64981d48a287"
 dependencies = [
  "bevy",
  "bevy_ecs_macros",
@@ -4216,7 +4244,7 @@ dependencies = [
 [[package]]
 name = "sickle_ui_scaffold"
 version = "0.1.0"
-source = "git+https://github.com/knutsoned/sickle_ui?branch=bevy_014_upgrade#8459262c1344e3dc6496d3b831944ad16c2d6f6c"
+source = "git+https://github.com/knutsoned/sickle_ui?branch=014rc4#bd845547d99bf9460eda9e1090ab64981d48a287"
 dependencies = [
  "bevy",
  "bevy_reflect",

@@ -20,6 +20,9 @@ license = "MIT OR Apache-2.0"
 # with the BRP changes replayed on top
 bevy = { version = "0.14.0-rc.4", git = "https://github.com/knutsoned/bevy", branch = "brp-rc.4", features = ["bevy_remote", "dynamic_linking", "serialize"] }
 
+# for debug inspector feature
+bevy_dev_tools = { version = "0.14.0-rc.4", git = "https://github.com/knutsoned/bevy", branch = "brp-rc.4", optional = true }
+
 # editor core (Rust)
 anyhow = "1"
 futures-lite = "2"
@@ -27,17 +30,18 @@ futures-signals = "0.3.33"
 serde = { version = "1", features = ["derive"] }
 
 # editor core (ecosystem)
-aery = { version = "0.7.0", git = "https://github.com/iiYese/aery.git", branch = "014" }
+aery = { version = "0.7.0", git = "https://github.com/iiYese/aery", branch = "014" }
 bevy-async-ecs = { version = "0.6.0", git = "https://github.com/knutsoned/bevy-async-ecs" }
 bevy_simple_text_input = { version = "0.8.0", git = "https://github.com/knutsoned/bevy_simple_text_input" }
 #haalka = { version = "0.2.0", path = "../haalka" } # git = "https://github.com/knutsoned/haalka"
-leafwing-input-manager = { version = "0.14.0-rc", git = "https://github.com/knutsoned/leafwing-input-manager.git" }
+leafwing-input-manager = { version = "0.14.0-rc", git = "https://github.com/knutsoned/leafwing-input-manager" }
+sickle_example = { version = "0.2.0", path = "../sickle_example" } # git = "https://github.com/knutsoned/sickle_example"
 
 # this is a placeholder (just a reminder to find or build a non-egui thing like this)
 # bevy_console = { version = "0.12.0", git = "https://github.com/knutsoned/bevy-console" }
 
 # TODO some kind of error involving NoOpHash from bevy_animation not implementing Reflect, check back in a bit
-#bevy_defer = { version = "0.13.0", git = "https://github.com/mintlu8/bevy_defer.git", branch = "0.14" }
+#bevy_defer = { version = "0.13.0", git = "https://github.com/mintlu8/bevy_defer", branch = "0.14" }
 
 # should be behind a scripting feature
 #bevy_mod_scripting = "0.6.0"
@@ -47,7 +51,7 @@ leafwing-input-manager = { version = "0.14.0-rc", git = "https://github.com/knut
 # it still needs bevy to be in a path which doesn't work when you point the dep at a repository
 #
 # when 0.14.0 comes out, there will be an official crate release
-sickle_ui = { git = "https://github.com/knutsoned/sickle_ui", branch = "bevy_014_upgrade", version = "0.2.0" }
+sickle_ui = { git = "https://github.com/knutsoned/sickle_ui", branch = "014rc4", version = "0.2.0" }
 
 # i18n
 bevy_fluent = { git = "https://github.com/knutsoned/bevy_fluent", version = "0.9.0" }
@@ -71,6 +75,10 @@ ehttp = "0.5.0"
 # app icon
 #image = "0.25.1"
 #winit = "0.30.3"
+
+[features]
+default = [ "bevy_dev_tools" ]
+bevy_dev_tools = ["dep:bevy_dev_tools"]
 
 # sickle needs this until it is published as a crate
 [patch.crates-io]

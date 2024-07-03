@@ -84,6 +84,10 @@ pub struct LocaleSelect;
 #[derive(Component)]
 pub struct RemoteCamera;
 
+// marker for an FPS counter on a remote server
+#[derive(Component)]
+pub struct RemoteFpsCounter;
+
 // marker for an entity with updates that can't be sent yet
 // (probably because the previous update is still running)
 #[derive(Component)]

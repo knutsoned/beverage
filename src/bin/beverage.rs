@@ -1,6 +1,8 @@
 // The mothership.
 
-use bevy::prelude::*; //, winit::WinitWindows };
+use bevy::{ prelude::*, winit::* };
+
+use bevy_dev_tools::ui_debug_overlay::*;
 
 use leafwing_input_manager::plugin::InputManagerPlugin;
 
@@ -39,11 +41,8 @@ struct EditorPlugin;
 impl Plugin for EditorPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins((EditorLocalePlugin, SickleUiPlugin))
-
-            // the next few are tracking navigation
-            .init_resource::<CurrentPage>()
-            .init_state::<EditorState>()
-            .init_state::<Page>()
+            // Only run the app when there is user input. This will significantly reduce CPU/GPU use.
+            .insert_resource(WinitSettings::desktop_app())
 
             // This plugin maps inputs to an input-type agnostic action-state
             // We need to provide it with an enum which stores the possible actions a player could take
@@ -56,6 +55,11 @@ impl Plugin for EditorPlugin {
 
             // BRP plugin to sync server camera with local viewport
             .add_plugins(CameraControlRemotePlugin)
+
+            // the next few are tracking navigation
+            .init_resource::<CurrentPage>()
+            .init_state::<EditorState>()
+            .init_state::<Page>()
 
             // FIXME why doesn't this work?
             //.add_systems(PreStartup, set_window_icon)
@@ -130,6 +134,23 @@ impl Plugin for EditorPlugin {
                     .after(WidgetLibraryUpdate)
                     .run_if(in_state(EditorState::Running))
             );
+
+        // add the standard debug overlay if dev tools are enabled
+        #[cfg(feature = "bevy_dev_tools")]
+        {
+            app.add_plugins(DebugUiPlugin).add_systems(Update, toggle_overlay);
+        }
+    }
+}
+
+// from Bevy UI examples
+#[cfg(feature = "bevy_dev_tools")]
+// The system that will enable/disable the debug outlines around the nodes
+fn toggle_overlay(input: Res<ButtonInput<KeyCode>>, mut options: ResMut<UiDebugOptions>) {
+    info_once!("The debug outlines are enabled, press Space to turn them on/off");
+    if input.just_pressed(KeyCode::Space) {
+        // The toggle method will enable the debug_overlay if disabled and disable if enabled
+        options.toggle();
     }
 }
 

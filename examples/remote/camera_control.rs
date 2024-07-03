@@ -1,5 +1,7 @@
 //! A Bevy app that sends camera position commands to a BRP server.
 
+// NOTE this is no longer maintained and is presented only as a reference to the old ways
+
 /*
  0. start in Disconnected mode
  1. see if there are any remote entities with a Transform (Uninitialized mode)
