@@ -2,9 +2,7 @@
 
 use bevy::prelude::*; //, winit::WinitWindows };
 
-use bevy_fluent::{ FluentPlugin, Locale };
 use leafwing_input_manager::plugin::InputManagerPlugin;
-use unic_langid::LanguageIdentifier;
 
 use sickle_ui::{ prelude::*, ui_commands::SetCursorExt, SickleUiPlugin };
 
@@ -12,19 +10,15 @@ use sickle_ui::{ prelude::*, ui_commands::SetCursorExt, SickleUiPlugin };
 
 use beverage::{
     framework::*,
-    l10n::{ self, handle_locale_select },
+    l10n::EditorLocalePlugin,
     layout::editor,
-    prelude::DEFAULT_LOCALE,
     remote::plugin::camera_control::CameraControlRemotePlugin,
-    setup,
-    theme::{ handle_theme_contrast_select, handle_theme_data_update, handle_theme_switch },
-    widget::camera_control::{ CameraControl, CameraControlPlugin, SpawnCameraControlPreUpdate },
+    setup::{ self, spawn_footer },
+    theme::*,
+    widget::camera_control::*,
 };
 
 fn main() {
-    let default_li = DEFAULT_LOCALE.parse::<LanguageIdentifier>().expect(
-        "Invalid default LanguageIdentifier"
-    );
     App::new()
         .add_plugins((
             DefaultPlugins.set(WindowPlugin {
@@ -35,92 +29,108 @@ fn main() {
                 }),
                 ..default()
             }),
-            FluentPlugin,
-            SickleUiPlugin,
+            EditorPlugin,
         ))
-        // identify the current locale
-        // (a different resource Localization uses this to look up actual string templates)
-        .insert_resource(Locale::new(default_li))
-
-        // the next few are tracking navigation
-        .init_resource::<CurrentPage>()
-        .init_state::<EditorState>()
-        .init_state::<Page>()
-
-        // This plugin maps inputs to an input-type agnostic action-state
-        // We need to provide it with an enum which stores the possible actions a player could take
-        .add_plugins(InputManagerPlugin::<InputAction>::default())
-
-        // sickle widget plugin for the remote camera demo
-        .add_plugins(CameraControlPlugin)
-
-        // BRP plugin to sync server camera with local viewport
-        .add_plugins(CameraControlRemotePlugin)
-
-        // FIXME why doesn't this work?
-        //.add_systems(PreStartup, set_window_icon)
-
-        // init fluent l10n
-        .add_systems(OnEnter(EditorState::Loading), l10n::setup)
-
-        // spawn UI camera and top-level UI container
-        .add_systems(OnExit(EditorState::Loading), setup::on_load.in_set(UiStartupSet))
-
-        // handle selecting a new locale from the language switcher
-        .add_systems(OnEnter(EditorState::SwitchLocale), l10n::switch_locale)
-
-        // rebuild the entire contents of the top-level UI container after changing the locale
-        .add_systems(OnExit(EditorState::SwitchLocale), setup::on_rebuild)
-
-        // check to see if the AssetServer is done loading the locales folder
-        .add_systems(Update, l10n::update.run_if(in_state(EditorState::Loading)))
-
-        // TODO these 2 things belong in the router
-        // layout the editor content when a page is selected
-        .add_systems(OnEnter(Page::CameraControl), editor::layout)
-
-        // clean up after a different page is selected
-        .add_systems(OnExit(Page::CameraControl), clear_content_on_menu_change)
-        // TODO needs to be a way to just change the content area and not the entire editor
-
-        // at minimum, need to figure out if a hierarchy view and scene view both represent the same data,
-        // and the scene editor is swapped with another page, what happens?
-
-        // the basic idea of a page is defining a collection of widgets that can go in each pane
-
-        // the mechanics of how to deal with then despawning a page with shared widgets is unclear
-
-        // also need to support adding new tabs to the containers and removing them
-        //.add_systems(OnEnter(Page::SceneEditor), editor::layout)
-        //.add_systems(OnExit(Page::SceneEditor), clear_content_on_menu_change)
-        // handle selecting Exit from the Editor menu
-        .add_systems(PreUpdate, exit_app_on_menu_item)
-
-        // need a better way to group views in different containers that work together
-
-        // also need a view to save a snapshot of the current editor arrangement as a "preset"
-        .add_systems(
-            PreUpdate,
-            despawn_camera_tree_view
-                /*, spawn_camera_tree_view*/ .after(SpawnCameraControlPreUpdate)
-                .run_if(in_state(EditorState::Running))
-        )
-
-        // update_current_page checks the menu for updates while the rest handle radios and dropdowns
-        .add_systems(
-            Update,
-            (
-                update_current_page,
-                handle_locale_select,
-                handle_theme_data_update,
-                handle_theme_switch,
-                handle_theme_contrast_select,
-            )
-                .chain()
-                .after(WidgetLibraryUpdate)
-                .run_if(in_state(EditorState::Running))
-        )
         .run();
+}
+
+struct EditorPlugin;
+
+impl Plugin for EditorPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_plugins((EditorLocalePlugin, SickleUiPlugin))
+
+            // the next few are tracking navigation
+            .init_resource::<CurrentPage>()
+            .init_state::<EditorState>()
+            .init_state::<Page>()
+
+            // This plugin maps inputs to an input-type agnostic action-state
+            // We need to provide it with an enum which stores the possible actions a player could take
+            .add_plugins(InputManagerPlugin::<InputAction>::default())
+
+            // page widgets (i.e. "main" content)
+
+            // sickle widget plugin for the remote camera demo
+            .add_plugins(CameraControlPlugin)
+
+            // BRP plugin to sync server camera with local viewport
+            .add_plugins(CameraControlRemotePlugin)
+
+            // FIXME why doesn't this work?
+            //.add_systems(PreStartup, set_window_icon)
+
+            // spawn UI camera and top-level UI container
+            .add_systems(OnExit(EditorState::Loading), setup::on_load.in_set(UiStartupSet))
+
+            // rebuild the entire contents of the top-level UI container after changing the locale
+
+            // this goes here instead of the plugin because the plugin shouldn't need to know how to rebuild the UI
+
+            // also this should go away once we can hot reload localized strings in text labels
+            .add_systems(OnExit(EditorState::SwitchLocale), setup::on_rebuild)
+
+            // for now just make sure the footer refreshes every time the app enters the running state
+            .add_systems(OnEnter(EditorState::Running), spawn_footer.after(setup::on_rebuild))
+
+            // is there a better way to do this?
+            .add_systems(
+                OnEnter(RemoteConnectionState::Disconnected),
+                spawn_footer.run_if(in_state(EditorState::Running))
+            )
+            .add_systems(
+                OnEnter(RemoteConnectionState::Connecting),
+                spawn_footer.run_if(in_state(EditorState::Running))
+            )
+            .add_systems(
+                OnEnter(RemoteConnectionState::Connected),
+                spawn_footer.run_if(in_state(EditorState::Running))
+            )
+
+            // TODO these 2 things belong in the router
+            // layout the editor content when a page is selected
+            .add_systems(OnEnter(Page::CameraControl), editor::layout)
+
+            // clean up after a different page is selected
+            .add_systems(OnExit(Page::CameraControl), clear_content_on_menu_change)
+            // TODO needs to be a way to just change the content area and not the entire editor
+
+            // at minimum, need to figure out if a hierarchy view and scene view both represent the same data,
+            // and the scene editor is swapped with another page, what happens?
+
+            // the basic idea of a page is defining a collection of widgets that can go in each pane
+
+            // the mechanics of how to deal with then despawning a page with shared widgets is unclear
+
+            // also need to support adding new tabs to the containers and removing them
+            //.add_systems(OnEnter(Page::SceneEditor), editor::layout)
+            //.add_systems(OnExit(Page::SceneEditor), clear_content_on_menu_change)
+            // handle selecting Exit from the Editor menu
+            .add_systems(PreUpdate, exit_app_on_menu_item)
+            // need a better way to group views in different containers that work together
+
+            // also need a view to save a snapshot of the current editor arrangement as a "preset"
+            .add_systems(
+                PreUpdate,
+                despawn_camera_tree_view
+                    /*, spawn_camera_tree_view*/ .after(SpawnCameraControlPreUpdate)
+                    .run_if(in_state(EditorState::Running))
+            )
+
+            // update_current_page checks the menu for updates while the rest handle radios and dropdowns
+            .add_systems(
+                Update,
+                (
+                    update_current_page,
+                    handle_theme_data_update,
+                    handle_theme_switch,
+                    handle_theme_contrast_select,
+                )
+                    .chain()
+                    .after(WidgetLibraryUpdate)
+                    .run_if(in_state(EditorState::Running))
+            );
+    }
 }
 
 // from https://bevy-cheatbook.github.io/window/icon.html
@@ -206,7 +216,7 @@ fn spawn_camera_tree_view(
 */
 
 fn despawn_camera_tree_view(
-    q_hierarchy_panel: Query<Entity, With<HierarchyPanel>>,
+    q_hierarchy_panel: Query<Entity, With<TreeViewPanel>>,
     q_removed_scene_view: RemovedComponents<CameraControl>,
     mut commands: Commands
 ) {

@@ -472,9 +472,12 @@ dependencies = [
  "anyhow",
  "argh",
  "bevy",
+ "bevy-async-ecs",
  "bevy_fluent",
+ "bevy_simple_text_input",
  "ehttp",
  "fluent_content",
+ "futures-lite",
  "futures-signals",
  "http-body-util",
  "hyper",
@@ -497,6 +500,21 @@ source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b1
 dependencies = [
  "bevy_dylib",
  "bevy_internal",
+]
+
+[[package]]
+name = "bevy-async-ecs"
+version = "0.6.0"
+source = "git+https://github.com/knutsoned/bevy-async-ecs#b21855948727318111586adebe2850e982af1328"
+dependencies = [
+ "async-channel",
+ "async-lock",
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_core 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_hierarchy 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "futures-lite",
 ]
 
 [[package]]
@@ -1222,6 +1240,14 @@ dependencies = [
  "serde",
  "thiserror",
  "uuid",
+]
+
+[[package]]
+name = "bevy_simple_text_input"
+version = "0.8.0"
+source = "git+https://github.com/knutsoned/bevy_simple_text_input#cb0fac3dbe15ebc5301bfe1c14b33d35ba5fa0f6"
+dependencies = [
+ "bevy",
 ]
 
 [[package]]

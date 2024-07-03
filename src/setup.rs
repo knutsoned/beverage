@@ -1,12 +1,12 @@
 // cameras and containers.
 
-use bevy::prelude::*;
+use bevy::{ color::palettes, prelude::* };
 
 use bevy_fluent::Localization;
 
 use sickle_ui::{ prelude::*, ui_commands::UpdateStatesExt };
 
-use crate::{ framework::*, layout::footer::{ UiFooterRootNode, UiUiFooterRootNodeExt } };
+use crate::{ framework::*, layout::plugin::footer::{ UiFooterRootNode, UiUiFooterRootNodeExt } };
 
 // TODO modularize the menu so it's a regular system and not a fn that has to be called
 pub mod menu;
@@ -15,7 +15,7 @@ use menu::build_menu;
 pub fn on_load(l10n: Res<Localization>, mut commands: Commands) {
     warn!("on_load");
     // The main camera which will render UI
-    let main_camera = commands
+    let main_ui_camera = commands
         .spawn((
             Camera3dBundle {
                 camera: Camera {
@@ -51,7 +51,7 @@ pub fn on_load(l10n: Res<Localization>, mut commands: Commands) {
                     ..default()
                 },
                 LocaleRoot,
-                TargetCamera(main_camera),
+                TargetCamera(main_ui_camera),
             ),
             |_| {}
         )
@@ -61,10 +61,10 @@ pub fn on_load(l10n: Res<Localization>, mut commands: Commands) {
 }
 
 pub fn on_rebuild(
-    footer_root: Query<Entity, With<UiFooterRootNode>>,
+    footer_root: Query<Entity, With<UiFooterContainer>>,
+    ui_main_root: Query<Entity, With<UiMainRootNode>>,
     locale_root: Query<Entity, With<LocaleRoot>>,
     locale_select: Query<&Dropdown, With<LocaleSelect>>,
-    ui_main_root: Query<Entity, With<UiMainRootNode>>,
     l10n: Res<Localization>,
     mut commands: Commands
 ) {
@@ -73,23 +73,21 @@ pub fn on_rebuild(
     // trigger update of the UI text
     if let Ok(locale_root) = locale_root.get_single() {
         if let Ok(ui_main_root) = ui_main_root.get_single() {
+            if let Ok(footer_root) = footer_root.get_single() {
+                // despawn the footer that floats on top (at the bottom?)
+                commands.entity(footer_root).despawn_recursive();
+            }
+
+            // despawn everything in the top level container
+            commands.entity(ui_main_root).despawn_recursive();
+
             if let Ok(locale_select) = locale_select.get_single() {
-                if let Ok(footer_root) = footer_root.get_single() {
-                    // despawn everything in the top level container
-                    commands.entity(ui_main_root).despawn_recursive();
-
-                    // despawn the footer that floats on top (at the bottom?)
-                    commands.entity(footer_root).despawn_recursive();
-
-                    build(
-                        &mut commands,
-                        &l10n,
-                        &locale_root,
-                        locale_select.value().expect("No selected locale in dropdown")
-                    );
-                } else {
-                    error!("No UiFooterRootNode");
-                }
+                build(
+                    &mut commands,
+                    &l10n,
+                    &locale_root,
+                    locale_select.value().expect("No selected locale in dropdown")
+                );
             } else {
                 error!("No LocaleSelect");
             }
@@ -98,6 +96,40 @@ pub fn on_rebuild(
         }
     } else {
         error!("No LocaleRoot");
+    }
+}
+
+pub fn spawn_footer(
+    footer_container: Query<Entity, With<UiFooterContainer>>,
+    footer_root: Query<Entity, With<UiFooterRootNode>>,
+    l10n: Res<Localization>,
+    remote_state: Res<State<RemoteConnectionState>>,
+    mut commands: Commands
+) {
+    warn!("spawn_footer");
+    if let Ok(footer_container) = footer_container.get_single() {
+        if let Ok(footer_root) = footer_root.get_single() {
+            // despawn the footer that floats on top (at the bottom?)
+            commands.entity(footer_root).despawn_recursive();
+        }
+
+        commands.ui_builder(footer_container).ui_footer(|builder| {
+            builder
+                .label(LabelConfig {
+                    label: l10n.lbl("Status"),
+                    ..default()
+                })
+                .style()
+                .background_color(match remote_state.get() {
+                    RemoteConnectionState::Disconnected => Color::Srgba(palettes::css::LIGHT_CORAL),
+                    RemoteConnectionState::Connecting =>
+                        Color::Srgba(palettes::css::PALE_GOLDENROD),
+                    RemoteConnectionState::Checking => Color::Srgba(palettes::css::PALE_GOLDENROD),
+                    RemoteConnectionState::Connected => Color::Srgba(palettes::css::CHARTREUSE),
+                })
+                .margin(UiRect::all(Val::Px(5.0)))
+                .width(Val::Px(80.0));
+        });
     }
 }
 
@@ -122,16 +154,7 @@ fn build(commands: &mut Commands, l10n: &Res<Localization>, context: &Entity, lo
         ))
         .id();
 
-    commands.ui_builder(context).ui_footer(|builder| {
-        builder
-            .label(LabelConfig {
-                label: l10n.lbl("Status"),
-                ..default()
-            })
-            .style()
-            .margin(UiRect::all(Val::Px(5.0)))
-            .width(Val::Px(80.0));
-    });
+    commands.ui_builder(context).container((UiFooterContainer, NodeBundle::default()), |_| {});
 
     // Use the UI builder of the root entity with styling applied via commands
     commands.ui_builder(root_entity).column(|builder| {

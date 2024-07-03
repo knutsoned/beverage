@@ -4,13 +4,40 @@
 
 use bevy::{ asset::LoadState, prelude::* };
 
-use bevy_fluent::*;
+use bevy_fluent::{ FluentPlugin, Locale, Localization, LocalizationBuilder };
 use fluent_content::Content;
 use unic_langid::LanguageIdentifier;
 
 use sickle_ui::{ prelude::Dropdown, ui_commands::UpdateStatesExt };
 
 use crate::prelude::*;
+
+pub struct EditorLocalePlugin;
+
+impl Plugin for EditorLocalePlugin {
+    fn build(&self, app: &mut App) {
+        let default_li = DEFAULT_LOCALE.parse::<LanguageIdentifier>().expect(
+            "Invalid default LanguageIdentifier"
+        );
+
+        app.add_plugins(FluentPlugin)
+            // identify the current locale
+            // (a different resource Localization uses this to look up actual string templates)
+            .insert_resource(Locale::new(default_li))
+
+            // init fluent l10n
+            .add_systems(OnEnter(EditorState::Loading), setup)
+
+            // handle selecting a new locale from the language switcher
+            .add_systems(OnEnter(EditorState::SwitchLocale), switch_locale)
+
+            // check to see if the AssetServer is done loading the locales folder
+            .add_systems(Update, update.run_if(in_state(EditorState::Loading)))
+
+            // check for a new selection from the language dropdown
+            .add_systems(Update, handle_locale_select.run_if(in_state(EditorState::Running)));
+    }
+}
 
 pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     warn!("setup");

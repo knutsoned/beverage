@@ -18,21 +18,23 @@ license = "MIT OR Apache-2.0"
 #
 # hypothetically, at that point, both this project and sickle should be able to use a careful git fork of the release
 # with the BRP changes replayed on top
-#bevy = { path = "../../bevy", version = "0.14.0-rc.4", features = ["bevy_remote", "dynamic_linking", "serialize"] }
 bevy = { version = "0.14.0-rc.4", git = "https://github.com/knutsoned/bevy", branch = "brp-rc.4", features = ["bevy_remote", "dynamic_linking", "serialize"] }
 
 # editor core (Rust)
 anyhow = "1"
+futures-lite = "2"
 futures-signals = "0.3.33"
 serde = { version = "1", features = ["derive"] }
 
 # editor core (ecosystem)
 aery = { version = "0.7.0", git = "https://github.com/iiYese/aery.git", branch = "014" }
-#haalka = "0.2.0-defer"
+bevy-async-ecs = { version = "0.6.0", git = "https://github.com/knutsoned/bevy-async-ecs" }
+bevy_simple_text_input = { version = "0.8.0", git = "https://github.com/knutsoned/bevy_simple_text_input" }
+#haalka = { version = "0.2.0", path = "../haalka" } # git = "https://github.com/knutsoned/haalka"
 leafwing-input-manager = { version = "0.14.0-rc", git = "https://github.com/knutsoned/leafwing-input-manager.git" }
 
-# not sure if this is a placeholder
-#bevy_console = "0.11.1"
+# this is a placeholder (just a reminder to find or build a non-egui thing like this)
+# bevy_console = { version = "0.12.0", git = "https://github.com/knutsoned/bevy-console" }
 
 # TODO some kind of error involving NoOpHash from bevy_animation not implementing Reflect, check back in a bit
 #bevy_defer = { version = "0.13.0", git = "https://github.com/mintlu8/bevy_defer.git", branch = "0.14" }
@@ -83,7 +85,7 @@ doc-scrape-examples = true
 
 [package.metadata.example.camera_control]
 name = "camera_control"
-description = "A simple command line client that can control a remote Bevy camera via the BRP"
+description = "A simple GUI client that can control a remote Bevy camera via the BRP"
 category = "Remote Protocol"
 wasm = true
 

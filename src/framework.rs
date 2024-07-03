@@ -11,6 +11,9 @@ pub trait Translator {
 pub struct UiCamera;
 
 #[derive(Component)]
+pub struct UiFooterContainer;
+
+#[derive(Component)]
 pub struct UiMainRootNode;
 
 #[derive(SystemSet, Clone, Hash, Debug, Eq, PartialEq)]
@@ -61,7 +64,7 @@ pub struct EditorContainer;
 
 #[derive(Component, Debug, Default, Reflect)]
 #[reflect(Component)]
-pub struct HierarchyPanel;
+pub struct TreeViewPanel;
 
 #[derive(Resource, Debug, Default, Reflect)]
 #[reflect(Resource)]
@@ -106,6 +109,8 @@ pub enum RemoteConnectionState {
     Disconnected,
     // getting the remote camera entity...
     Connecting,
+    // checking the response, do not pass go, do not collect $200
+    Checking,
     // not a persistent connection, but "connected" as in, able to map to the remote camera
     Connected,
 }

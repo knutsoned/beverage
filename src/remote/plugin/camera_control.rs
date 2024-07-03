@@ -1,6 +1,7 @@
 use bevy::{ prelude::*, tasks::{ block_on, poll_once } };
 
 use leafwing_input_manager::action_state::ActionState;
+
 use sickle_ui::ui_commands::UpdateStatesExt;
 
 use crate::{ prelude::*, remote::client::BrpClient, widget::camera_control::CameraControl };
@@ -11,22 +12,18 @@ impl Plugin for CameraControlRemotePlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<BrpClient>()
             .init_state::<RemoteConnectionState>()
+            .add_systems(Update, init_connect.run_if(in_state(RemoteConnectionState::Disconnected)))
             .add_systems(
                 Update,
-                check_connect.run_if(in_state(RemoteConnectionState::Disconnected))
+                connect_to_camera.run_if(in_state(RemoteConnectionState::Connecting))
             )
-            .add_systems(
-                Update,
-                (poll_responses, connect_to_camera)
-                    .chain()
-                    .run_if(in_state(RemoteConnectionState::Connecting))
-            )
+            .add_systems(Update, poll_responses.run_if(in_state(RemoteConnectionState::Checking)))
             .add_systems(Update, sync_camera.run_if(in_state(RemoteConnectionState::Connected)));
     }
 }
 
 // step 1: wait for a key press
-fn check_connect(
+fn init_connect(
     q_action: Query<&ActionState<InputAction>, (With<CameraControl>, Without<RemoteRequest>)>,
     mut commands: Commands
 ) {
@@ -52,8 +49,11 @@ fn connect_to_camera(
         match brp.fetch_remote_camera(camera.0, &mut commands) {
             Ok(_) => {
                 trace!("spawning fetch_remote_camera task");
+
+                // change the RemoteConnectionState to Checking
+                commands.next_state(RemoteConnectionState::Checking);
             }
-            Err(error) => error!("Could not spawn task to get remote camera: {}", error),
+            Err(error) => { error!("Could not spawn task to get remote camera: {}", error) }
         }
     }
 }
@@ -61,6 +61,7 @@ fn connect_to_camera(
 // step 3: see if the Camera entity has returned yet
 fn poll_responses(
     mut camera: Query<RemoteTransformArgs, With<CameraControl>>,
+    brp: Res<BrpClient>,
     mut commands: Commands
 ) {
     match camera.get_single_mut() {
@@ -71,8 +72,19 @@ fn poll_responses(
                     let entity = camera.0;
                     commands.entity(entity).remove::<RemoteRequest>();
 
-                    // change the RemoteState to Connected
-                    commands.next_state(RemoteConnectionState::Connected);
+                    // check to see if we have an entity
+                    let entity = match brp.remote_entity_dungeon.lock() {
+                        Ok(mutex) => mutex.as_ref().is_some(),
+                        Err(_) => false,
+                    };
+
+                    // change the RemoteConnectionState to Connected
+                    if entity {
+                        commands.next_state(RemoteConnectionState::Connected);
+                    } else {
+                        commands.next_state(RemoteConnectionState::Disconnected);
+                    }
+
                     info!("connected to BRP server and found remote camera");
                 }
             }

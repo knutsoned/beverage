@@ -19,6 +19,7 @@ use bevy::{
 use bevy_fluent::Localization;
 
 use leafwing_input_manager::{ action_state::ActionState, input_map::InputMap, InputManagerBundle };
+
 use sickle_ui::{ prelude::*, widgets::inputs::slider::SliderAxis };
 
 use crate::framework::*;

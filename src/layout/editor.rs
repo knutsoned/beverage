@@ -37,7 +37,7 @@ pub fn layout(
                                 true,
                                 |tab_container| {
                                     tab_container.add_tab(l10n.lbl("Relationships"), |panel| {
-                                        panel.insert(HierarchyPanel);
+                                        panel.insert(TreeViewPanel);
                                     });
                                 }
                             );

@@ -14,11 +14,12 @@ use serde_json::Value;
 use crate::prelude::RemoteRequest;
 
 // ehttp builder
-struct EhttpBuilder {}
+struct EhttpBuilder;
 pub trait RemoteRequestBuilder: Send + Sync + 'static {
     // TODO accept callback closure instead of returning ehttp::Request
     fn post(&self, url: String, body: String) -> ehttp::Request;
 }
+
 impl RemoteRequestBuilder for EhttpBuilder {
     fn post(&self, url: String, body: String) -> ehttp::Request {
         ehttp::Request::post(url, body.into())
@@ -30,6 +31,7 @@ impl RemoteRequestBuilder for EhttpBuilder {
 pub struct BrpClient {
     // id seq
     pub last_id: u32,
+
     // where we store the bits of the remote camera EntityId
     pub remote_entity_dungeon: Arc<Mutex<Option<Entity>>>,
 
@@ -49,7 +51,7 @@ impl Default for BrpClient {
         Self {
             last_id: 0,
             remote_entity_dungeon: Arc::new(Mutex::new(Option::<Entity>::None)),
-            request_builder: Box::new(EhttpBuilder {}),
+            request_builder: Box::new(EhttpBuilder),
             url,
         }
     }
@@ -73,13 +75,7 @@ impl BrpClient {
             filter: default(),
         };
         let request = serde_json::to_value(request)?;
-        let request = BrpRequest {
-            request: "QUERY".to_string(),
-            id: request_id.into(),
-            params: request,
-        };
-        let request = serde_json::to_string(&request)?;
-        let request = self.request_builder.as_ref().post(self.url.to_string(), request);
+        let request = self.ehttp_request_from(request_id, request, "QUERY", "fetch_remote_camera")?;
 
         self.spawn_task(request_id, entity, true, request, commands);
 
@@ -99,8 +95,8 @@ impl BrpClient {
         transform: Transform,
         commands: &mut Commands
     ) -> anyhow::Result<()> {
-        let request_id = self.next_id();
         let mut components = HashMap::<String, Value>::new();
+        let request_id = self.next_id();
         let value = serde_json::to_value(transform)?;
 
         // must use full type path
@@ -113,17 +109,14 @@ impl BrpClient {
                     components,
                 };
                 let request = serde_json::to_value(request)?;
-
-                let request = BrpRequest {
-                    request: "INSERT".to_string(),
-                    id: request_id.into(),
-                    params: request,
-                };
-                let request = serde_json::to_string(&request)?;
-                trace!("post_transform: {}", request);
-                let request = self.request_builder.as_ref().post(self.url.to_string(), request);
-
+                let request = self.ehttp_request_from(
+                    request_id,
+                    request,
+                    "INSERT",
+                    "post_transform"
+                )?;
                 self.spawn_task(request_id, entity, false, request, commands);
+
                 Ok(())
             }
             None => Err(anyhow!("no remote camera entity found")),
@@ -158,8 +151,6 @@ impl BrpClient {
                         let response = response.text().unwrap();
                         trace!("Response: {}", serde_json::to_string(&response).unwrap());
 
-                        // FIXME shuld probably handle error conditions
-
                         // if this is a response to the camera query, we need to save it from within this closure
                         if store_remote_entity {
                             // get an entity ID
@@ -174,7 +165,10 @@ impl BrpClient {
                             *camera_balloon.lock().unwrap() = Some(remote_entity);
                         }
                     }
-                    Err(error) => trace!("BRP error: {}", error),
+                    // FIXME go to Disconnected state if there's an error
+                    Err(error) => {
+                        error!("BRP error: {}", error);
+                    }
                 }
             });
         });
@@ -184,5 +178,23 @@ impl BrpClient {
         } else {
             commands.entity(local_entity).insert(RemoteRequest { task });
         }
+    }
+
+    fn ehttp_request_from(
+        &self,
+        request_id: u32,
+        value: Value,
+        verb: &str,
+        label: &str
+    ) -> anyhow::Result<Request> {
+        let request = BrpRequest {
+            request: verb.to_string(),
+            id: request_id.into(),
+            params: value,
+        };
+
+        let request = serde_json::to_string(&request)?;
+        trace!("{}: {}", label, request);
+        Ok(self.request_builder.as_ref().post(self.url.to_string(), request))
     }
 }
