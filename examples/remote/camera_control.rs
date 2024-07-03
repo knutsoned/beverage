@@ -18,14 +18,13 @@ use bevy::{
         BrpRequest,
         DEFAULT_PORT,
     },
-    tasks::{ IoTaskPool, Task },
+    tasks::{ block_on, poll_once, IoTaskPool, Task },
     utils::HashMap,
 };
 
 use anyhow::anyhow;
 use argh::FromArgs;
 use ehttp::Request;
-use futures_lite::future;
 use serde_json::Value;
 
 use sickle_ui::ui_commands::UpdateStatesExt;
@@ -316,7 +315,7 @@ fn poll_responses(mut camera: Query<TransformRequestArgs, With<Camera>>, mut com
         Ok(camera) => {
             // check to see if running task has completed
             if let Some(mut request) = camera.2 {
-                if future::block_on(future::poll_once(&mut request.task)).is_some() {
+                if block_on(poll_once(&mut request.task)).is_some() {
                     let entity = camera.0;
                     commands.entity(entity).remove::<RunningRequest>();
 
@@ -363,7 +362,7 @@ fn sync_camera(
 
         // check to see if running task has completed
         if let Some(mut request) = camera.2 {
-            if future::block_on(future::poll_once(&mut request.task)).is_some() {
+            if block_on(poll_once(&mut request.task)).is_some() {
                 commands.entity(entity).remove::<RunningRequest>();
             }
         }
@@ -405,7 +404,6 @@ fn sync_camera(
             die(&mut exit, error);
         }
     }
-    // step 7: next tick
 }
 
 fn die(exit: &mut EventWriter<AppExit>, error: anyhow::Error) {

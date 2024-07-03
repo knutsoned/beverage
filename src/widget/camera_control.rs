@@ -157,10 +157,8 @@ fn layout(
                     target: image_handle.clone().into(),
                     ..default()
                 },
-                transform: Transform::from_xyz(0.0, 2.0, -3.0).looking_at(
-                    Vec3::new(0.0, 0.0, 0.0),
-                    Vec3::Y
-                ),
+                // sickle example: Transform::from_xyz(0.0, 2.0, -3.0).looking_at(
+                transform: Transform::from_xyz(-2.5, 4.5, 9.0).looking_at(Vec3::ZERO, Vec3::Y),
                 ..default()
             },
             FogSettings {
@@ -171,13 +169,11 @@ fn layout(
                 },
                 ..default()
             },
+            RemoteCamera,
         ))
         .id();
 
-    let transform = Transform::from_xyz(0.0, 10.0, 3.0).looking_at(
-        Vec3::new(0.0, 0.0, 0.0),
-        Vec3::Y
-    );
+    let transform = Transform::from_xyz(0.0, 10.0, 3.0).looking_at(Vec3::ZERO, Vec3::Y);
     let scene_light = commands
         .spawn((
             DirectionalLightBundle {
@@ -192,9 +188,7 @@ fn layout(
         ))
         .id();
 
-    let mut transform = Transform::from_xyz(0.0, 0.0, 0.0);
-    transform.scale = Vec3::splat(1.0);
-
+    // spawn the main CameraControl
     commands
         .entity(container)
         .insert((

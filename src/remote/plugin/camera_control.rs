@@ -1,0 +1,136 @@
+use bevy::{ prelude::*, tasks::{ block_on, poll_once } };
+
+use leafwing_input_manager::action_state::ActionState;
+use sickle_ui::ui_commands::UpdateStatesExt;
+
+use crate::{ prelude::*, remote::client::BrpClient, widget::camera_control::CameraControl };
+
+pub struct CameraControlRemotePlugin;
+
+impl Plugin for CameraControlRemotePlugin {
+    fn build(&self, app: &mut App) {
+        app.init_resource::<BrpClient>()
+            .init_state::<RemoteConnectionState>()
+            .add_systems(
+                Update,
+                check_connect.run_if(in_state(RemoteConnectionState::Disconnected))
+            )
+            .add_systems(
+                Update,
+                (poll_responses, connect_to_camera)
+                    .chain()
+                    .run_if(in_state(RemoteConnectionState::Connecting))
+            )
+            .add_systems(Update, sync_camera.run_if(in_state(RemoteConnectionState::Connected)));
+    }
+}
+
+// step 1: wait for a key press
+fn check_connect(
+    q_action: Query<&ActionState<InputAction>, (With<CameraControl>, Without<RemoteRequest>)>,
+    mut commands: Commands
+) {
+    for action_state in &q_action {
+        if
+            action_state.pressed(&InputAction::CameraRotateYDecrease) ||
+            action_state.pressed(&InputAction::CameraRotateYIncrease)
+        {
+            // try to sync client camera to server
+            commands.next_state(RemoteConnectionState::Connecting);
+        }
+    }
+}
+
+// step 2: run a query to get the entity ID of the remote camera
+fn connect_to_camera(
+    mut camera: Query<RemoteTransformArgs, With<CameraControl>>,
+    mut brp: ResMut<BrpClient>,
+    mut commands: Commands
+) {
+    if let Ok(camera) = camera.get_single_mut() {
+        // spawn a task to connect to the remote server
+        match brp.fetch_remote_camera(camera.0, &mut commands) {
+            Ok(_) => {
+                trace!("spawning fetch_remote_camera task");
+            }
+            Err(error) => error!("Could not spawn task to get remote camera: {}", error),
+        }
+    }
+}
+
+// step 3: see if the Camera entity has returned yet
+fn poll_responses(
+    mut camera: Query<RemoteTransformArgs, With<CameraControl>>,
+    mut commands: Commands
+) {
+    match camera.get_single_mut() {
+        Ok(camera) => {
+            // check to see if running task has completed
+            if let Some(mut request) = camera.2 {
+                if block_on(poll_once(&mut request.task)).is_some() {
+                    let entity = camera.0;
+                    commands.entity(entity).remove::<RemoteRequest>();
+
+                    // change the RemoteState to Connected
+                    commands.next_state(RemoteConnectionState::Connected);
+                    info!("connected to BRP server and found remote camera");
+                }
+            }
+        }
+        Err(error) => error!("Error loading camera: {}", error),
+    }
+}
+
+// step 4: propagate local camera to remote
+fn sync_camera(
+    mut camera: Query<RemoteTransformArgs, With<RemoteCamera>>,
+    mut brp: ResMut<BrpClient>,
+    mut commands: Commands
+) {
+    if let Ok(camera) = camera.get_single_mut() {
+        // send update or mark pending
+        let entity = camera.0;
+        let transform = camera.1;
+        if transform.is_changed() {
+            let mut running = camera.2.is_some();
+            let pending = camera.3.is_some();
+            let mut result: anyhow::Result<()> = Ok(());
+
+            // check to see if running task has completed
+            if let Some(mut request) = camera.2 {
+                if block_on(poll_once(&mut request.task)).is_some() {
+                    commands.entity(entity).remove::<RemoteRequest>();
+                    running = false;
+                }
+            }
+
+            // then we send the serialized Transform to the server
+            // -if a request is already running, mark with RemotePending so we get to it later
+            // -if no request is running, send one if either we moved or already pending
+
+            // see if there is a running request
+            // if so, then mark with RemotePending if not already
+            if running && !pending {
+                // (if the request just finished it will still be marked running, which is fine)
+                // (next tick it will have no RunningRequest but will be marked RemotePending)
+                commands.entity(entity).insert(RemotePending);
+            } else if !running && pending {
+                // if no running request and an update is pending, kick off a new request
+                result = brp.post_transform(entity, *transform, &mut commands);
+
+                // remove RemotePending
+                commands.entity(entity).remove::<RemotePending>();
+            } else if !running && !pending {
+                // if no running request, kick off a new request
+                result = brp.post_transform(entity, *transform, &mut commands);
+
+                // don't mark with Pending until there is data to send
+            }
+
+            // handle error caused while spawning request task
+            if let Err(error) = result {
+                error!("BRP error: {}", error);
+            }
+        }
+    }
+}

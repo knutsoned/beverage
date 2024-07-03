@@ -23,6 +23,7 @@ bevy = { version = "0.14.0-rc.4", git = "https://github.com/knutsoned/bevy", bra
 
 # editor core (Rust)
 anyhow = "1"
+futures-signals = "0.3.33"
 serde = { version = "1", features = ["derive"] }
 
 # editor core (ecosystem)
@@ -64,7 +65,6 @@ macro_rules_attribute = "0.2.0"
 
 # BRP camera control example
 ehttp = "0.5.0"
-futures-lite = "2.3.0"
 
 # app icon
 #image = "0.25.1"

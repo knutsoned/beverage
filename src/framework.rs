@@ -1,4 +1,5 @@
-use bevy::{ asset::LoadedFolder, prelude::* };
+use bevy::{ asset::LoadedFolder, prelude::*, tasks::Task };
+
 use leafwing_input_manager::Actionlike;
 
 pub trait Translator {
@@ -75,6 +76,39 @@ pub struct LocaleRoot;
 
 #[derive(Component, Debug)]
 pub struct LocaleSelect;
+
+// marker for an entity whose transform may control a remote camera
+#[derive(Component)]
+pub struct RemoteCamera;
+
+// marker for an entity with updates that can't be sent yet
+// (probably because the previous update is still running)
+#[derive(Component)]
+pub struct RemotePending;
+
+#[derive(Component, Debug)]
+pub struct RemoteRequest {
+    pub task: Task<()>,
+}
+
+// query args to help remotely query or update an entity's transform
+pub type RemoteTransformArgs<'a> = (
+    Entity,
+    &'a mut Transform,
+    Option<&'a mut RemoteRequest>,
+    Option<&'a RemotePending>,
+);
+
+// need states to prevent updates from sending before the remote camera entity ID is known
+#[derive(States, Default, Debug, Clone, PartialEq, Eq, Hash)]
+pub enum RemoteConnectionState {
+    #[default]
+    Disconnected,
+    // getting the remote camera entity...
+    Connecting,
+    // not a persistent connection, but "connected" as in, able to map to the remote camera
+    Connected,
+}
 
 // theme handling widgets
 #[derive(Component, Debug)]

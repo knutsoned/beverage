@@ -1,0 +1,188 @@
+use std::sync::{ Arc, Mutex };
+
+use bevy::{
+    prelude::*,
+    remote::{ builtin_verbs::*, BrpRequest, DEFAULT_PORT },
+    tasks::IoTaskPool,
+    utils::HashMap,
+};
+
+use anyhow::anyhow;
+use ehttp::Request;
+use serde_json::Value;
+
+use crate::prelude::RemoteRequest;
+
+// ehttp builder
+struct EhttpBuilder {}
+pub trait RemoteRequestBuilder: Send + Sync + 'static {
+    // TODO accept callback closure instead of returning ehttp::Request
+    fn post(&self, url: String, body: String) -> ehttp::Request;
+}
+impl RemoteRequestBuilder for EhttpBuilder {
+    fn post(&self, url: String, body: String) -> ehttp::Request {
+        ehttp::Request::post(url, body.into())
+    }
+}
+
+// container for HTTP request task spawner
+#[derive(Resource)]
+pub struct BrpClient {
+    // id seq
+    pub last_id: u32,
+    // where we store the bits of the remote camera EntityId
+    pub remote_entity_dungeon: Arc<Mutex<Option<Entity>>>,
+
+    // in case we want to do this another way
+    pub request_builder: Box<dyn RemoteRequestBuilder>,
+
+    // server URL http://host:port
+    pub url: String,
+}
+
+impl Default for BrpClient {
+    fn default() -> Self {
+        // Create the URL. We're going to need it to issue the HTTP request.
+        let url = format!("http://{}:{}", "127.0.0.1", DEFAULT_PORT);
+        info!("BRP server URL: {}", url);
+
+        Self {
+            last_id: 0,
+            remote_entity_dungeon: Arc::new(Mutex::new(Option::<Entity>::None)),
+            request_builder: Box::new(EhttpBuilder {}),
+            url,
+        }
+    }
+}
+
+// convenience BRP entry point resource
+impl BrpClient {
+    pub fn fetch_remote_camera(
+        &mut self,
+        entity: Entity,
+        commands: &mut Commands
+    ) -> anyhow::Result<()> {
+        let request_id = self.next_id();
+
+        let request = BrpQueryRequest {
+            data: BrpQuery {
+                // must use full type path
+                components: vec!["bevy_render::camera::camera::Camera".to_string()],
+                ..default()
+            },
+            filter: default(),
+        };
+        let request = serde_json::to_value(request)?;
+        let request = BrpRequest {
+            request: "QUERY".to_string(),
+            id: request_id.into(),
+            params: request,
+        };
+        let request = serde_json::to_string(&request)?;
+        let request = self.request_builder.as_ref().post(self.url.to_string(), request);
+
+        self.spawn_task(request_id, entity, true, request, commands);
+
+        Ok(())
+    }
+
+    // increment the id counter and return the next value
+    pub fn next_id(&mut self) -> u32 {
+        self.last_id += 1;
+        self.last_id
+    }
+
+    // insert the provided Transform into the specified remote Entity
+    pub fn post_transform(
+        &mut self,
+        entity: Entity,
+        transform: Transform,
+        commands: &mut Commands
+    ) -> anyhow::Result<()> {
+        let request_id = self.next_id();
+        let mut components = HashMap::<String, Value>::new();
+        let value = serde_json::to_value(transform)?;
+
+        // must use full type path
+        components.insert("bevy_transform::components::transform::Transform".to_string(), value);
+        match *self.remote_entity_dungeon.lock().unwrap() {
+            Some(remote_entity) => {
+                trace!("remote_entity (post_transform): {}", remote_entity);
+                let request = BrpInsertRequest {
+                    entity: remote_entity,
+                    components,
+                };
+                let request = serde_json::to_value(request)?;
+
+                let request = BrpRequest {
+                    request: "INSERT".to_string(),
+                    id: request_id.into(),
+                    params: request,
+                };
+                let request = serde_json::to_string(&request)?;
+                trace!("post_transform: {}", request);
+                let request = self.request_builder.as_ref().post(self.url.to_string(), request);
+
+                self.spawn_task(request_id, entity, false, request, commands);
+                Ok(())
+            }
+            None => Err(anyhow!("no remote camera entity found")),
+        }
+    }
+
+    pub fn set_url(&mut self, url: String) {
+        self.url = url;
+    }
+
+    // convenience function to use ehttp to spawn an HTTP request in a Bevy task
+    // TODO replace request arg with closure that generates and handles a request
+    // (basically the outer closure of the task)
+    pub fn spawn_task(
+        &self,
+        request_id: u32,
+        local_entity: Entity,
+        store_remote_entity: bool,
+        request: Request,
+        commands: &mut Commands
+    ) {
+        // can't write to the resource from within a thread, so we use this
+        let camera_balloon = self.remote_entity_dungeon.clone();
+        let thread_pool = IoTaskPool::get();
+
+        // spawn an async task for the long network op
+        let task = thread_pool.spawn(async move {
+            ehttp::fetch(request, move |response: ehttp::Result<ehttp::Response>| {
+                match response {
+                    Ok(response) => {
+                        trace!("Request ID: {}, status code: {:?}", request_id, response.status);
+                        let response = response.text().unwrap();
+                        trace!("Response: {}", serde_json::to_string(&response).unwrap());
+
+                        // FIXME shuld probably handle error conditions
+
+                        // if this is a response to the camera query, we need to save it from within this closure
+                        if store_remote_entity {
+                            // get an entity ID
+                            let remote_entity = match
+                                serde_json::from_str::<BrpQueryResponse>(response)
+                            {
+                                Ok(value) => value.rows[0].entity,
+                                _ => Entity::PLACEHOLDER,
+                            };
+
+                            // float the data back to the resource
+                            *camera_balloon.lock().unwrap() = Some(remote_entity);
+                        }
+                    }
+                    Err(error) => trace!("BRP error: {}", error),
+                }
+            });
+        });
+
+        if local_entity == Entity::PLACEHOLDER {
+            warn!("making transient BRP request");
+        } else {
+            commands.entity(local_entity).insert(RemoteRequest { task });
+        }
+    }
+}
