@@ -120,6 +120,7 @@ pub fn spawn_footer(
                     ..default()
                 })
                 .style()
+                .font_color(Color::BLACK)
                 .background_color(match remote_state.get() {
                     RemoteConnectionState::Disconnected => Color::Srgba(palettes::css::LIGHT_CORAL),
                     RemoteConnectionState::Connecting =>

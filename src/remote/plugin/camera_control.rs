@@ -79,13 +79,14 @@ fn poll_responses(
                     };
 
                     // change the RemoteConnectionState to Connected
+                    info!("connected to BRP server");
                     if entity {
+                        info!("...and found a camera!");
                         commands.next_state(RemoteConnectionState::Connected);
                     } else {
+                        info!("[...]");
                         commands.next_state(RemoteConnectionState::Disconnected);
                     }
-
-                    info!("connected to BRP server and found remote camera");
                 }
             }
         }
