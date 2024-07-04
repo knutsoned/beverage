@@ -2,9 +2,9 @@
 
 use bevy::prelude::*;
 
-use sickle_ui::{ prelude::*, ui_commands::UpdateStatesExt };
+use sickle_ui::{ prelude::*, ui_commands::{ SetTextExt, UpdateStatesExt } };
 
-use sickle_example::prelude::*;
+use sickle_example::fps_widget::*;
 
 use beverage::{ framework::*, remote::EditorRemotePlugin };
 
@@ -140,7 +140,19 @@ fn update_fps_visibility(
     } else if show && !widget {
         // otherwise, if the client spawned a RemoteFpsCounter and there is no existing widget,
         // then spawn a new FpsWidget
-        commands.ui_builder(UiRoot).fps();
+        commands.ui_builder(UiRoot).container((NodeBundle::default(), FpsWidget), |fps| {
+            fps.style()
+                .position_type(PositionType::Absolute)
+                .right(Val::Px(10.0))
+                .bottom(Val::Px(10.0))
+                .justify_content(JustifyContent::Center)
+                .background_color(Color::BLACK);
+
+            let mut label = fps.label(LabelConfig::default());
+
+            // No fancy styling in this example.
+            label.entity_commands().insert(FpsText).set_text("FPS: 0".to_string(), None);
+        });
         commands.next_state(FpsVisibility::Visible);
     } else if !show && widget {
         // if there is no RemoteFpsCounter, then despawn the FpsCounter
