@@ -8,11 +8,11 @@ use sickle_ui::{ prelude::*, ui_commands::SetCursorExt, SickleUiPlugin };
 
 use beverage::{
     framework::*,
-    input::InputPlugin,
+    input::EditorInputPlugin,
+    layout::{ editor, footer::spawn_footer },
     locale::EditorLocalePlugin,
-    layout::editor,
     remote::camera_control::CameraControlRemotePlugin,
-    setup::{ self, spawn_footer },
+    setup,
     theme::*,
     widget::camera_control::*,
 };
@@ -43,7 +43,7 @@ impl Plugin for EditorPlugin {
 
             // This plugin maps inputs to an input-type agnostic action-state
             // We need to provide it with an enum which stores the possible actions a player could take
-            .add_plugins(InputPlugin)
+            .add_plugins(EditorInputPlugin)
 
             // page widgets (i.e. "main" content)
 

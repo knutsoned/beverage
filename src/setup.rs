@@ -1,12 +1,12 @@
 // cameras and containers.
 
-use bevy::{ color::palettes, prelude::* };
+use bevy::prelude::*;
 
 use bevy_fluent::Localization;
 
 use sickle_ui::{ prelude::*, ui_commands::UpdateStatesExt };
 
-use crate::{ framework::*, layout::footer::{ UiFooterRootNode, UiUiFooterRootNodeExt } };
+use crate::framework::*;
 
 // TODO modularize the menu so it's a regular system and not a fn that has to be called
 pub mod menu;
@@ -96,41 +96,6 @@ pub fn on_rebuild(
         }
     } else {
         error!("No LocaleRoot");
-    }
-}
-
-pub fn spawn_footer(
-    footer_container: Query<Entity, With<UiFooterContainer>>,
-    footer_root: Query<Entity, With<UiFooterRootNode>>,
-    l10n: Res<Localization>,
-    remote_state: Res<State<RemoteConnectionState>>,
-    mut commands: Commands
-) {
-    warn!("spawn_footer");
-    if let Ok(footer_container) = footer_container.get_single() {
-        if let Ok(footer_root) = footer_root.get_single() {
-            // despawn the footer that floats on top (at the bottom?)
-            commands.entity(footer_root).despawn_recursive();
-        }
-
-        commands.ui_builder(footer_container).ui_footer(|builder| {
-            builder
-                .label(LabelConfig {
-                    label: l10n.lbl("Status"),
-                    ..default()
-                })
-                .style()
-                .font_color(Color::BLACK)
-                .background_color(match remote_state.get() {
-                    RemoteConnectionState::Disconnected => Color::Srgba(palettes::css::LIGHT_CORAL),
-                    RemoteConnectionState::Connecting =>
-                        Color::Srgba(palettes::css::PALE_GOLDENROD),
-                    RemoteConnectionState::Checking => Color::Srgba(palettes::css::PALE_GOLDENROD),
-                    RemoteConnectionState::Connected => Color::Srgba(palettes::css::CHARTREUSE),
-                })
-                .margin(UiRect::all(Val::Px(5.0)))
-                .width(Val::Px(80.0));
-        });
     }
 }
 

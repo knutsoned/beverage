@@ -12,9 +12,9 @@ use bevy_dev_tools::ui_debug_overlay::*;
 use leafwing_input_manager::Actionlike;
 use leafwing_input_manager::plugin::InputManagerPlugin;
 
-pub struct InputPlugin;
+pub struct EditorInputPlugin;
 
-impl Plugin for InputPlugin {
+impl Plugin for EditorInputPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<InputConfig>().add_plugins(
             InputManagerPlugin::<InputAction>::default()
