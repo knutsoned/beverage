@@ -8,7 +8,7 @@ use bevy_fluent::{ FluentPlugin, Locale, Localization, LocalizationBuilder };
 use fluent_content::Content;
 use unic_langid::LanguageIdentifier;
 
-use sickle_ui::prelude::Dropdown;
+use sickle_ui::{ prelude::Dropdown, ui_commands::UpdateStatesExt };
 
 use crate::prelude::*;
 

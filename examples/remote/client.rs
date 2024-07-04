@@ -6,17 +6,17 @@ use std::process;
 use anyhow::Result as AnyhowResult;
 use argh::FromArgs;
 use bevy::prelude::default;
-use bevy::remote::builtin_verbs::{BrpQuery, BrpQueryRequest};
-use bevy::remote::{BrpRequest, DEFAULT_PORT};
 use http_body_util::BodyExt as _;
 use hyper::client::conn::http1;
 use hyper::header::HOST;
 use hyper::Request;
 use macro_rules_attribute::apply;
 use serde_json::Value;
-use smol::{net::TcpStream, Executor};
+use smol::{ net::TcpStream, Executor };
 use smol_hyper::rt::FuturesIo;
 use smol_macros::main;
+
+use beverage::remote::{ builtin_verbs::{ BrpQuery, BrpQueryRequest }, BrpRequest, DEFAULT_PORT };
 
 /// TODO
 #[derive(FromArgs)]
@@ -40,16 +40,14 @@ async fn main(executor: &Executor<'_>) -> AnyhowResult<()> {
 
     // Create the URL. We're going to need it to issue the HTTP request.
     let host_part = format!("{}:{}", args.host, args.port);
-    let url = format!("https://{}/", host_part)
-        .parse::<hyper::Uri>()
-        .unwrap();
+    let url = format!("https://{}/", host_part).parse::<hyper::Uri>().unwrap();
 
     // Create our `smol` TCP stream.
     let stream = TcpStream::connect(host_part).await.unwrap();
 
     // Create a HTTP 1.x connection.
-    let (mut sender, connection) = http1::handshake::<_, String>(FuturesIo::new(stream))
-        .await
+    let (mut sender, connection) = http1
+        ::handshake::<_, String>(FuturesIo::new(stream)).await
         .unwrap();
 
     // Build the parameters to our BRP request. Include the full type names of
@@ -64,10 +62,7 @@ async fn main(executor: &Executor<'_>) -> AnyhowResult<()> {
 
     let brp_query_params = match serde_json::to_value(&brp_query_params) {
         Ok(brp_query_params) => brp_query_params,
-        Err(error) => die(&format!(
-            "Failed to serialize request parameters: {}",
-            error
-        )),
+        Err(error) => die(&format!("Failed to serialize request parameters: {}", error)),
     };
 
     // Build the request.

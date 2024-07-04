@@ -9,7 +9,7 @@ use sickle_ui::{ prelude::*, ui_commands::SetCursorExt, SickleUiPlugin };
 use beverage::{
     framework::*,
     input::InputPlugin,
-    l10n::EditorLocalePlugin,
+    locale::EditorLocalePlugin,
     layout::editor,
     remote::camera_control::CameraControlRemotePlugin,
     setup::{ self, spawn_footer },

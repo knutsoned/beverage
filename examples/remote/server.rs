@@ -1,17 +1,17 @@
 //! A Bevy app that you can connect to with the BRP and edit.
 
-use bevy::{ prelude::*, remote::RemotePlugin };
+use bevy::prelude::*;
 
 use sickle_ui::{ prelude::*, ui_commands::UpdateStatesExt };
 
 use sickle_example::prelude::*;
 
-use beverage::framework::*;
+use beverage::{ framework::*, remote::EditorRemotePlugin };
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_plugins(RemotePlugin::default())
+        .add_plugins(EditorRemotePlugin::default())
         .init_state::<FpsVisibility>()
         .add_systems(Startup, (lights_camera, mesh))
         .add_systems(Update, (update_camera, update_fps_visibility))

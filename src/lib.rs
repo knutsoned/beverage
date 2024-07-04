@@ -2,7 +2,7 @@ pub mod a11y;
 pub mod construct;
 pub mod framework;
 pub mod input;
-pub mod l10n;
+pub mod locale;
 pub mod layout;
 pub mod logging;
 pub mod remote;

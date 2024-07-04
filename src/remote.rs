@@ -103,7 +103,7 @@ const CHANNEL_SIZE: usize = 16;
 /// Add this plugin to your [`App`] to allow remote connections to inspect and modify entities.
 ///
 /// By default, this is [`DEFAULT_PORT`]: 15702.
-pub struct RemotePlugin {
+pub struct EditorRemotePlugin {
     /// The port that Bevy will listen on.
     pub port: u16,
 }
@@ -182,13 +182,13 @@ pub struct BrpMessage {
 #[derive(Resource, Deref, DerefMut)]
 pub struct BrpMailbox(Receiver<BrpMessage>);
 
-impl Default for RemotePlugin {
+impl Default for EditorRemotePlugin {
     fn default() -> Self {
-        RemotePlugin { port: DEFAULT_PORT }
+        EditorRemotePlugin { port: DEFAULT_PORT }
     }
 }
 
-impl Plugin for RemotePlugin {
+impl Plugin for EditorRemotePlugin {
     fn build(&self, app: &mut App) {
         let mut remote_verbs = RemoteVerbs::new();
         remote_verbs.insert(
