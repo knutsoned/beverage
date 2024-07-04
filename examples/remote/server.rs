@@ -13,6 +13,9 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugins(EditorRemotePlugin::default())
         .init_state::<FpsVisibility>()
+        // types must be registered on both sides for serde_json to work
+        .register_type::<RemoteFpsCounter>()
+        .register_type::<DespawnRemoteFpsCounter>()
         .add_systems(Startup, (lights_camera, mesh))
         .add_systems(Update, (update_camera, update_fps_visibility))
         .add_systems(Update, update_fps.run_if(in_state(FpsVisibility::Visible)))
@@ -21,8 +24,8 @@ fn main() {
 
 #[derive(States, Clone, Copy, Debug, Default, Eq, Hash, PartialEq)]
 enum FpsVisibility {
-    Hidden,
     #[default]
+    Hidden,
     Visible,
 }
 
@@ -55,7 +58,7 @@ fn lights_camera(mut commands: Commands) {
         ))
         .id();
 
-    // TODO use 3D cam as viewport cam inside UI
+    // use 3D cam as viewport cam inside UI
     commands.ui_builder(UiRoot).container(
         (
             NodeBundle {
@@ -113,38 +116,35 @@ fn update_camera(mut transform: Query<&mut Transform, With<Camera>>) {
 fn update_fps_visibility(
     show_marker: Query<Entity, With<RemoteFpsCounter>>,
     hide_marker: Query<Entity, Added<DespawnRemoteFpsCounter>>,
-    widget: Query<Entity, With<FpsWidget>>,
+    widget_handle: Query<Entity, With<FpsWidget>>,
     mut commands: Commands
 ) {
     let hide_marker = hide_marker.get_single();
+    let hide = hide_marker.is_ok();
     let show_marker = show_marker.get_single();
-    let widget = widget.get_single();
+    let show = show_marker.is_ok();
+    let widget_handle = widget_handle.get_single();
+    let widget = widget_handle.is_ok();
 
     // if both the show and hide marker are present, the hide marker wins
-    if hide_marker.is_ok() {
+    if hide {
         // despawn the FpsCounter and any RemoteFpsCounter and DespawnRemoteFpsCounter markers
-        if let Ok(widget) = widget {
-            error!("despawn FpsWdiget");
-            commands.entity(widget).despawn_recursive();
+        if widget {
+            commands.entity(widget_handle.unwrap()).despawn_recursive();
         }
-        if let Ok(show_marker) = show_marker {
-            error!("despawn RemoteFpsCounter");
-            commands.entity(show_marker).despawn();
+        if show {
+            commands.entity(show_marker.unwrap()).despawn();
         }
         commands.entity(hide_marker.unwrap()).despawn();
-        error!("despawn the despawner");
         commands.next_state(FpsVisibility::Hidden);
-        error!("found DespawnRemoteFpsCounter (hiding FPS)");
-    } else if show_marker.is_ok() && widget.is_err() {
+    } else if show && !widget {
         // otherwise, if the client spawned a RemoteFpsCounter and there is no existing widget,
         // then spawn a new FpsWidget
         commands.ui_builder(UiRoot).fps();
         commands.next_state(FpsVisibility::Visible);
-        warn!("spawning FPS")
-    } else if show_marker.is_err() && widget.is_ok() {
+    } else if !show && widget {
         // if there is no RemoteFpsCounter, then despawn the FpsCounter
-        commands.entity(widget.unwrap()).despawn_recursive();
+        commands.entity(widget_handle.unwrap()).despawn_recursive();
         commands.next_state(FpsVisibility::Hidden);
-        warn!("missing RemoteFpsCounter (hiding FPS)");
     }
 }

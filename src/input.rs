@@ -6,7 +6,7 @@
 
 use bevy::prelude::*;
 
-use bevy_dev_tools::ui_debug_overlay::*;
+//use bevy_dev_tools::ui_debug_overlay::*;
 
 use leafwing_input_manager::Actionlike;
 use leafwing_input_manager::plugin::InputManagerPlugin;
@@ -40,7 +40,7 @@ pub enum InputAction {
 pub struct InputConfig {
     pub remote_fps: bool,
 }
-
+/*
 // from Bevy UI examples
 #[cfg(feature = "bevy_dev_tools")]
 // The system that will enable/disable the debug outlines around the nodes
@@ -51,3 +51,4 @@ fn toggle_overlay(input: Res<ButtonInput<KeyCode>>, mut options: ResMut<UiDebugO
         options.toggle();
     }
 }
+*/

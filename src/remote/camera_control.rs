@@ -7,7 +7,7 @@ use sickle_ui::ui_commands::UpdateStatesExt;
 use crate::{
     input::{ InputAction, InputConfig },
     prelude::*,
-    remote::client::BrpClient,
+    remote::brp_client::BrpClient,
     widget::camera_control::CameraControl,
 };
 
@@ -25,25 +25,30 @@ impl Plugin for CameraControlRemotePlugin {
             .add_systems(Update, poll_responses.run_if(in_state(RemoteConnectionState::Checking)))
             .add_systems(
                 Update,
-                (check_toggle_fps, sync_camera).run_if(in_state(RemoteConnectionState::Connected))
+                (check_toggle_fps, check_toggle_fps_response, sync_camera).run_if(
+                    in_state(RemoteConnectionState::Connected)
+                )
             );
     }
 }
 
+type RemoteActionQuery<'a> = (Entity, &'a ActionState<InputAction>, Option<&'a RemoteRequest>);
+
 fn check_toggle_fps(
-    q_action: Query<&ActionState<InputAction>, With<CameraControl>>,
+    q_action: Query<RemoteActionQuery, With<CameraControl>>,
     type_registry: Res<AppTypeRegistry>,
     mut input: ResMut<InputConfig>,
     mut brp: ResMut<BrpClient>,
     mut commands: Commands
 ) {
-    for action_state in &q_action {
-        // if the F key was just pressed...
-        if action_state.just_pressed(&InputAction::ToggleRemoteFpsCounter) {
+    for (entity, action_state, request) in &q_action {
+        // if not already sending a toggle and the F key was just pressed...
+        if request.is_none() && action_state.just_pressed(&InputAction::ToggleRemoteFpsCounter) {
             // toggle and send over the wire
             input.remote_fps = !input.remote_fps;
             if
                 let Err(error) = brp.spawn_fps_marker(
+                    &entity,
                     input.remote_fps,
                     &type_registry,
                     &mut commands
@@ -51,6 +56,17 @@ fn check_toggle_fps(
             {
                 error!("BRP error toggling FPS widget: {}", error);
             }
+        }
+    }
+}
+
+fn check_toggle_fps_response(
+    mut q_action: Query<(Entity, &mut RemoteRequest), With<CameraControl>>,
+    mut commands: Commands
+) {
+    for (entity, mut request) in q_action.iter_mut() {
+        if block_on(poll_once(&mut request.task)).is_some() {
+            commands.entity(entity).remove::<RemoteRequest>();
         }
     }
 }

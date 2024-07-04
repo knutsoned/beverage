@@ -77,10 +77,12 @@ pub struct RemoteCamera;
 
 // marker for an FPS counter on a remote server
 #[derive(Component, Reflect)]
+#[reflect(Component)]
 pub struct RemoteFpsCounter;
 
 // marker to remove an FPS counter on a remote server
 #[derive(Component, Reflect)]
+#[reflect(Component)]
 pub struct DespawnRemoteFpsCounter;
 
 // marker for an entity with updates that can't be sent yet

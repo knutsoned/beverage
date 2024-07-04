@@ -6,8 +6,8 @@ use anyhow::anyhow;
 use ehttp::Request;
 use serde_json::Value;
 
-use crate::{ prelude::*, remote::* };
-use builtin_verbs::*;
+use crate::prelude::*;
+use super::{ builtin_verbs::*, BrpRequest, DEFAULT_PORT };
 
 // ehttp builder
 struct EhttpBuilder;
@@ -126,6 +126,7 @@ impl BrpClient {
     // convenience function to spawn or despawn the remote FPS counter widget
     pub fn spawn_fps_marker(
         &mut self,
+        entity: &Entity,
         visibility: bool,
         type_registry: &Res<AppTypeRegistry>,
         commands: &mut Commands
@@ -136,22 +137,19 @@ impl BrpClient {
         }
         if let Some(marker) = type_registry.read().get_type_info(marker) {
             let marker = marker.type_path();
-            warn!("spawning {:#?}", marker);
             let request_id = self.next_id();
             let mut components = HashMap::<String, Value>::new();
             // I _think_ this is how you send an empty struct component
-            components.insert(marker.to_string(), Value::Null);
+            components.insert(marker.to_string(), Value::Object(default()));
             let request = BrpSpawnRequest { components };
             let request = serde_json::to_value(request)?;
-            info!("{:#?}", request);
             let request = self.ehttp_request_from(
                 request_id,
                 request,
                 "SPAWN",
                 "spawn_fps_marker"
             )?;
-            // FIXME not sure error handling works for spawn requests, so look at server code
-            self.spawn_task(request_id, Entity::PLACEHOLDER, false, request, commands);
+            self.spawn_task(request_id, *entity, false, request, commands);
         }
         Ok(())
     }
@@ -176,9 +174,9 @@ impl BrpClient {
             ehttp::fetch(request, move |response: ehttp::Result<ehttp::Response>| {
                 match response {
                     Ok(response) => {
-                        info!("Request ID: {}, status code: {:?}", request_id, response.status);
+                        trace!("Request ID: {}, status code: {:?}", request_id, response.status);
                         let response = response.text().unwrap();
-                        info!("Response: {}", serde_json::to_string(&response).unwrap());
+                        trace!("Response: {}", serde_json::to_string(&response).unwrap());
 
                         // if this is a response to the camera query, we need to save it from within this closure
                         if store_remote_entity {

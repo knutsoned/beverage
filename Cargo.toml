@@ -21,18 +21,18 @@ license = "MIT OR Apache-2.0"
 bevy = { version = "0.14.0-rc.4", features = ["dynamic_linking", "serialize"] }
 
 # for debug inspector feature
-bevy_dev_tools = { version = "0.14.0-rc.4", optional = true }
+#bevy_dev_tools = { version = "0.14.0-rc.4", optional = true }
 
 # editor core (Rust)
 anyhow = "1"
-futures-lite = "2.3.0"
-futures-signals = "0.3.33"
+#futures-lite = "2.3.0"
+#futures-signals = "0.3.33"
 serde = { version = "1", features = ["derive"] }
 
 # editor core (ecosystem)
-aery = { version = "0.7.0", git = "https://github.com/iiYese/aery", branch = "014" }
-bevy-async-ecs = { version = "0.6.0", git = "https://github.com/knutsoned/bevy-async-ecs" }
-bevy_simple_text_input = { version = "0.8.0", git = "https://github.com/knutsoned/bevy_simple_text_input" }
+#aery = { version = "0.7.0", git = "https://github.com/iiYese/aery", branch = "014" }
+#bevy-async-ecs = { version = "0.6.0", git = "https://github.com/knutsoned/bevy-async-ecs" }
+#bevy_simple_text_input = { version = "0.8.0", git = "https://github.com/knutsoned/bevy_simple_text_input" }
 #haalka = { version = "0.2.0", path = "../haalka" } # git = "https://github.com/knutsoned/haalka"
 leafwing-input-manager = { version = "0.14.0-rc", git = "https://github.com/knutsoned/leafwing-input-manager" }
 sickle_example = { version = "0.2.0", git = "https://github.com/knutsoned/sickle_example" }
@@ -60,7 +60,6 @@ fluent_content = "0.0.5"
 unic-langid = { version = "0.9.4", features = ["macros"] }
 
 # bevy_remote (BRP) core deps
-argh = "0.1.12"
 serde_json = { version = "1" }
 hyper = { version = "1", features = ["full"] }
 hyper-util = { version = "0.1", features = ["full"] }
@@ -70,6 +69,9 @@ smol-macros = "0.1"
 http-body-util = "0.1"
 macro_rules_attribute = "0.2.0"
 
+# BRP basic client example
+argh = "0.1.12"
+
 # BRP camera control example (not sure we really need this)
 ehttp = "0.5.0"
 
@@ -77,9 +79,12 @@ ehttp = "0.5.0"
 #image = "0.25.1"
 #winit = "0.30.3"
 
+[dev.dependencies]
+argh = "0.1.12"
+
 [features]
-default = [ "bevy_dev_tools" ]
-bevy_dev_tools = ["dep:bevy_dev_tools"]
+#default = [ "bevy_dev_tools" ]
+#bevy_dev_tools = ["dep:bevy_dev_tools"]
 
 [[example]]
 name = "camera_control"
