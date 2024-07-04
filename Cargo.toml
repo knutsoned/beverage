@@ -21,7 +21,7 @@ license = "MIT OR Apache-2.0"
 bevy = { version = "0.14.0-rc.4", features = ["dynamic_linking", "serialize"] }
 
 # for debug inspector feature
-#bevy_dev_tools = { version = "0.14.0-rc.4", optional = true }
+bevy_dev_tools = { version = "0.14.0-rc.4", optional = true }
 
 # editor core (Rust)
 anyhow = "1"
@@ -83,8 +83,8 @@ ehttp = "0.5.0"
 argh = "0.1.12"
 
 [features]
-#default = [ "bevy_dev_tools" ]
-#bevy_dev_tools = ["dep:bevy_dev_tools"]
+default = [ "bevy_dev_tools" ]
+bevy_dev_tools = ["dep:bevy_dev_tools"]
 
 [[example]]
 name = "camera_control"
