@@ -4,7 +4,12 @@ use leafwing_input_manager::action_state::ActionState;
 
 use sickle_ui::ui_commands::UpdateStatesExt;
 
-use crate::{ prelude::*, remote::client::BrpClient, widget::camera_control::CameraControl };
+use crate::{
+    input::{ InputAction, InputConfig },
+    prelude::*,
+    remote::client::BrpClient,
+    widget::camera_control::CameraControl,
+};
 
 pub struct CameraControlRemotePlugin;
 
@@ -18,7 +23,35 @@ impl Plugin for CameraControlRemotePlugin {
                 connect_to_camera.run_if(in_state(RemoteConnectionState::Connecting))
             )
             .add_systems(Update, poll_responses.run_if(in_state(RemoteConnectionState::Checking)))
-            .add_systems(Update, sync_camera.run_if(in_state(RemoteConnectionState::Connected)));
+            .add_systems(
+                Update,
+                (check_toggle_fps, sync_camera).run_if(in_state(RemoteConnectionState::Connected))
+            );
+    }
+}
+
+fn check_toggle_fps(
+    q_action: Query<&ActionState<InputAction>, With<CameraControl>>,
+    type_registry: Res<AppTypeRegistry>,
+    mut input: ResMut<InputConfig>,
+    mut brp: ResMut<BrpClient>,
+    mut commands: Commands
+) {
+    for action_state in &q_action {
+        // if the F key was just pressed...
+        if action_state.just_pressed(&InputAction::ToggleRemoteFpsCounter) {
+            // toggle and send over the wire
+            input.remote_fps = !input.remote_fps;
+            if
+                let Err(error) = brp.spawn_fps_marker(
+                    input.remote_fps,
+                    &type_registry,
+                    &mut commands
+                )
+            {
+                error!("BRP error toggling FPS widget: {}", error);
+            }
+        }
     }
 }
 
@@ -30,7 +63,8 @@ fn init_connect(
     for action_state in &q_action {
         if
             action_state.pressed(&InputAction::CameraRotateYDecrease) ||
-            action_state.pressed(&InputAction::CameraRotateYIncrease)
+            action_state.pressed(&InputAction::CameraRotateYIncrease) ||
+            action_state.just_pressed(&InputAction::ToggleRemoteFpsCounter)
         {
             // try to sync client camera to server
             commands.next_state(RemoteConnectionState::Connecting);

@@ -6,7 +6,7 @@ use bevy_fluent::Localization;
 
 use sickle_ui::{ prelude::*, ui_commands::UpdateStatesExt };
 
-use crate::{ framework::*, layout::plugin::footer::{ UiFooterRootNode, UiUiFooterRootNodeExt } };
+use crate::{ framework::*, layout::footer::{ UiFooterRootNode, UiUiFooterRootNodeExt } };
 
 // TODO modularize the menu so it's a regular system and not a fn that has to be called
 pub mod menu;

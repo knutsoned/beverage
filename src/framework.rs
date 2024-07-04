@@ -1,7 +1,5 @@
 use bevy::{ asset::LoadedFolder, prelude::*, tasks::Task };
 
-use leafwing_input_manager::Actionlike;
-
 pub trait Translator {
     fn lbl(&self, str: &str) -> String;
     fn t(&self, string: String) -> String;
@@ -19,7 +17,7 @@ pub struct UiMainRootNode;
 #[derive(SystemSet, Clone, Hash, Debug, Eq, PartialEq)]
 pub struct UiStartupSet;
 
-#[derive(Clone, Copy, Debug, Default, Eq, Hash, PartialEq, States)]
+#[derive(States, Clone, Copy, Debug, Default, Eq, Hash, PartialEq)]
 pub enum EditorState {
     #[default]
     Loading,
@@ -35,13 +33,6 @@ pub enum EditorState {
     // 4) that system switches to the Running state after completing its work
     Building,
     Running,
-}
-
-// This is the list of "things in the game I want to be able to do based on input"
-#[derive(Actionlike, PartialEq, Eq, Hash, Clone, Copy, Debug, Reflect)]
-pub enum InputAction {
-    CameraRotateYIncrease,
-    CameraRotateYDecrease,
 }
 
 #[derive(Component, Clone, Copy, Debug, Default, PartialEq, Eq, Reflect, States, Hash)]
@@ -80,13 +71,17 @@ pub struct LocaleRoot;
 #[derive(Component, Debug)]
 pub struct LocaleSelect;
 
-// marker for an entity whose transform may control a remote camera
+// marker for a local entity whose transform may control a remote camera
 #[derive(Component)]
 pub struct RemoteCamera;
 
 // marker for an FPS counter on a remote server
-#[derive(Component)]
+#[derive(Component, Reflect)]
 pub struct RemoteFpsCounter;
+
+// marker to remove an FPS counter on a remote server
+#[derive(Component, Reflect)]
+pub struct DespawnRemoteFpsCounter;
 
 // marker for an entity with updates that can't be sent yet
 // (probably because the previous update is still running)

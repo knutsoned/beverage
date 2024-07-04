@@ -22,7 +22,7 @@ use leafwing_input_manager::{ action_state::ActionState, input_map::InputMap, In
 
 use sickle_ui::{ prelude::*, widgets::inputs::slider::SliderAxis };
 
-use crate::framework::*;
+use crate::{ framework::*, input::* };
 
 pub struct CameraControlPlugin;
 
@@ -97,9 +97,11 @@ fn layout(
     warn!("layout");
 
     // for the Camera Control demo, KeyA and KeyD rotate around Y in opposite directions
+    // the F key toggles the remote FPS counter
     let mut input_map = InputMap::new([
         (InputAction::CameraRotateYDecrease, KeyCode::KeyA),
         (InputAction::CameraRotateYIncrease, KeyCode::KeyD),
+        (InputAction::ToggleRemoteFpsCounter, KeyCode::KeyF),
     ]);
 
     // we will also accept West and East

@@ -4203,6 +4203,7 @@ checksum = "0fda2ff0d084019ba4d7c6f371c95d8fd75ce3524c3cb8fb653a3023f6323e64"
 [[package]]
 name = "sickle_example"
 version = "0.2.0"
+source = "git+https://github.com/knutsoned/sickle_example#df9a7e7bb98dee450e21655e223031fae90dfae3"
 dependencies = [
  "bevy",
  "sickle_ui",

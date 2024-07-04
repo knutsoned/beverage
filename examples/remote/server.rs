@@ -2,19 +2,27 @@
 
 use bevy::{ prelude::*, remote::RemotePlugin };
 
-use sickle_ui::ui_builder::{ UiBuilderExt, UiRoot };
+use sickle_ui::{ prelude::*, ui_commands::UpdateStatesExt };
 
 use sickle_example::prelude::*;
 
-use beverage::framework::{ RemoteFpsCounter, UiCamera };
+use beverage::framework::*;
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .add_plugins(RemotePlugin::default())
         .add_systems(Startup, (lights_camera, mesh))
-        .add_systems(Update, (update_camera, update_fps_counter))
+        .add_systems(Update, (update_camera, update_fps_visibility))
+        .add_systems(Update, update_fps.run_if(in_state(FpsVisibility::Visible)))
         .run();
+}
+
+#[derive(States, Clone, Copy, Debug, Default, Eq, Hash, PartialEq)]
+enum FpsVisibility {
+    #[default]
+    Hidden,
+    Visible,
 }
 
 fn lights_camera(mut commands: Commands) {
@@ -28,34 +36,41 @@ fn lights_camera(mut commands: Commands) {
         ..default()
     });
 
-    // camera
-    commands.spawn(Camera3dBundle {
-        camera: Camera {
-            order: 0,
-            ..default()
-        },
-        transform: Transform::from_xyz(-2.5, 4.5, 9.0).looking_at(Vec3::ZERO, Vec3::Y),
-        ..default()
-    });
-
     // set up UI camera
-    commands.spawn((
-        Camera3dBundle {
-            camera: Camera {
-                order: 1,
-                clear_color: Color::BLACK.into(),
+    let main_ui_camera = commands
+        .spawn((
+            Camera3dBundle {
+                camera: Camera {
+                    clear_color: Color::BLACK.into(),
+                    ..default()
+                },
+                transform: Transform::from_translation(Vec3::new(-2.5, 4.5, 9.0)).looking_at(
+                    Vec3::ZERO,
+                    Vec3::Y
+                ),
                 ..default()
             },
-            transform: Transform::from_translation(Vec3::new(0.0, 30.0, 0.0)).looking_at(
-                Vec3::ZERO,
-                Vec3::Y
-            ),
-            ..default()
-        },
-        UiCamera,
-    ));
+            UiCamera,
+        ))
+        .id();
 
     // TODO use 3D cam as viewport cam inside UI
+    commands.ui_builder(UiRoot).container(
+        (
+            NodeBundle {
+                style: Style {
+                    width: Val::Percent(100.0),
+                    height: Val::Percent(100.0),
+                    flex_direction: FlexDirection::Column,
+                    justify_content: JustifyContent::SpaceBetween,
+                    ..default()
+                },
+                ..default()
+            },
+            TargetCamera(main_ui_camera),
+        ),
+        |_| {}
+    );
 }
 
 fn mesh(
@@ -78,6 +93,9 @@ fn mesh(
         transform: Transform::from_xyz(0.0, 0.5, 0.0),
         ..default()
     });
+
+    // uncomment to spawn an FpsCounter by default (simulate the client pressing the F key)
+    //commands.spawn(RemoteFpsCounter);
 }
 
 fn look_at_origin(transform: &mut Transform) -> Transform {
@@ -91,17 +109,38 @@ fn update_camera(mut transform: Query<&mut Transform, With<Camera>>) {
     }
 }
 
-fn update_fps_counter(
-    marker: Query<&RemoteFpsCounter>,
+fn update_fps_visibility(
+    show_marker: Query<Entity, With<RemoteFpsCounter>>,
+    hide_marker: Query<Entity, With<DespawnRemoteFpsCounter>>,
     widget: Query<Entity, With<FpsWidget>>,
     mut commands: Commands
 ) {
+    let hide_marker = hide_marker.get_single();
+    let show_marker = show_marker.get_single();
     let widget = widget.get_single();
-    if marker.get_single().is_ok() && widget.is_err() {
-        // if the client spawned a RemoteFpsCounter and there is no existing widget, then spawn an FpsWidget
+
+    // if both the show and hide marker are present, the hide marker wins
+    if hide_marker.is_ok() {
+        // despawn the FpsCounter and any RemoteFpsCounter and DespawnRemoteFpsCounter markers
+        if let Ok(widget) = widget {
+            commands.entity(widget).despawn_recursive();
+        }
+        if let Ok(show_marker) = show_marker {
+            commands.entity(show_marker).despawn();
+        }
+        commands.entity(hide_marker.unwrap()).despawn();
+        commands.next_state(FpsVisibility::Hidden);
+        warn!("found DespawnRemoteFpsCounter (hiding FPS)");
+    } else if show_marker.is_ok() && widget.is_err() {
+        // otherwise, if the client spawned a RemoteFpsCounter and there is no existing widget,
+        // then spawn a new FpsWidget
         commands.ui_builder(UiRoot).fps();
+        commands.next_state(FpsVisibility::Visible);
+        warn!("spawning FPS")
     } else if let Ok(widget) = widget {
         // if there is no RemoteFpsCounter, then despawn the FpsCounter
         commands.entity(widget).despawn_recursive();
+        commands.next_state(FpsVisibility::Hidden);
+        warn!("missing RemoteFpsCounter (hiding FPS)");
     }
 }

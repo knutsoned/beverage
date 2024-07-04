@@ -25,7 +25,7 @@ bevy_dev_tools = { version = "0.14.0-rc.4", git = "https://github.com/knutsoned/
 
 # editor core (Rust)
 anyhow = "1"
-futures-lite = "2"
+futures-lite = "2.3.0"
 futures-signals = "0.3.33"
 serde = { version = "1", features = ["derive"] }
 
@@ -35,10 +35,10 @@ bevy-async-ecs = { version = "0.6.0", git = "https://github.com/knutsoned/bevy-a
 bevy_simple_text_input = { version = "0.8.0", git = "https://github.com/knutsoned/bevy_simple_text_input" }
 #haalka = { version = "0.2.0", path = "../haalka" } # git = "https://github.com/knutsoned/haalka"
 leafwing-input-manager = { version = "0.14.0-rc", git = "https://github.com/knutsoned/leafwing-input-manager" }
-sickle_example = { version = "0.2.0", path = "../sickle_example" } # git = "https://github.com/knutsoned/sickle_example"
+sickle_example = { version = "0.2.0", git = "https://github.com/knutsoned/sickle_example" }
 
 # this is a placeholder (just a reminder to find or build a non-egui thing like this)
-# bevy_console = { version = "0.12.0", git = "https://github.com/knutsoned/bevy-console" }
+#bevy_console = { version = "0.12.0", git = "https://github.com/knutsoned/bevy-console" }
 
 # TODO some kind of error involving NoOpHash from bevy_animation not implementing Reflect, check back in a bit
 #bevy_defer = { version = "0.13.0", git = "https://github.com/mintlu8/bevy_defer", branch = "0.14" }

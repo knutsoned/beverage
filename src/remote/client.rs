@@ -1,4 +1,4 @@
-use std::sync::{ Arc, Mutex };
+use std::{ any::Any, sync::{ Arc, Mutex } };
 
 use bevy::{
     prelude::*,
@@ -11,7 +11,7 @@ use anyhow::anyhow;
 use ehttp::Request;
 use serde_json::Value;
 
-use crate::prelude::RemoteRequest;
+use crate::prelude::{ DespawnRemoteFpsCounter, RemoteFpsCounter, RemoteRequest };
 
 // ehttp builder
 struct EhttpBuilder;
@@ -127,6 +127,39 @@ impl BrpClient {
         self.url = url;
     }
 
+    // convenience function to spawn or despawn the remote FPS counter widget
+    pub fn spawn_fps_marker(
+        &mut self,
+        visibility: bool,
+        type_registry: &Res<AppTypeRegistry>,
+        commands: &mut Commands
+    ) -> anyhow::Result<()> {
+        let mut marker = DespawnRemoteFpsCounter.type_id();
+        if visibility {
+            marker = RemoteFpsCounter.type_id();
+        }
+        if let Some(marker) = type_registry.read().get_type_info(marker) {
+            let marker = marker.type_path();
+            warn!("spawning {:#?}", marker);
+            let request_id = self.next_id();
+            let mut components = HashMap::<String, Value>::new();
+            // I _think_ this is how you send an empty struct component
+            components.insert(marker.to_string(), Value::Null);
+            let request = BrpSpawnRequest { components };
+            let request = serde_json::to_value(request)?;
+            info!("{:#?}", request);
+            let request = self.ehttp_request_from(
+                request_id,
+                request,
+                "SPAWN",
+                "spawn_fps_marker"
+            )?;
+            // FIXME not sure error handling works for spawn requests, so look at server code
+            self.spawn_task(request_id, Entity::PLACEHOLDER, false, request, commands);
+        }
+        Ok(())
+    }
+
     // convenience function to use ehttp to spawn an HTTP request in a Bevy task
     // TODO replace request arg with closure that generates and handles a request
     // (basically the outer closure of the task)
@@ -147,9 +180,9 @@ impl BrpClient {
             ehttp::fetch(request, move |response: ehttp::Result<ehttp::Response>| {
                 match response {
                     Ok(response) => {
-                        trace!("Request ID: {}, status code: {:?}", request_id, response.status);
+                        info!("Request ID: {}, status code: {:?}", request_id, response.status);
                         let response = response.text().unwrap();
-                        trace!("Response: {}", serde_json::to_string(&response).unwrap());
+                        info!("Response: {}", serde_json::to_string(&response).unwrap());
 
                         // if this is a response to the camera query, we need to save it from within this closure
                         if store_remote_entity {
@@ -174,6 +207,7 @@ impl BrpClient {
         });
 
         if local_entity == Entity::PLACEHOLDER {
+            // this just means we aren't storing any data about the running task
             warn!("making transient BRP request");
         } else {
             commands.entity(local_entity).insert(RemoteRequest { task });
