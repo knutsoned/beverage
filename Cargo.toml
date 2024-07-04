@@ -18,10 +18,10 @@ license = "MIT OR Apache-2.0"
 #
 # hypothetically, at that point, both this project and sickle should be able to use a careful git fork of the release
 # with the BRP changes replayed on top
-bevy = { version = "0.14.0-rc.4", git = "https://github.com/knutsoned/bevy", branch = "brp-rc.4", features = ["bevy_remote", "dynamic_linking", "serialize"] }
+bevy = { version = "0.14.0-rc.4", features = ["dynamic_linking", "serialize"] }
 
 # for debug inspector feature
-bevy_dev_tools = { version = "0.14.0-rc.4", git = "https://github.com/knutsoned/bevy", branch = "brp-rc.4", optional = true }
+bevy_dev_tools = { version = "0.14.0-rc.4", optional = true }
 
 # editor core (Rust)
 anyhow = "1"
@@ -48,10 +48,11 @@ sickle_example = { version = "0.2.0", git = "https://github.com/knutsoned/sickle
 
 # sickle is now compatible with 0.14.0(-rc.4)
 #
-# it still needs bevy to be in a path which doesn't work when you point the dep at a repository
-#
 # when 0.14.0 comes out, there will be an official crate release
 sickle_ui = { git = "https://github.com/knutsoned/sickle_ui", branch = "014rc4", version = "0.2.0" }
+sickle_macros = { git = "https://github.com/knutsoned/sickle_ui", branch = "014rc4", version = "0.2.0" }
+sickle_math = { git = "https://github.com/knutsoned/sickle_ui", branch = "014rc4", version = "0.2.0" }
+sickle_ui_scaffold = { git = "https://github.com/knutsoned/sickle_ui", branch = "014rc4", version = "0.2.0" }
 
 # i18n
 bevy_fluent = { git = "https://github.com/knutsoned/bevy_fluent", version = "0.9.0" }
@@ -69,7 +70,7 @@ smol-macros = "0.1"
 http-body-util = "0.1"
 macro_rules_attribute = "0.2.0"
 
-# BRP camera control example
+# BRP camera control example (not sure we really need this)
 ehttp = "0.5.0"
 
 # app icon
@@ -79,12 +80,6 @@ ehttp = "0.5.0"
 [features]
 default = [ "bevy_dev_tools" ]
 bevy_dev_tools = ["dep:bevy_dev_tools"]
-
-# sickle needs this until it is published as a crate
-[patch.crates-io]
-bevy = { git = "https://github.com/knutsoned/bevy", branch = "brp-rc.4" }
-bevy_ecs_macros = { git = "https://github.com/knutsoned/bevy", branch = "brp-rc.4" }
-bevy_reflect = { git = "https://github.com/knutsoned/bevy", branch = "brp-rc.4" }
 
 [[example]]
 name = "camera_control"

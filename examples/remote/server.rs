@@ -12,6 +12,7 @@ fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .add_plugins(RemotePlugin::default())
+        .init_state::<FpsVisibility>()
         .add_systems(Startup, (lights_camera, mesh))
         .add_systems(Update, (update_camera, update_fps_visibility))
         .add_systems(Update, update_fps.run_if(in_state(FpsVisibility::Visible)))
@@ -20,8 +21,8 @@ fn main() {
 
 #[derive(States, Clone, Copy, Debug, Default, Eq, Hash, PartialEq)]
 enum FpsVisibility {
-    #[default]
     Hidden,
+    #[default]
     Visible,
 }
 
@@ -111,7 +112,7 @@ fn update_camera(mut transform: Query<&mut Transform, With<Camera>>) {
 
 fn update_fps_visibility(
     show_marker: Query<Entity, With<RemoteFpsCounter>>,
-    hide_marker: Query<Entity, With<DespawnRemoteFpsCounter>>,
+    hide_marker: Query<Entity, Added<DespawnRemoteFpsCounter>>,
     widget: Query<Entity, With<FpsWidget>>,
     mut commands: Commands
 ) {
@@ -123,23 +124,26 @@ fn update_fps_visibility(
     if hide_marker.is_ok() {
         // despawn the FpsCounter and any RemoteFpsCounter and DespawnRemoteFpsCounter markers
         if let Ok(widget) = widget {
+            error!("despawn FpsWdiget");
             commands.entity(widget).despawn_recursive();
         }
         if let Ok(show_marker) = show_marker {
+            error!("despawn RemoteFpsCounter");
             commands.entity(show_marker).despawn();
         }
         commands.entity(hide_marker.unwrap()).despawn();
+        error!("despawn the despawner");
         commands.next_state(FpsVisibility::Hidden);
-        warn!("found DespawnRemoteFpsCounter (hiding FPS)");
+        error!("found DespawnRemoteFpsCounter (hiding FPS)");
     } else if show_marker.is_ok() && widget.is_err() {
         // otherwise, if the client spawned a RemoteFpsCounter and there is no existing widget,
         // then spawn a new FpsWidget
         commands.ui_builder(UiRoot).fps();
         commands.next_state(FpsVisibility::Visible);
         warn!("spawning FPS")
-    } else if let Ok(widget) = widget {
+    } else if show_marker.is_err() && widget.is_ok() {
         // if there is no RemoteFpsCounter, then despawn the FpsCounter
-        commands.entity(widget).despawn_recursive();
+        commands.entity(widget.unwrap()).despawn_recursive();
         commands.next_state(FpsVisibility::Hidden);
         warn!("missing RemoteFpsCounter (hiding FPS)");
     }

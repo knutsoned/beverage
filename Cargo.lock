@@ -101,7 +101,7 @@ dependencies = [
  "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "bevy_hierarchy 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "bevy_log 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
- "bevy_reflect",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "smallvec",
 ]
@@ -471,7 +471,7 @@ dependencies = [
  "aery",
  "anyhow",
  "argh",
- "bevy",
+ "bevy 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "bevy-async-ecs",
  "bevy_dev_tools",
  "bevy_fluent",
@@ -488,7 +488,10 @@ dependencies = [
  "serde",
  "serde_json",
  "sickle_example",
+ "sickle_macros",
+ "sickle_math",
  "sickle_ui",
+ "sickle_ui_scaffold",
  "smol",
  "smol-hyper",
  "smol-macros",
@@ -498,10 +501,19 @@ dependencies = [
 [[package]]
 name = "bevy"
 version = "0.14.0-rc.4"
-source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "faae5f971c9932c23dabc91fd0ad9df2b8c8b886c39d5bfc4bb158fd8368928b"
 dependencies = [
  "bevy_dylib",
- "bevy_internal",
+ "bevy_internal 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "bevy"
+version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
+dependencies = [
+ "bevy_internal 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
 ]
 
 [[package]]
@@ -522,6 +534,18 @@ dependencies = [
 [[package]]
 name = "bevy_a11y"
 version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "69a744d285337cd0371d677618b043ccb3c66f19c8546429b5fb9fa9163f0347"
+dependencies = [
+ "accesskit",
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_derive 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "bevy_a11y"
+version = "0.14.0-rc.4"
 source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
 dependencies = [
  "accesskit",
@@ -533,21 +557,51 @@ dependencies = [
 [[package]]
 name = "bevy_animation"
 version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1d653bb38765ffcc21add2a694ee3d0c1cf00007f3285c38676b28cbaa400d00"
+dependencies = [
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_asset 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_color 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_core 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_derive 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_hierarchy 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_log 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_math 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_render 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_time 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_transform 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "blake3",
+ "fixedbitset 0.5.7",
+ "petgraph",
+ "ron",
+ "serde",
+ "thiserror",
+ "thread_local",
+ "uuid",
+]
+
+[[package]]
+name = "bevy_animation"
+version = "0.14.0-rc.4"
 source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
 dependencies = [
  "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_asset",
- "bevy_color",
+ "bevy_asset 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_color 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_core 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_derive 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_hierarchy 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_log 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_math",
- "bevy_reflect",
- "bevy_render",
- "bevy_time",
- "bevy_transform",
+ "bevy_math 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_render 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_time 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_transform 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "blake3",
  "fixedbitset 0.5.7",
@@ -567,7 +621,7 @@ checksum = "3194b4549358a8bdefd1cf4d948deba98ce925213c1c94594ea7b7550864ffea"
 dependencies = [
  "bevy_derive 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
- "bevy_reflect",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "bevy_tasks 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "console_error_panic_hook",
@@ -584,7 +638,7 @@ source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b1
 dependencies = [
  "bevy_derive 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_reflect",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_tasks 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "console_error_panic_hook",
@@ -597,18 +651,50 @@ dependencies = [
 [[package]]
 name = "bevy_asset"
 version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b356c4fd36a45f3ae6da7b67cc56d8730778c9c999da499d17273b240ca8e839"
+dependencies = [
+ "async-broadcast",
+ "async-fs",
+ "async-lock",
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_asset_macros 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_tasks 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_winit 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "blake3",
+ "crossbeam-channel",
+ "downcast-rs",
+ "futures-io",
+ "futures-lite",
+ "js-sys",
+ "parking_lot",
+ "ron",
+ "serde",
+ "thiserror",
+ "uuid",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
+]
+
+[[package]]
+name = "bevy_asset"
+version = "0.14.0-rc.4"
 source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
 dependencies = [
  "async-broadcast",
  "async-fs",
  "async-lock",
  "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_asset_macros",
+ "bevy_asset_macros 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_reflect",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_tasks 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_winit",
+ "bevy_winit 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "blake3",
  "crossbeam-channel",
  "downcast-rs",
@@ -628,6 +714,18 @@ dependencies = [
 [[package]]
 name = "bevy_asset_macros"
 version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8052515e86651991db18f42b86ef436e688d54ae57fd9005355f85f94797d92b"
+dependencies = [
+ "bevy_macro_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.68",
+]
+
+[[package]]
+name = "bevy_asset_macros"
+version = "0.14.0-rc.4"
 source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
 dependencies = [
  "bevy_macro_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
@@ -639,16 +737,35 @@ dependencies = [
 [[package]]
 name = "bevy_audio"
 version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b450fcad072473795e3fdfbd45fae066d0d0e488e543ebd53484d6a87ac3d275"
+dependencies = [
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_asset 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_derive 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_hierarchy 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_math 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_transform 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cpal",
+ "rodio",
+]
+
+[[package]]
+name = "bevy_audio"
+version = "0.14.0-rc.4"
 source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
 dependencies = [
  "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_asset",
+ "bevy_asset 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_derive 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_hierarchy 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_math",
- "bevy_reflect",
- "bevy_transform",
+ "bevy_math 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_transform 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "cpal",
  "rodio",
@@ -657,10 +774,25 @@ dependencies = [
 [[package]]
 name = "bevy_color"
 version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ecc1ac252b21c8ba52833ee7e67186c71e163320c575eddffc5a9a7de3a65507"
+dependencies = [
+ "bevy_math 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bytemuck",
+ "encase",
+ "serde",
+ "thiserror",
+ "wgpu-types",
+]
+
+[[package]]
+name = "bevy_color"
+version = "0.14.0-rc.4"
 source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
 dependencies = [
- "bevy_math",
- "bevy_reflect",
+ "bevy_math 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bytemuck",
  "encase",
  "serde",
@@ -676,9 +808,10 @@ checksum = "c13e10e1de1a8ed222aa33cf98692c1eab7f9e64009d4308450c1264349d1223"
 dependencies = [
  "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
- "bevy_reflect",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "bevy_tasks 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde",
  "uuid",
 ]
 
@@ -689,11 +822,35 @@ source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b1
 dependencies = [
  "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_reflect",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_tasks 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "serde",
  "uuid",
+]
+
+[[package]]
+name = "bevy_core_pipeline"
+version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c6863ecfa9d7b9296bd221a675e3662bc34cd751b2b7a942aecded0805a79ef9"
+dependencies = [
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_asset 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_color 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_core 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_derive 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_math 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_render 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_transform 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bitflags 2.6.0",
+ "nonmax",
+ "radsort",
+ "serde",
+ "smallvec",
+ "thiserror",
 ]
 
 [[package]]
@@ -702,15 +859,15 @@ version = "0.14.0-rc.4"
 source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
 dependencies = [
  "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_asset",
- "bevy_color",
+ "bevy_asset 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_color 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_core 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_derive 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_math",
- "bevy_reflect",
- "bevy_render",
- "bevy_transform",
+ "bevy_math 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_render 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_transform 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bitflags 2.6.0",
  "nonmax",
@@ -744,28 +901,45 @@ dependencies = [
 [[package]]
 name = "bevy_dev_tools"
 version = "0.14.0-rc.4"
-source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "48e7989d47fa11125622f91695025e08a42c5f50bf3665ea21b5288e3eb53537"
 dependencies = [
- "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_asset",
- "bevy_color",
- "bevy_core 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_core_pipeline",
- "bevy_diagnostic",
- "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_gizmos",
- "bevy_hierarchy 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_input",
- "bevy_math",
- "bevy_reflect",
- "bevy_render",
- "bevy_state",
- "bevy_text",
- "bevy_time",
- "bevy_transform",
- "bevy_ui",
- "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_window",
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_asset 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_color 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_core 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_core_pipeline 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_diagnostic 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_gizmos 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_hierarchy 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_input 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_math 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_render 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_state 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_text 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_time 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_transform 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ui 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_window 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "bevy_diagnostic"
+version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e2346a954fb5f07e51d2992cd51942dbd0322f8ece72ef2943fa334265a94204"
+dependencies = [
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_core 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_tasks 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_time 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "const-fnv1a-hash",
+ "sysinfo",
 ]
 
 [[package]]
@@ -777,7 +951,7 @@ dependencies = [
  "bevy_core 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_tasks 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_time",
+ "bevy_time 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "const-fnv1a-hash",
  "sysinfo",
@@ -786,9 +960,10 @@ dependencies = [
 [[package]]
 name = "bevy_dylib"
 version = "0.14.0-rc.4"
-source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "58d3e37beaf6a34155a61a773ab4db48890f23213b330dd920664216d4e9b573"
 dependencies = [
- "bevy_internal",
+ "bevy_internal 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -797,9 +972,10 @@ version = "0.14.0-rc.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c7f2d9f48f53deb44d0ce12c973eb050ea020ffddadac248af9e9a78f768853f"
 dependencies = [
- "bevy_ecs_macros",
+ "arrayvec",
+ "bevy_ecs_macros 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "bevy_ptr 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
- "bevy_reflect",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "bevy_tasks 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "bitflags 2.6.0",
@@ -807,6 +983,7 @@ dependencies = [
  "fixedbitset 0.5.7",
  "nonmax",
  "petgraph",
+ "serde",
  "thiserror",
 ]
 
@@ -816,9 +993,9 @@ version = "0.14.0-rc.4"
 source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
 dependencies = [
  "arrayvec",
- "bevy_ecs_macros",
+ "bevy_ecs_macros 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ptr 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_reflect",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_tasks 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bitflags 2.6.0",
@@ -828,6 +1005,18 @@ dependencies = [
  "petgraph",
  "serde",
  "thiserror",
+]
+
+[[package]]
+name = "bevy_ecs_macros"
+version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "173a929bc0d53cb307e020b867cda05bde32085a45cd3bb8ea278644abb03dcd"
+dependencies = [
+ "bevy_macro_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.68",
 ]
 
 [[package]]
@@ -844,6 +1033,16 @@ dependencies = [
 [[package]]
 name = "bevy_encase_derive"
 version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "075e16d640c361a91e72d356fa5a2f92fae1dd5492c533fda3af800f35160878"
+dependencies = [
+ "bevy_macro_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "encase_derive_impl",
+]
+
+[[package]]
+name = "bevy_encase_derive"
+version = "0.14.0-rc.4"
 source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
 dependencies = [
  "bevy_macro_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
@@ -855,7 +1054,7 @@ name = "bevy_fluent"
 version = "0.9.0"
 source = "git+https://github.com/knutsoned/bevy_fluent#e85985847818cc222e25b800ae40e8fa26245572"
 dependencies = [
- "bevy",
+ "bevy 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "fluent",
  "fluent-langneg",
  "fluent_content",
@@ -874,12 +1073,27 @@ dependencies = [
 [[package]]
 name = "bevy_gilrs"
 version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f78a5cda0bdec4c7152e5a146034164188792b61f88950f6bca5573d09590555"
+dependencies = [
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_input 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_time 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gilrs",
+ "thiserror",
+]
+
+[[package]]
+name = "bevy_gilrs"
+version = "0.14.0-rc.4"
 source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
 dependencies = [
  "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_input",
- "bevy_time",
+ "bevy_input 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_time 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "gilrs",
  "thiserror",
@@ -888,23 +1102,58 @@ dependencies = [
 [[package]]
 name = "bevy_gizmos"
 version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2d3d58ce94cf24884461ac62cb27b9112361ef4bb361d1764cdd8fa97b05e645"
+dependencies = [
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_asset 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_color 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_core_pipeline 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_gizmos_macros 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_math 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_pbr 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_render 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_sprite 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_time 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_transform 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bytemuck",
+]
+
+[[package]]
+name = "bevy_gizmos"
+version = "0.14.0-rc.4"
 source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
 dependencies = [
  "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_asset",
- "bevy_color",
- "bevy_core_pipeline",
+ "bevy_asset 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_color 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_core_pipeline 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_gizmos_macros",
- "bevy_math",
- "bevy_pbr",
- "bevy_reflect",
- "bevy_render",
- "bevy_sprite",
- "bevy_time",
- "bevy_transform",
+ "bevy_gizmos_macros 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_math 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_pbr 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_render 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_sprite 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_time 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_transform 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bytemuck",
+]
+
+[[package]]
+name = "bevy_gizmos_macros"
+version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bcd0fe61492a613a5fc3480b561003f754db548d22f1f95b684bac4089f5784e"
+dependencies = [
+ "bevy_macro_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.68",
 ]
 
 [[package]]
@@ -921,24 +1170,55 @@ dependencies = [
 [[package]]
 name = "bevy_gltf"
 version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "85d9f8e2352a68e6c30066424794d7e70c1fcf848b166f5dcbad2fd6c57df06c"
+dependencies = [
+ "base64 0.22.1",
+ "bevy_animation 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_asset 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_color 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_core 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_core_pipeline 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_hierarchy 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_math 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_pbr 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_render 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_scene 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_tasks 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_transform 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gltf",
+ "percent-encoding",
+ "serde",
+ "serde_json",
+ "smallvec",
+ "thiserror",
+]
+
+[[package]]
+name = "bevy_gltf"
+version = "0.14.0-rc.4"
 source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
 dependencies = [
  "base64 0.22.1",
- "bevy_animation",
+ "bevy_animation 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_asset",
- "bevy_color",
+ "bevy_asset 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_color 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_core 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_core_pipeline",
+ "bevy_core_pipeline 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_hierarchy 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_math",
- "bevy_pbr",
- "bevy_reflect",
- "bevy_render",
- "bevy_scene",
+ "bevy_math 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_pbr 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_render 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_scene 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_tasks 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_transform",
+ "bevy_transform 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "gltf",
  "percent-encoding",
@@ -957,7 +1237,7 @@ dependencies = [
  "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "bevy_core 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
- "bevy_reflect",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "smallvec",
 ]
@@ -970,9 +1250,25 @@ dependencies = [
  "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_core 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_reflect",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "smallvec",
+]
+
+[[package]]
+name = "bevy_input"
+version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "476a4396bb89a7c44d99e60e959b717f36b68bd781e119fccc4ac2c231a39f52"
+dependencies = [
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_math 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde",
+ "smol_str",
+ "thiserror",
 ]
 
 [[package]]
@@ -982,10 +1278,9 @@ source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b1
 dependencies = [
  "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_math",
- "bevy_reflect",
+ "bevy_math 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "serde",
  "smol_str",
  "thiserror",
 ]
@@ -993,42 +1288,83 @@ dependencies = [
 [[package]]
 name = "bevy_internal"
 version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "22dd8269a3110ed58df1f56c782d22f4dc1c9507546b6c8140d79c1eb990f247"
+dependencies = [
+ "bevy_a11y 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_animation 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_asset 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_audio 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_color 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_core 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_core_pipeline 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_derive 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_diagnostic 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_gilrs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_gizmos 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_gltf 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_hierarchy 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_input 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_log 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_math 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_pbr 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ptr 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_render 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_scene 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_sprite 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_state 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_tasks 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_text 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_time 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_transform 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ui 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_window 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_winit 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "bevy_internal"
+version = "0.14.0-rc.4"
 source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
 dependencies = [
- "bevy_a11y",
- "bevy_animation",
+ "bevy_a11y 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_animation 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_asset",
- "bevy_audio",
- "bevy_color",
+ "bevy_asset 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_audio 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_color 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_core 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_core_pipeline",
+ "bevy_core_pipeline 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_derive 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_diagnostic",
+ "bevy_diagnostic 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_gilrs",
- "bevy_gizmos",
- "bevy_gltf",
+ "bevy_gilrs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_gizmos 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_gltf 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_hierarchy 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_input",
+ "bevy_input 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_log 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_math",
- "bevy_pbr",
+ "bevy_math 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_pbr 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ptr 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_reflect",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_remote",
- "bevy_render",
- "bevy_scene",
- "bevy_sprite",
- "bevy_state",
+ "bevy_render 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_scene 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_sprite 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_state 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_tasks 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_text",
- "bevy_time",
- "bevy_transform",
- "bevy_ui",
+ "bevy_text 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_time 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_transform 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_ui 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_window",
- "bevy_winit",
+ "bevy_window 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_winit 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
 ]
 
 [[package]]
@@ -1086,14 +1422,36 @@ dependencies = [
 [[package]]
 name = "bevy_math"
 version = "0.14.0-rc.4"
-source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "46861b9a030b18c26b0e5823ee5404caf800e5dce217b9d3c3d6f86083d4bba0"
 dependencies = [
- "bevy_reflect",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "glam",
  "rand",
  "serde",
  "smallvec",
  "thiserror",
+]
+
+[[package]]
+name = "bevy_math"
+version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
+dependencies = [
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "glam",
+ "rand",
+ "smallvec",
+ "thiserror",
+]
+
+[[package]]
+name = "bevy_mikktspace"
+version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e36434f799ca6b26a9957f68c9e438a8c6664993fbe5df6ef277f2c30cb0b18b"
+dependencies = [
+ "glam",
 ]
 
 [[package]]
@@ -1107,20 +1465,47 @@ dependencies = [
 [[package]]
 name = "bevy_pbr"
 version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "03a018415365a209e8b60f41a8ed4f0c7fe8be6dfc75ece6032394fe372e08d4"
+dependencies = [
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_asset 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_color 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_core_pipeline 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_derive 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_math 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_render 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_transform 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_window 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bitflags 2.6.0",
+ "bytemuck",
+ "fixedbitset 0.5.7",
+ "nonmax",
+ "radsort",
+ "smallvec",
+ "static_assertions",
+]
+
+[[package]]
+name = "bevy_pbr"
+version = "0.14.0-rc.4"
 source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
 dependencies = [
  "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_asset",
- "bevy_color",
- "bevy_core_pipeline",
+ "bevy_asset 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_color 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_core_pipeline 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_derive 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_math",
- "bevy_reflect",
- "bevy_render",
- "bevy_transform",
+ "bevy_math 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_render 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_transform 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_window",
+ "bevy_window 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bitflags 2.6.0",
  "bytemuck",
  "fixedbitset 0.5.7",
@@ -1144,10 +1529,30 @@ source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b1
 [[package]]
 name = "bevy_reflect"
 version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b521d4cc0d8d104c5dba566c014f9433fbf0ae5e1e2a314db5f060f554de2a3d"
+dependencies = [
+ "bevy_ptr 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect_derive 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "downcast-rs",
+ "erased-serde",
+ "glam",
+ "petgraph",
+ "serde",
+ "smallvec",
+ "smol_str",
+ "thiserror",
+ "uuid",
+]
+
+[[package]]
+name = "bevy_reflect"
+version = "0.14.0-rc.4"
 source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
 dependencies = [
  "bevy_ptr 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_reflect_derive",
+ "bevy_reflect_derive 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "downcast-rs",
  "erased-serde",
@@ -1157,6 +1562,19 @@ dependencies = [
  "smallvec",
  "smol_str",
  "thiserror",
+ "uuid",
+]
+
+[[package]]
+name = "bevy_reflect_derive"
+version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "269f0d30171a511ce6df08242d086aecf1e793dabf99b0063694d32087561d2b"
+dependencies = [
+ "bevy_macro_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.68",
  "uuid",
 ]
 
@@ -1182,7 +1600,7 @@ dependencies = [
  "bevy_derive 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_hierarchy 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_reflect",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_tasks 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "http-body-util",
@@ -1197,27 +1615,75 @@ dependencies = [
 [[package]]
 name = "bevy_render"
 version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3fb3aff6416a1009e0b59af857307822a697d8e638c1642375d0fa457d7cefb8"
+dependencies = [
+ "async-channel",
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_asset 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_color 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_core 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_derive 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_diagnostic 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_encase_derive 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_hierarchy 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_math 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_mikktspace 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_render_macros 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_tasks 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_time 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_transform 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_window 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bitflags 2.6.0",
+ "bytemuck",
+ "codespan-reporting",
+ "downcast-rs",
+ "encase",
+ "futures-lite",
+ "hexasphere",
+ "image",
+ "js-sys",
+ "ktx2",
+ "naga",
+ "naga_oil",
+ "nonmax",
+ "ruzstd",
+ "send_wrapper",
+ "serde",
+ "smallvec",
+ "thiserror",
+ "wasm-bindgen",
+ "web-sys",
+ "wgpu",
+]
+
+[[package]]
+name = "bevy_render"
+version = "0.14.0-rc.4"
 source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
 dependencies = [
  "async-channel",
  "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_asset",
- "bevy_color",
+ "bevy_asset 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_color 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_core 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_derive 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_diagnostic",
+ "bevy_diagnostic 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_encase_derive",
+ "bevy_encase_derive 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_hierarchy 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_math",
- "bevy_mikktspace",
- "bevy_reflect",
- "bevy_render_macros",
+ "bevy_math 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_mikktspace 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_render_macros 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_tasks 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_time",
- "bevy_transform",
+ "bevy_time 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_transform 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_window",
+ "bevy_window 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bitflags 2.6.0",
  "bytemuck",
  "codespan-reporting",
@@ -1244,6 +1710,18 @@ dependencies = [
 [[package]]
 name = "bevy_render_macros"
 version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "54964cbd9049ead391b467e03b415564d7827c422b0556f990506339f63424ae"
+dependencies = [
+ "bevy_macro_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.68",
+]
+
+[[package]]
+name = "bevy_render_macros"
+version = "0.14.0-rc.4"
 source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
 dependencies = [
  "bevy_macro_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
@@ -1255,16 +1733,36 @@ dependencies = [
 [[package]]
 name = "bevy_scene"
 version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e97e06be2cb7323c988021c5934c3aad2fdc6681e5d8ccc7504a4ae49d03ab8e"
+dependencies = [
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_asset 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_derive 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_hierarchy 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_render 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_transform 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde",
+ "thiserror",
+ "uuid",
+]
+
+[[package]]
+name = "bevy_scene"
+version = "0.14.0-rc.4"
 source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
 dependencies = [
  "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_asset",
+ "bevy_asset 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_derive 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_hierarchy 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_reflect",
- "bevy_render",
- "bevy_transform",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_render 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_transform 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "serde",
  "thiserror",
@@ -1276,7 +1774,33 @@ name = "bevy_simple_text_input"
 version = "0.8.0"
 source = "git+https://github.com/knutsoned/bevy_simple_text_input#cb0fac3dbe15ebc5301bfe1c14b33d35ba5fa0f6"
 dependencies = [
- "bevy",
+ "bevy 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "bevy_sprite"
+version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7dee532d127cc7c3225ba871410f059f6175669e0b0771fe85b504025137be22"
+dependencies = [
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_asset 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_color 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_core_pipeline 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_derive 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_math 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_render 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_transform 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bitflags 2.6.0",
+ "bytemuck",
+ "fixedbitset 0.5.7",
+ "guillotiere",
+ "radsort",
+ "rectangle-pack",
+ "thiserror",
 ]
 
 [[package]]
@@ -1285,15 +1809,15 @@ version = "0.14.0-rc.4"
 source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
 dependencies = [
  "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_asset",
- "bevy_color",
- "bevy_core_pipeline",
+ "bevy_asset 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_color 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_core_pipeline 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_derive 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_math",
- "bevy_reflect",
- "bevy_render",
- "bevy_transform",
+ "bevy_math 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_render 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_transform 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bitflags 2.6.0",
  "bytemuck",
@@ -1307,14 +1831,40 @@ dependencies = [
 [[package]]
 name = "bevy_state"
 version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b6c5f1e6661f714801bc7003fdc326ca94af3fd94b2250024c6aa771b8227765"
+dependencies = [
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_hierarchy 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_state_macros 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "bevy_state"
+version = "0.14.0-rc.4"
 source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
 dependencies = [
  "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_hierarchy 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_reflect",
- "bevy_state_macros",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_state_macros 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+]
+
+[[package]]
+name = "bevy_state_macros"
+version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "87a30232e5b7407a09ef509e3d909b165930837c727fa7ec8e313964de2e838a"
+dependencies = [
+ "bevy_macro_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.68",
 ]
 
 [[package]]
@@ -1334,7 +1884,9 @@ version = "0.14.0-rc.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "740b23ac8effce61939cc2a11d9bc621fe39df8d85da398ffbe3ab4729616233"
 dependencies = [
+ "async-channel",
  "async-executor",
+ "concurrent-queue",
  "futures-lite",
  "wasm-bindgen-futures",
 ]
@@ -1354,21 +1906,59 @@ dependencies = [
 [[package]]
 name = "bevy_text"
 version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "18bb4dfaff55a650cf1e1a51dd794908bf1a327b5e7aebecfaba9b0f246985c9"
+dependencies = [
+ "ab_glyph",
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_asset 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_color 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_math 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_render 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_sprite 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_transform 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_window 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "glyph_brush_layout",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
+name = "bevy_text"
+version = "0.14.0-rc.4"
 source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
 dependencies = [
  "ab_glyph",
  "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_asset",
- "bevy_color",
+ "bevy_asset 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_color 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_math",
- "bevy_reflect",
- "bevy_render",
- "bevy_sprite",
- "bevy_transform",
+ "bevy_math 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_render 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_sprite 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_transform 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_window",
+ "bevy_window 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "glyph_brush_layout",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
+name = "bevy_time"
+version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7cec34d3731bab2fb131e0ba98518037d007dd02104e2606dfdeb026be6eaa74"
+dependencies = [
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "crossbeam-channel",
  "serde",
  "thiserror",
 ]
@@ -1380,9 +1970,23 @@ source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b1
 dependencies = [
  "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_reflect",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "crossbeam-channel",
+ "thiserror",
+]
+
+[[package]]
+name = "bevy_transform"
+version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a674a5ec6a4112e8b1452d5e69054200e2a4d86b3e6bd858ab95297f67434ec5"
+dependencies = [
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_hierarchy 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_math 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde",
  "thiserror",
 ]
@@ -1395,9 +1999,39 @@ dependencies = [
  "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_hierarchy 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_math",
- "bevy_reflect",
+ "bevy_math 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "thiserror",
+]
+
+[[package]]
+name = "bevy_ui"
+version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d51a3ee9482e02d9963df97be66c8a29914916f6689cf9b9ec2827fdcff7f2d5"
+dependencies = [
+ "bevy_a11y 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_asset 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_color 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_core_pipeline 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_derive 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_hierarchy 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_input 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_math 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_render 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_sprite 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_text 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_transform 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_window 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bytemuck",
+ "nonmax",
  "serde",
+ "smallvec",
+ "taffy",
  "thiserror",
 ]
 
@@ -1406,26 +2040,25 @@ name = "bevy_ui"
 version = "0.14.0-rc.4"
 source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
 dependencies = [
- "bevy_a11y",
+ "bevy_a11y 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_asset",
- "bevy_color",
- "bevy_core_pipeline",
+ "bevy_asset 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_color 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_core_pipeline 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_derive 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_hierarchy 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_input",
- "bevy_math",
- "bevy_reflect",
- "bevy_render",
- "bevy_sprite",
- "bevy_text",
- "bevy_transform",
+ "bevy_input 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_math 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_render 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_sprite 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_text 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_transform 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_window",
+ "bevy_window 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bytemuck",
  "nonmax",
- "serde",
  "smallvec",
  "taffy",
  "thiserror",
@@ -1484,17 +2117,62 @@ dependencies = [
 [[package]]
 name = "bevy_window"
 version = "0.14.0-rc.4"
-source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9c704aaafb36343a12fc5262173fabc08bc4b73c4680e7f9a770807afb7d8414"
 dependencies = [
- "bevy_a11y",
- "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_math",
- "bevy_reflect",
- "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_a11y 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_math 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "raw-window-handle",
  "serde",
  "smol_str",
+]
+
+[[package]]
+name = "bevy_window"
+version = "0.14.0-rc.4"
+source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b13ef7d87f5fabfc2fd50429a7"
+dependencies = [
+ "bevy_a11y 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_math 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "raw-window-handle",
+ "smol_str",
+]
+
+[[package]]
+name = "bevy_winit"
+version = "0.14.0-rc.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b020877be70d68fae4951061a09bd40657702191b982385848791656aba03713"
+dependencies = [
+ "accesskit_winit",
+ "approx",
+ "bevy_a11y 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_app 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_derive 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_hierarchy 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_input 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_log 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_math 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_tasks 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_utils 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_window 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cfg-if",
+ "crossbeam-channel",
+ "raw-window-handle",
+ "serde",
+ "wasm-bindgen",
+ "web-sys",
+ "winit",
 ]
 
 [[package]]
@@ -1504,22 +2182,21 @@ source = "git+https://github.com/knutsoned/bevy?branch=brp-rc.4#34cd4cc5f729d5b1
 dependencies = [
  "accesskit_winit",
  "approx",
- "bevy_a11y",
+ "bevy_a11y 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_app 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_derive 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_ecs 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_hierarchy 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_input",
+ "bevy_input 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_log 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_math",
- "bevy_reflect",
+ "bevy_math 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
+ "bevy_reflect 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_tasks 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "bevy_utils 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
- "bevy_window",
+ "bevy_window 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "cfg-if",
  "crossbeam-channel",
  "raw-window-handle",
- "serde",
  "wasm-bindgen",
  "web-sys",
  "winit",
@@ -2998,7 +3675,7 @@ name = "leafwing-input-manager"
 version = "0.14.0-rc"
 source = "git+https://github.com/knutsoned/leafwing-input-manager#b532dad62639d61bae3d6238e75adbb18a1fec86"
 dependencies = [
- "bevy",
+ "bevy 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "derive_more",
  "dyn-clone",
  "dyn-eq",
@@ -4205,14 +4882,14 @@ name = "sickle_example"
 version = "0.2.0"
 source = "git+https://github.com/knutsoned/sickle_example#df9a7e7bb98dee450e21655e223031fae90dfae3"
 dependencies = [
- "bevy",
+ "bevy 0.14.0-rc.4 (git+https://github.com/knutsoned/bevy?branch=brp-rc.4)",
  "sickle_ui",
 ]
 
 [[package]]
 name = "sickle_macros"
-version = "0.1.0"
-source = "git+https://github.com/knutsoned/sickle_ui?branch=014rc4#bd845547d99bf9460eda9e1090ab64981d48a287"
+version = "0.2.0"
+source = "git+https://github.com/knutsoned/sickle_ui?branch=014rc4#ca134f32611c16da36c55e6f228b8b31c903330b"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -4221,21 +4898,21 @@ dependencies = [
 
 [[package]]
 name = "sickle_math"
-version = "0.1.0"
-source = "git+https://github.com/knutsoned/sickle_ui?branch=014rc4#bd845547d99bf9460eda9e1090ab64981d48a287"
+version = "0.2.0"
+source = "git+https://github.com/knutsoned/sickle_ui?branch=014rc4#ca134f32611c16da36c55e6f228b8b31c903330b"
 dependencies = [
- "bevy",
+ "bevy 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde",
 ]
 
 [[package]]
 name = "sickle_ui"
 version = "0.2.0"
-source = "git+https://github.com/knutsoned/sickle_ui?branch=014rc4#bd845547d99bf9460eda9e1090ab64981d48a287"
+source = "git+https://github.com/knutsoned/sickle_ui?branch=014rc4#ca134f32611c16da36c55e6f228b8b31c903330b"
 dependencies = [
- "bevy",
- "bevy_ecs_macros",
- "bevy_reflect",
+ "bevy 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_ecs_macros 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde",
  "sickle_macros",
  "sickle_math",
@@ -4244,11 +4921,11 @@ dependencies = [
 
 [[package]]
 name = "sickle_ui_scaffold"
-version = "0.1.0"
-source = "git+https://github.com/knutsoned/sickle_ui?branch=014rc4#bd845547d99bf9460eda9e1090ab64981d48a287"
+version = "0.2.0"
+source = "git+https://github.com/knutsoned/sickle_ui?branch=014rc4#ca134f32611c16da36c55e6f228b8b31c903330b"
 dependencies = [
- "bevy",
- "bevy_reflect",
+ "bevy 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bevy_reflect 0.14.0-rc.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde",
  "sickle_macros",
  "sickle_math",

@@ -8,9 +8,11 @@ use bevy_fluent::{ FluentPlugin, Locale, Localization, LocalizationBuilder };
 use fluent_content::Content;
 use unic_langid::LanguageIdentifier;
 
-use sickle_ui::{ prelude::Dropdown, ui_commands::UpdateStatesExt };
+use sickle_ui::prelude::Dropdown;
 
 use crate::prelude::*;
+
+pub const DEFAULT_LOCALE: &str = "en-US";
 
 pub struct EditorLocalePlugin;
 
@@ -152,5 +154,20 @@ impl Translator for Localization {
     // convenience function so the resource can be called with a short, arbitrarily-named method
     fn lbl(&self, str: &str) -> String {
         self.t(concat("lbl_", str))
+    }
+}
+
+// map each language switcher dropdown option to a locale
+pub fn get_selected_locale(locale_select: &Dropdown) -> String {
+    match locale_select.value() {
+        // this is the single source of truth for the locales the app is claiming to support on the backend
+
+        // the options matched here must follow the order of the items in the dropdown or the wrong language will be chosen
+        // (the default is option 0 so it doesn't need an explicit mapping)
+
+        // FIXME there should be an ordered map of language codes to dropdown
+        // ...and eventually proper locale management
+        Some(1) => "fr-FR".to_string(),
+        _ => DEFAULT_LOCALE.to_string(),
     }
 }
