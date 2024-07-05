@@ -25,3 +25,7 @@ lbl_Placeholder = Espace Réservé
 lbl_CameraControl = Contrôle de la Caméra
 lbl_Console = Console
 lbl_Status = Situation
+lbl_File = Fichier
+lbl_Open = Ouvrir
+lbl_Save = Enregistrer
+lbl_Close = Fermer

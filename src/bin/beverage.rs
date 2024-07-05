@@ -1,6 +1,6 @@
 // The mothership.
 
-use bevy::{ prelude::*, winit::* };
+use bevy::{ log::LogPlugin, prelude::*, winit::* };
 
 use sickle_ui::{ prelude::*, ui_commands::SetCursorExt, SickleUiPlugin };
 
@@ -27,6 +27,10 @@ fn main() {
                     ..default()
                 }),
                 ..default()
+            }).set(LogPlugin {
+                filter: "info,wgpu_core=warn,wgpu_hal=warn,beverage=debug".into(),
+                level: bevy::log::Level::DEBUG,
+                custom_layer: |_| None,
             }),
             EditorPlugin,
         ))

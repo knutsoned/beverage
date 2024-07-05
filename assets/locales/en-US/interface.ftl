@@ -25,3 +25,7 @@ lbl_Placeholder = Placeholder
 lbl_CameraControl = Camera Control
 lbl_Console = Console
 lbl_Status = Status
+lbl_File = File
+lbl_Open = Open
+lbl_Save = Save
+lbl_Close = Close

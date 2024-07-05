@@ -19,7 +19,7 @@ pub fn build_menu(
         bar.menu(
             MenuConfig {
                 name: l10n.lbl("Editor"),
-                alt_code: KeyCode::KeyS.into(),
+                alt_code: KeyCode::KeyE.into(),
             },
             |menu| {
                 menu.menu_item(MenuItemConfig {
@@ -35,6 +35,37 @@ pub fn build_menu(
                 menu.menu_item(MenuItemConfig {
                     name: l10n.lbl("Exit"),
                     leading_icon: icons.exit_to_app,
+                    ..default()
+                }).insert(ExitAppButton);
+            }
+        );
+
+        bar.separator();
+
+        bar.menu(
+            MenuConfig {
+                name: l10n.lbl("File"),
+                alt_code: KeyCode::KeyL.into(),
+            },
+            |menu| {
+                menu.menu_item(MenuItemConfig {
+                    name: l10n.lbl("Open"),
+                    shortcut: vec![KeyCode::KeyO].into(),
+                    alt_code: KeyCode::KeyO.into(),
+                    ..default()
+                }).insert(Page::CameraControl);
+
+                menu.menu_item(MenuItemConfig {
+                    name: l10n.lbl("Save"),
+                    shortcut: vec![KeyCode::KeyS].into(),
+                    alt_code: KeyCode::KeyS.into(),
+                    ..default()
+                }).insert(ExitAppButton);
+
+                menu.menu_item(MenuItemConfig {
+                    name: l10n.lbl("Close"),
+                    shortcut: vec![KeyCode::KeyC].into(),
+                    alt_code: KeyCode::KeyC.into(),
                     ..default()
                 }).insert(ExitAppButton);
             }
