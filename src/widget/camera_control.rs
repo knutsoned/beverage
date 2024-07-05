@@ -87,6 +87,40 @@ fn spawn_camera_control((
     }
 }
 
+// TODO router lifecycle
+/*
+pub fn spawn_camera_tree_view(
+    q_added_camera_control: Query<&CameraControl, Added<CameraControl>>,
+    q_tree_view_panel: Query<Entity, With<TreeViewPanel>>,
+
+    mut commands: Commands
+) {
+    if let Some(camera_control) = (&q_added_camera_control).into_iter().next() {
+        let Ok(container) = q_tree_view_panel.get_single() else {
+            return;
+        };
+
+        commands.entity(container).despawn_descendants();
+        commands.ui_builder(container).tree_for(camera_control.asset_root());
+    }
+}
+*/
+
+pub fn despawn_camera_tree_view(
+    q_hierarchy_panel: Query<Entity, With<TreeViewPanel>>,
+    q_removed_scene_view: RemovedComponents<CameraControl>,
+    mut commands: Commands
+) {
+    let Ok(container) = q_hierarchy_panel.get_single() else {
+        return;
+    };
+
+    if !q_removed_scene_view.is_empty() {
+        commands.entity(container).despawn_descendants();
+    }
+}
+
+// layout
 fn layout(
     container: Entity,
     size: Extent3d,
@@ -120,6 +154,7 @@ fn layout(
             ..default()
         })
         .id();
+
     // cube
     let scene_cube = commands
         .spawn(PbrBundle {

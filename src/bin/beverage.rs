@@ -19,6 +19,16 @@ use beverage::{
 
 fn main() {
     App::new()
+        // to make your own editor app, just cut and paste this section
+        // into your own app and optionally configure the window title and log filters
+
+        // note that there are in game editor widgets that are designed to work with BRP
+
+        // the current demo can be explored by: cargo run --example server
+
+        // this spawns a BRP server window with a demo scene
+
+        // you may then connect to that using the standalone editor (i.e. this app)
         .add_plugins((
             DefaultPlugins.set(WindowPlugin {
                 primary_window: Some(Window {
@@ -28,12 +38,25 @@ fn main() {
                 }),
                 ..default()
             }).set(LogPlugin {
-                filter: "info,wgpu_core=warn,wgpu_hal=warn,beverage=debug".into(),
+                filter: "info,wgpu_core=info,wgpu_hal=info,beverage=debug".into(),
                 level: bevy::log::Level::DEBUG,
                 custom_layer: |_| None,
             }),
+            // the EditorPlugin provides the default sickle_ui, bevy_fluent, leafwing-input-manager, and BRP functionality
+
+            // it is designed to respond to marker components in order to know how to configure itself (see documentation)
+
+            // TODO implement this fully and write the documentation
             EditorPlugin,
         ))
+        // all placeholder content goes here
+
+        // sickle widget plugin for the remote camera demo
+        .add_plugins(CameraControlPlugin)
+
+        // BRP plugin to sync server camera with local viewport
+        .add_plugins(CameraControlRemotePlugin)
+
         .run();
 }
 
@@ -42,6 +65,10 @@ struct EditorPlugin;
 impl Plugin for EditorPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins((EditorLocalePlugin, SickleUiPlugin))
+            // this section sets up all the primary functionality of the editor
+
+            // the convention of beginning a symbol with `Editor` signifies it is provided internally
+
             // Only run the app when there is user input. This will significantly reduce CPU/GPU use.
             .insert_resource(WinitSettings::desktop_app())
 
@@ -50,12 +77,6 @@ impl Plugin for EditorPlugin {
             .add_plugins(EditorInputPlugin)
 
             // page widgets (i.e. "main" content)
-
-            // sickle widget plugin for the remote camera demo
-            .add_plugins(CameraControlPlugin)
-
-            // BRP plugin to sync server camera with local viewport
-            .add_plugins(CameraControlRemotePlugin)
 
             // the next few are tracking navigation
             .init_resource::<CurrentPage>()
@@ -104,27 +125,23 @@ impl Plugin for EditorPlugin {
             .add_systems(OnExit(Page::CameraControl), clear_content_on_menu_change)
             // TODO needs to be a way to just change the content area and not the entire editor
 
-            // at minimum, need to figure out if a hierarchy view and scene view both represent the same data,
-            // and the scene editor is swapped with another page, what happens?
+            // the basic idea of an activity is defining a collection of widgets that can go in each pane
 
-            // the basic idea of a page is defining a collection of widgets that can go in each pane
+            // example activities: edit a scene, design a UI widget, import and arrange a glTF file from Blender
 
-            // the mechanics of how to deal with then despawning a page with shared widgets is unclear
+            // at minimum, need to figure out if a tree view and scene view both represent the same data,
+            // and the scene view is swapped with another activity, what happens?
+
+            // if the new widget doesn't use a tree view, what happens to the old one?
+
+            // if it does use a tree view, does each pane maintain a stack? how to navigate back?
+
+            // the mechanics of how to deal with then despawning an activity with shared widgets is unclear
 
             // also need to support adding new tabs to the containers and removing them
-            //.add_systems(OnEnter(Page::SceneEditor), editor::layout)
-            //.add_systems(OnExit(Page::SceneEditor), clear_content_on_menu_change)
+
             // handle selecting Exit from the Editor menu
             .add_systems(PreUpdate, exit_app_on_menu_item)
-            // need a better way to group views in different containers that work together
-
-            // also need a view to save a snapshot of the current editor arrangement as a "preset"
-            .add_systems(
-                PreUpdate,
-                despawn_camera_tree_view
-                    /*, spawn_camera_tree_view*/ .after(SpawnCameraControlPreUpdate)
-                    .run_if(in_state(EditorState::Running))
-            )
 
             // update_current_page checks the menu for updates while the rest handle radios and dropdowns
             .add_systems(
@@ -204,37 +221,5 @@ fn clear_content_on_menu_change(
     let root_entity = root_node.single();
     commands.entity(root_entity).despawn_descendants();
     commands.set_cursor(CursorIcon::Default);
-}
-
-/*
-fn spawn_camera_tree_view(
-    q_added_camera_control: Query<&CameraControl, Added<CameraControl>>,
-    q_tree_view_panel: Query<Entity, With<TreeViewPanel>>,
-
-    mut commands: Commands
-) {
-    if let Some(camera_control) = (&q_added_camera_control).into_iter().next() {
-        let Ok(container) = q_tree_view_panel.get_single() else {
-            return;
-        };
-
-        commands.entity(container).despawn_descendants();
-        commands.ui_builder(container).tree_for(camera_control.asset_root());
-    }
-}
-*/
-
-fn despawn_camera_tree_view(
-    q_hierarchy_panel: Query<Entity, With<TreeViewPanel>>,
-    q_removed_scene_view: RemovedComponents<CameraControl>,
-    mut commands: Commands
-) {
-    let Ok(container) = q_hierarchy_panel.get_single() else {
-        return;
-    };
-
-    if !q_removed_scene_view.is_empty() {
-        commands.entity(container).despawn_descendants();
-    }
 }
 // END: sickle editor example internal systems
