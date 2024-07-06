@@ -66,7 +66,6 @@ argh = "0.1.12"
 
 # BRP camera control example (not sure we really need this)
 ehttp = "0.5.0"
-blake3 = "1.5.1"
 
 # app icon
 #image = "0.25.1"
