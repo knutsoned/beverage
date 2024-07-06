@@ -1,6 +1,6 @@
 // The mothership.
 
-use bevy::{ log::LogPlugin, prelude::*, winit::* };
+use bevy::{ log::LogPlugin, prelude::* }; //, winit::WinitSettings };
 
 use sickle_ui::{ prelude::*, ui_commands::SetCursorExt, SickleUiPlugin };
 
@@ -70,7 +70,7 @@ impl Plugin for EditorPlugin {
             // the convention of beginning a symbol with `Editor` signifies it is provided internally
 
             // Only run the app when there is user input. This will significantly reduce CPU/GPU use.
-            .insert_resource(WinitSettings::desktop_app())
+            //.insert_resource(WinitSettings::desktop_app()) // this line causes SEVERE lag
 
             // This plugin maps inputs to an input-type agnostic action-state
             // We need to provide it with an enum which stores the possible actions a player could take

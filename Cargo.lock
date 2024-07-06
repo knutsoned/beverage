@@ -438,6 +438,7 @@ dependencies = [
  "bevy",
  "bevy_dev_tools",
  "bevy_fluent",
+ "blake3",
  "ehttp",
  "fluent_content",
  "http-body-util",
