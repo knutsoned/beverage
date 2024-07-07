@@ -55,6 +55,12 @@ components, so that's where we're going next. The basic idea is to expand on [ho
 supports plugins](https://github.com/UmbraLuminosa/sickle_ui?tab=readme-ov-file#extending-sickle-ui)
 and add some things like localization, input management, and other reactive properties.
 
+## 🕊 Bevy Compatibility
+
+| bevy   | bevy_lazy_signals |
+| ------ | ----------------- |
+| 0.14.0 | 0.1.0             |
+
 # License
 
 All code in this repository is dual-licensed under either:

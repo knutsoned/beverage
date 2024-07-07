@@ -48,7 +48,8 @@ impl Plugin for CameraControlPlugin {
                     .chain()
                     .in_set(SpawnCameraControlUpdate)
                     .run_if(in_state(EditorState::Running))
-            );
+            )
+            .add_systems(OnExit(Page::CameraControl), despawn_active_camera);
     }
 }
 
@@ -106,6 +107,18 @@ pub fn spawn_camera_tree_view(
 }
 */
 
+// try to clean up camera and light when we navigate away
+fn despawn_active_camera(
+    remote_cameras: Query<Entity, With<RemoteCamera>>,
+    mut commands: Commands
+) {
+    warn!("despawn_active_camera");
+    for entity in remote_cameras.iter() {
+        info!("-despawning {}", entity);
+        commands.entity(entity).despawn_recursive();
+    }
+}
+
 pub fn despawn_camera_tree_view(
     q_hierarchy_panel: Query<Entity, With<TreeViewPanel>>,
     q_removed_scene_view: RemovedComponents<CameraControl>,
@@ -129,6 +142,20 @@ fn layout(
     commands: &mut Commands
 ) {
     warn!("layout");
+    /*
+    match editor {
+        EditorState::Loading => info!("Loading"),
+        EditorState::SwitchLocale => info!("SwitchLocale"),
+        EditorState::Building => info!("Building"),
+        EditorState::Running => info!("Running"),
+    }
+    match connection {
+        RemoteConnectionState::Disconnected => info!("Disconnected"),
+        RemoteConnectionState::Connecting => info!("Connecting"),
+        RemoteConnectionState::Checking => info!("Checking"),
+        RemoteConnectionState::Connected => info!("Connected"),
+    }
+    */
 
     // for the Camera Control demo, KeyA and KeyD rotate around Y in opposite directions
     // the F key toggles the remote FPS counter

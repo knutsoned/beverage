@@ -38,6 +38,17 @@ pub struct BrpClient {
     pub url: String,
 }
 
+impl core::fmt::Debug for BrpClient {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("BrpClient")
+            .field("last_id", &self.last_id)
+            .field("remote_entity_dungeon", &self.remote_entity_dungeon)
+            //.field("request_builder", &self.request_builder)
+            .field("url", &self.url)
+            .finish()
+    }
+}
+
 impl Default for BrpClient {
     fn default() -> Self {
         // Create the URL. We're going to need it to issue the HTTP request.

@@ -6,7 +6,7 @@ use bevy_fluent::Localization;
 
 use sickle_ui::{ prelude::*, ui_commands::UpdateStatesExt };
 
-use crate::framework::*;
+use crate::{ framework::*, remote::brp_client::BrpClient };
 
 // TODO modularize the menu so it's a regular system and not a fn that has to be called
 pub mod menu;
@@ -66,9 +66,11 @@ pub fn on_rebuild(
     locale_root: Query<Entity, With<LocaleRoot>>,
     locale_select: Query<&Dropdown, With<LocaleSelect>>,
     l10n: Res<Localization>,
+    brp: Res<BrpClient>,
     mut commands: Commands
 ) {
     warn!("rebuild");
+    info!("BRP client: {:#?}", brp);
 
     // trigger update of the UI text
     if let Ok(locale_root) = locale_root.get_single() {
@@ -136,6 +138,7 @@ fn build(commands: &mut Commands, l10n: &Res<Localization>, context: &Entity, lo
             .background_color(Color::NONE);
     });
 
+    info!("switching EditorState to Running");
     commands.next_state(EditorState::Running);
 
     // this is where to set the default start page for the editor content area

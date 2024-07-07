@@ -96,12 +96,13 @@ impl Plugin for EditorPlugin {
             // rebuild the entire contents of the top-level UI container after changing the locale
 
             // this goes here instead of the plugin because the plugin shouldn't need to know how to rebuild the UI
+            .add_systems(OnEnter(EditorState::SwitchLocale), clear_content_on_menu_change)
 
             // also this should go away once we can hot reload localized strings in text labels
             .add_systems(OnExit(EditorState::SwitchLocale), setup::on_rebuild)
 
             // for now just make sure the footer refreshes every time the app enters the running state
-            .add_systems(OnEnter(EditorState::Running), spawn_footer.after(setup::on_rebuild))
+            .add_systems(OnEnter(EditorState::Running), spawn_footer)
 
             // is there a better way to do this?
             .add_systems(
@@ -110,6 +111,10 @@ impl Plugin for EditorPlugin {
             )
             .add_systems(
                 OnEnter(RemoteConnectionState::Connecting),
+                spawn_footer.run_if(in_state(EditorState::Running))
+            )
+            .add_systems(
+                OnEnter(RemoteConnectionState::Checking),
                 spawn_footer.run_if(in_state(EditorState::Running))
             )
             .add_systems(
@@ -219,6 +224,7 @@ fn clear_content_on_menu_change(
     root_node: Query<Entity, With<EditorContainer>>,
     mut commands: Commands
 ) {
+    // need to run this when we enter SwitchLocale I think
     let root_entity = root_node.single();
     commands.entity(root_entity).despawn_descendants();
     commands.set_cursor(CursorIcon::Default);

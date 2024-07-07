@@ -13,6 +13,7 @@ use crate::{
 
 pub struct CameraControlRemotePlugin;
 
+// TODO create in_running_state which also checks for EditorState::Running
 impl Plugin for CameraControlRemotePlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<BrpClient>()
@@ -150,50 +151,55 @@ fn sync_camera(
     mut brp: ResMut<BrpClient>,
     mut commands: Commands
 ) {
-    if let Ok(camera) = camera.get_single_mut() {
-        // send update or mark pending
-        let entity = camera.0;
-        let transform = camera.1;
-        if transform.is_changed() {
-            let mut running = camera.2.is_some();
-            let pending = camera.3.is_some();
-            let mut result: anyhow::Result<()> = Ok(());
+    match camera.get_single_mut() {
+        Ok(camera) => {
+            // send update or mark pending
+            let entity = camera.0;
+            let transform = camera.1;
+            if transform.is_changed() {
+                let mut running = camera.2.is_some();
+                let pending = camera.3.is_some();
+                let mut result: anyhow::Result<()> = Ok(());
 
-            // check to see if running task has completed
-            if let Some(mut request) = camera.2 {
-                if block_on(poll_once(&mut request.task)).is_some() {
-                    commands.entity(entity).remove::<RemoteRequest>();
-                    running = false;
+                // check to see if running task has completed
+                if let Some(mut request) = camera.2 {
+                    if block_on(poll_once(&mut request.task)).is_some() {
+                        commands.entity(entity).remove::<RemoteRequest>();
+                        running = false;
+                    }
+                }
+
+                // then we send the serialized Transform to the server
+                // -if a request is already running, mark with RemotePending so we get to it later
+                // -if no request is running, send one if either we moved or already pending
+
+                // see if there is a running request
+                // if so, then mark with RemotePending if not already
+                if running && !pending {
+                    // (if the request just finished it will still be marked running, which is fine)
+                    // (next tick it will have no RunningRequest but will be marked RemotePending)
+                    commands.entity(entity).insert(RemotePending);
+                } else if !running && pending {
+                    // if no running request and an update is pending, kick off a new request
+                    result = brp.post_transform(entity, *transform, &mut commands);
+
+                    // remove RemotePending
+                    commands.entity(entity).remove::<RemotePending>();
+                } else if !running && !pending {
+                    // if no running request, kick off a new request
+                    result = brp.post_transform(entity, *transform, &mut commands);
+
+                    // don't mark with Pending until there is data to send
+                }
+
+                // handle error caused while spawning request task
+                if let Err(error) = result {
+                    error!("BRP error: {}", error);
                 }
             }
-
-            // then we send the serialized Transform to the server
-            // -if a request is already running, mark with RemotePending so we get to it later
-            // -if no request is running, send one if either we moved or already pending
-
-            // see if there is a running request
-            // if so, then mark with RemotePending if not already
-            if running && !pending {
-                // (if the request just finished it will still be marked running, which is fine)
-                // (next tick it will have no RunningRequest but will be marked RemotePending)
-                commands.entity(entity).insert(RemotePending);
-            } else if !running && pending {
-                // if no running request and an update is pending, kick off a new request
-                result = brp.post_transform(entity, *transform, &mut commands);
-
-                // remove RemotePending
-                commands.entity(entity).remove::<RemotePending>();
-            } else if !running && !pending {
-                // if no running request, kick off a new request
-                result = brp.post_transform(entity, *transform, &mut commands);
-
-                // don't mark with Pending until there is data to send
-            }
-
-            // handle error caused while spawning request task
-            if let Err(error) = result {
-                error!("BRP error: {}", error);
-            }
+        }
+        Err(_error) => {
+            //error!("camera error: {}", error)
         }
     }
 }
