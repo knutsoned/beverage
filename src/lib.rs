@@ -132,6 +132,7 @@ impl Plugin for EditorPlugin {
     }
 }
 
+// TODO move these to the router
 // BEGIN: sickle editor example systems (menu navigation)
 fn exit_app_on_menu_item(
     q_menu_items: Query<&MenuItem, (With<ExitAppButton>, Changed<MenuItem>)>,
