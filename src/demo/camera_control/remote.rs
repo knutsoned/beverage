@@ -13,7 +13,6 @@ pub struct CameraControlRemotePlugin;
 impl Plugin for CameraControlRemotePlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<BrpClient>()
-            .init_state::<RemoteConnectionState>()
             .add_systems(Update, init_connect.run_if(in_state(RemoteConnectionState::Disconnected)))
             .add_systems(
                 Update,

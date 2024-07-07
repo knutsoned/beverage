@@ -56,6 +56,7 @@ impl Plugin for EditorPlugin {
             .init_resource::<CurrentPage>()
             .init_state::<EditorState>()
             .init_state::<Page>()
+            .init_state::<RemoteConnectionState>()
             // initialize custom types for reflection
             // (anything that needs to go over BRP, be saved to a file, or be otherwise serialized)
             .register_type::<RemoteFpsCounter>()
