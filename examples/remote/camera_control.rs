@@ -1,8 +1,7 @@
 use bevy::prelude::*;
 
 use beverage::{
-    remote::camera_control::CameraControlRemotePlugin,
-    widget::camera_control::CameraControlPlugin,
+    prelude::camera_control::{ remote::CameraControlRemotePlugin, widget::CameraControlPlugin },
     EditorPlugin,
 };
 

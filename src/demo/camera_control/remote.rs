@@ -4,12 +4,8 @@ use leafwing_input_manager::action_state::ActionState;
 
 use sickle_ui::ui_commands::UpdateStatesExt;
 
-use crate::{
-    input::{ InputAction, InputConfig },
-    prelude::*,
-    remote::brp_client::BrpClient,
-    widget::camera_control::CameraControl,
-};
+use crate::{ input::{ InputAction, InputConfig }, prelude::*, remote::brp_client::BrpClient };
+use camera_control::widget::CameraControl;
 
 pub struct CameraControlRemotePlugin;
 

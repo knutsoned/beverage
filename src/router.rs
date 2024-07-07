@@ -2,7 +2,10 @@
 
 use bevy::prelude::*;
 
-use crate::{ framework::*, widget::camera_control::* };
+use crate::{
+    demo::camera_control::widget::{ despawn_camera_tree_view, SpawnCameraControlPreUpdate },
+    framework::*,
+};
 
 // this is where we respond to navigation changes from a top-level menu or dialog click.
 pub struct EditorRouterPlugin {}

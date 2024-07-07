@@ -14,6 +14,10 @@ bevy = { version = "0.14", features = ["dynamic_linking", "serialize"] }
 # for debug inspector feature
 bevy_dev_tools = { version = "0.14", optional = true }
 
+# app icon
+#image = "0.25.1"
+#winit = "0.30.3"
+
 # FPS widget demo
 sickle_example = { version = "0.2.0", git = "https://github.com/knutsoned/sickle_example" }
 
@@ -36,47 +40,35 @@ bevy_fluent = { version = "0.10" }
 fluent_content = "0.0.5"
 unic-langid = { version = "0.9", features = ["macros"] }
 
-# bevy_remote (BRP) core deps
-http-body-util = "0.1"
-hyper = { version = "1", features = ["full"] }
+# bevy_remote (BRP) core deps (mostly imported by bevy_defer_http)
+ehttp = "0.5.0"
+http-body-util = "0.1.1"
+hyper = { version = "1.2", features = ["full"] }
 hyper-util = { version = "0.1", features = ["full"] }
 macro_rules_attribute = "0.2"
 smol = "2"
-smol-hyper = "0.1"
+smol-hyper = { version = "0.1.1", default-features = false, features = ["async-io","smol"] }
 smol-macros = "0.1"
-
-# BRP basic client example
-argh = "0.1.12"
-
-# BRP camera control example (not sure we really need this)
-ehttp = "0.5.0"
 
 # editor core (Rust)
 anyhow = "1"
-futures-lite = "2"
-futures-signals = "0.3.33"
+futures-signals = "0.3.30" # matches bevy_defer
 native-dialog = "0.7"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-
-# editor core (Bevy ecosystem)
-aery = "0.7.3"
-bevy_defer = "0.12.1"
-bevy_simple_text_input = "0.8.0"
-leafwing-input-manager = { version = "0.14.0", git = "https://github.com/LeafWing-Studios/leafwing-input-manager", branch = "v0.14-rc" }
-bevy_mod_picking = "0.20.0"
 
 # haalka deps
 bevy_asset_loader = "0.21"
 bevy_nine_slice_ui = "0.7"
 bevy_rand = "0.7"
 
-# app icon
-#image = "0.25.1"
-#winit = "0.30.3"
-
-[dev-dependencies]
-argh = "0.1.12"
+# editor core (Bevy ecosystem)
+aery = "0.7.3"
+bevy_defer = { version = "0.12.1", git = "https://github.com/knutsoned/bevy_defer" }
+bevy_defer_http = { version = "0.0.4", git = "https://github.com/knutsoned/bevy_defer" }
+bevy_simple_text_input = "0.8.0"
+leafwing-input-manager = { version = "0.14.0", git = "https://github.com/LeafWing-Studios/leafwing-input-manager", branch = "v0.14-rc" }
+bevy_mod_picking = "0.20.0"
 
 [features]
 default = [ "bevy_dev_tools" ]
@@ -91,18 +83,7 @@ doc-scrape-examples = true
 name = "camera_control"
 description = "A simple GUI client that can control a remote Bevy camera via the BRP"
 category = "Remote Protocol"
-wasm = true
-
-[[example]]
-name = "client"
-path = "examples/remote/client.rs"
-doc-scrape-examples = true
-
-[package.metadata.example.client]
-name = "client"
-description = "A simple command line client that can control Bevy apps via the BRP"
-category = "Remote Protocol"
-wasm = true
+wasm = false
 
 [[example]]
 name = "server"
@@ -113,7 +94,7 @@ doc-scrape-examples = true
 name = "server"
 description = "A Bevy app that you can connect to with the BRP and edit"
 category = "Remote Protocol"
-wasm = true
+wasm = false
 
 # Enable a small amount of optimization in debug mode
 [profile.dev]

@@ -4,11 +4,7 @@ use bevy::{ log::LogPlugin, prelude::* }; //, winit::WinitSettings };
 
 //use winit::window::Icon;
 
-use beverage::{
-    remote::camera_control::CameraControlRemotePlugin,
-    widget::camera_control::*,
-    EditorPlugin,
-};
+use beverage::EditorPlugin;
 
 fn main() {
     App::new()
@@ -42,13 +38,6 @@ fn main() {
             // TODO implement this fully and write the documentation
             EditorPlugin,
         ))
-        // all placeholder content goes here
-
-        // sickle widget plugin for the remote camera demo
-        .add_plugins(CameraControlPlugin)
-
-        // BRP plugin to sync server camera with local viewport
-        .add_plugins(CameraControlRemotePlugin)
 
         .run();
 }

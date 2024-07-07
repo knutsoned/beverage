@@ -383,7 +383,5 @@ async fn process_request_body(
     }
 }
 
-pub mod brp_client;
-pub mod camera_control;
-
 // insert editor BRP client API here
+pub mod brp_client;

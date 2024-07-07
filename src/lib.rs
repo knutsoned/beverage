@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use bevy_defer::AsyncPlugin;
+
 use sickle_ui::{ prelude::*, ui_commands::SetCursorExt, SickleUiPlugin };
 
 use framework::*;
@@ -22,9 +24,11 @@ pub mod theme;
 pub mod undo;
 pub mod widget;
 
+pub(crate) mod demo;
+
 // plugins will want to have the domain objects available
 pub mod prelude {
-    pub use crate::{ EditorPlugin, framework::* };
+    pub use crate::{ EditorPlugin, demo::*, framework::* };
 }
 
 pub struct EditorPlugin;
@@ -43,7 +47,10 @@ impl Plugin for EditorPlugin {
             // We need to provide it with an enum which stores the possible actions a player could take
             .add_plugins(EditorInputPlugin)
 
+            // set up bevy_defer
+            .add_plugins(AsyncPlugin::default_settings())
             // page widgets (i.e. "main" content)
+            // TODO put this in the router
 
             // the next few are tracking navigation
             .init_resource::<CurrentPage>()
