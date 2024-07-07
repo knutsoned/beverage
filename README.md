@@ -24,10 +24,13 @@ even if the user is no longer pressing the A or D key.
 ![Editor Remotely Controls Server Camera](./docs/bev2.png)
 
 In addition, when connected, the F key will toggle an FPS counter in the server window.
+
+![Editor Remotely Controls Server FPS Widget](./docs/bev3.png)
+
 Selecting a setting in the right side of the menu bar will adjust the color theme settings of
 sickle and switch the UI language using the asset-driven workflow of bevy_fluent.
 
-![Editor Remotely Controls Server FPS Widget](./docs/bev3.png)
+![Editor Allows Language Selection](./docs/bev4.png)
 
 Controls are mapped via leafwing-input-manager, except for the UI debug outlines which appear to be
 hard-wired to the space bar.
