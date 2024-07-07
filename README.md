@@ -61,9 +61,9 @@ the popular [Blender_bevy_components_workflow](https://github.com/kaosat-dev/Ble
 
 ## 🕊 Bevy Compatibility
 
-| bevy   | bevy_lazy_signals |
-| ------ | ----------------- |
-| 0.14.0 | 0.1.0             |
+| bevy   | beverage |
+| ------ | -------- |
+| 0.14.0 | 0.1.0    |
 
 # License
 
