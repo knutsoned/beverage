@@ -55,6 +55,10 @@ components, so that's where we're going next. The basic idea is to expand on [ho
 supports plugins](https://github.com/UmbraLuminosa/sickle_ui?tab=readme-ov-file#extending-sickle-ui)
 and add some things like localization, input management, and other reactive properties.
 
+In addition to basic UI editing capabilities, we would also like to implement the
+[Caffeine Phase 1](https://hackmd.io/Oj7KqBOlRqGrFLxwyfYFCw) proposal, which includes adapting
+the popular [Blender_bevy_components_workflow](https://github.com/kaosat-dev/Blender_bevy_components_workflow).
+
 ## 🕊 Bevy Compatibility
 
 | bevy   | bevy_lazy_signals |
