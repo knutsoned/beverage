@@ -34,7 +34,6 @@ fn main() {
             // TODO implement this fully and write the documentation
             EditorPlugin,
         ))
-        // all placeholder content goes here
 
         // sickle widget plugin for the remote camera demo
         .add_plugins(CameraControlPlugin)
