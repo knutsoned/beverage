@@ -114,17 +114,6 @@ description = "A Bevy app that you can connect to with the BRP and edit"
 category = "Remote Protocol"
 wasm = true
 
-[[example]]
-name = "sickle_editor"
-path = "examples/sickle_editor.rs"
-doc-scrape-examples = true
-
-[package.metadata.example.sickle_editor]
-name = "sickle_editor"
-description = "An example editor UI made with sickle_ui"
-category = "Sickle UI"
-wasm = true
-
 # Enable a small amount of optimization in debug mode
 [profile.dev]
 opt-level = 1
