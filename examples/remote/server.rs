@@ -9,8 +9,12 @@ use sickle_example::fps_widget::*;
 use beverage::{ framework::*, remote::EditorRemotePlugin };
 
 fn main() {
-    App::new()
-        .add_plugins(DefaultPlugins)
+    let mut app = App::new();
+
+    // init FPS widget
+    sickle_example::fps_widget::plugin(&mut app);
+
+    app.add_plugins(DefaultPlugins)
         .add_plugins(EditorRemotePlugin::default())
         .init_state::<FpsVisibility>()
         // types must be registered on both sides for serde_json to work
@@ -18,7 +22,8 @@ fn main() {
         .register_type::<DespawnRemoteFpsCounter>()
         .add_systems(Startup, (lights_camera, mesh))
         .add_systems(Update, (update_camera, update_fps_visibility))
-        .add_systems(Update, update_fps.run_if(in_state(FpsVisibility::Visible)))
+        // handled by plugin
+        //.add_systems(Update, update_fps.run_if(in_state(FpsVisibility::Visible)))
         .run();
 }
 

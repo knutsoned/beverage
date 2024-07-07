@@ -6,7 +6,11 @@
 
 In one terminal, cargo run --example server
 
+![Initial Server Window State](./docs/bev1a.png)
+
 In another, just cargo run
+
+![Initial Editor Window State](./docs/bev1b.png)
 
 In the bottom left corner of the editor window, a label indicates the network connection status.
 It is red when disconnected, yellow when a connection has been initiated but not resolved, and
@@ -15,11 +19,18 @@ green when a BRP query has returned with the ID of an entity with a Camera compo
 Pressing the A or D keys will rotate the editor camera and then, once connected, begin updating the
 transform of the server camera each frame that it changes. Clicking rotate scene while disconnected
 will not initiate a connection, but if already connected, the server window will match the rotation
-even if the user is no longer pressing the A or D key. In addition, when connected, the F key will
-toggle an FPS counter in the server window. Selecting a setting in the right side of the menu bar will
-adjust the color theme settings of sickle and switch the UI language using the asset-driven workflow
-of bevy_fluent. Controls are mapped via leafwing-input-manager, except for the UI debug outlines
-which appear to be hard wired to the space bar.
+even if the user is no longer pressing the A or D key.
+
+![Editor Remotely Controls Server Camera](./docs/bev2.png)
+
+In addition, when connected, the F key will toggle an FPS counter in the server window.
+Selecting a setting in the right side of the menu bar will adjust the color theme settings of
+sickle and switch the UI language using the asset-driven workflow of bevy_fluent.
+
+![Editor Remotely Controls Server FPS Widget](./docs/bev3.png)
+
+Controls are mapped via leafwing-input-manager, except for the UI debug outlines which appear to be
+hard-wired to the space bar.
 
 This is what I originally set out to do: make a sickle demo where the editor chrome was starting to
 get hooked up to some actual functions, including the Bevy Remote Protocol (BRP), explore

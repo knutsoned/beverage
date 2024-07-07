@@ -148,6 +148,7 @@ impl Plugin for EditorPlugin {
                 Update,
                 (
                     update_current_page,
+                    // TOODO these should go in the theme module
                     handle_theme_data_update,
                     handle_theme_switch,
                     handle_theme_contrast_select,
