@@ -8,7 +8,7 @@ In one terminal, cargo run --example server
 
 ![Initial Server Window State](./docs/bev1a.png)
 
-In another, just cargo run
+In another, cargo run --example camera_control
 
 ![Initial Editor Window State](./docs/bev1b.png)
 

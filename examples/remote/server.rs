@@ -21,7 +21,7 @@ fn main() {
         .register_type::<RemoteFpsCounter>()
         .register_type::<DespawnRemoteFpsCounter>()
         .add_systems(Startup, (lights_camera, mesh))
-        .add_systems(Update, (update_camera, update_fps_visibility))
+        .add_systems(Update, update_fps_visibility)
         // handled by plugin
         //.add_systems(Update, update_fps.run_if(in_state(FpsVisibility::Visible)))
         .run();
@@ -105,17 +105,6 @@ fn mesh(
 
     // uncomment to spawn an FpsCounter by default (simulate the client pressing the F key)
     //commands.spawn(RemoteFpsCounter);
-}
-
-fn look_at_origin(transform: &mut Transform) -> Transform {
-    transform.looking_at(Vec3::ZERO, Vec3::Y)
-}
-
-fn update_camera(mut transform: Query<&mut Transform, With<Camera>>) {
-    if let Ok(transform) = transform.get_single_mut() {
-        let transform = transform.into_inner();
-        *transform = look_at_origin(transform);
-    }
 }
 
 fn update_fps_visibility(

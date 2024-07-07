@@ -1,12 +1,8 @@
-// The mothership.
-
-use bevy::{ log::LogPlugin, prelude::* }; //, winit::WinitSettings };
-
-//use winit::window::Icon;
+use bevy::prelude::*;
 
 use beverage::{
     remote::camera_control::CameraControlRemotePlugin,
-    widget::camera_control::*,
+    widget::camera_control::CameraControlPlugin,
     EditorPlugin,
 };
 
@@ -25,15 +21,11 @@ fn main() {
         .add_plugins((
             DefaultPlugins.set(WindowPlugin {
                 primary_window: Some(Window {
-                    title: "Beverage - Also Available As A T-Shirt".into(),
+                    title: "Camera Control".into(),
                     resolution: (1280.0, 720.0).into(),
                     ..default()
                 }),
                 ..default()
-            }).set(LogPlugin {
-                filter: "info,wgpu_core=info,wgpu_hal=info,beverage=debug".into(),
-                level: bevy::log::Level::DEBUG,
-                custom_layer: |_| None,
             }),
             // the EditorPlugin provides the default sickle_ui, bevy_fluent, leafwing-input-manager, and BRP functionality
 
@@ -52,30 +44,3 @@ fn main() {
 
         .run();
 }
-
-// from https://bevy-cheatbook.github.io/window/icon.html
-/*
-fn set_window_icon(
-    // we have to use `NonSend` here
-    windows: NonSend<WinitWindows>
-) {
-    // here we use the `image` crate to load our icon data from a png file
-    // this is not a very bevy-native solution, but it will do
-    let (icon_rgba, icon_width, icon_height) = {
-        // FIXME this may not work, especially when packaged for release
-        //let path = std::env::current_dir().unwrap().join("assets/textures/ic_launcher.png");
-        //warn!("PATH: {}", path.display());
-        let path = "assets/textures/ic_launcher.png";
-        let image = image::open(path).expect("Failed to open icon path").into_rgba8();
-        let (width, height) = image.dimensions();
-        let rgba = image.into_raw();
-        (rgba, width, height)
-    };
-    let icon = Icon::from_rgba(icon_rgba, icon_width, icon_height).unwrap();
-
-    // do it for all windows
-    for window in windows.windows.values() {
-        window.set_window_icon(Some(icon.clone()));
-    }
-}
-*/

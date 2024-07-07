@@ -66,11 +66,9 @@ pub fn on_rebuild(
     locale_root: Query<Entity, With<LocaleRoot>>,
     locale_select: Query<&Dropdown, With<LocaleSelect>>,
     l10n: Res<Localization>,
-    brp: Res<BrpClient>,
     mut commands: Commands
 ) {
     warn!("rebuild");
-    info!("BRP client: {:#?}", brp);
 
     // trigger update of the UI text
     if let Ok(locale_root) = locale_root.get_single() {
