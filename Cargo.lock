@@ -414,7 +414,8 @@ checksum = "8b75356056920673b02621b35afd0f7dda9306d03c79a30f5c56c44cf256e3de"
 [[package]]
 name = "async_shared"
 version = "0.1.0"
-source = "git+https://github.com/knutsoned/bevy_defer#e34dbd065137a0acc69deb7c7a9e05136bf008c6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "aa9ab61f6f9cfaadc5eeb71975047774f93016129e98bc718a730d8b1ace7ac3"
 dependencies = [
  "event-listener 5.3.1",
  "futures-core",
@@ -711,7 +712,8 @@ dependencies = [
 [[package]]
 name = "bevy_defer"
 version = "0.12.1"
-source = "git+https://github.com/knutsoned/bevy_defer#e34dbd065137a0acc69deb7c7a9e05136bf008c6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "203a1587aad09adb6f3cd28721d18ede94b1260fc2dd0097ba0a852626bf2aa6"
 dependencies = [
  "async-executor",
  "async-oneshot",
@@ -730,7 +732,6 @@ dependencies = [
  "bevy_state",
  "bevy_tasks",
  "bevy_time",
- "bevy_transform",
  "bevy_ui",
  "event-listener 5.3.1",
  "event-listener-strategy",
@@ -745,7 +746,8 @@ dependencies = [
 [[package]]
 name = "bevy_defer_derive"
 version = "0.1.0"
-source = "git+https://github.com/knutsoned/bevy_defer#e34dbd065137a0acc69deb7c7a9e05136bf008c6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d62f3bee440203c0224d33a305273ce487143c093579dc40fafaf9267cfc9675"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -756,7 +758,8 @@ dependencies = [
 [[package]]
 name = "bevy_defer_http"
 version = "0.0.4"
-source = "git+https://github.com/knutsoned/bevy_defer#e34dbd065137a0acc69deb7c7a9e05136bf008c6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9350b82ab9ab0b5cbc8c667c64f2a47a482fac4aa6d4c588d04b0ee9627730d8"
 dependencies = [
  "async-io",
  "bevy_defer",
