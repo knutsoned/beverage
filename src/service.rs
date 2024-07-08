@@ -29,7 +29,7 @@ pub struct EditorService {
     pub input: InputService,
     pub layout: LayoutService,
     pub widget: WidgetService,
-    pub construct: ConstructService,
+    pub construct: Option<ConstructService>,
     pub locale: Option<LocaleService>,
     pub remote: Option<RemoteService>,
     pub router: Option<RouterService>,
