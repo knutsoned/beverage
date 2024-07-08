@@ -71,7 +71,7 @@ Being able to select and manipulate objects throughout the UI and within any sce
 in a consistent way is crucial to the above experience. Focus and selection are core parts of the
 activity context that every editor plugin has access to as a regular resource. In addition some
 care will be taken to ensure that accessibility is a priority, and there should always be a way
-for a user with a single axis controller and 3rd party onscreen keyboard to utilize every provided
+for a user with a single stick controller and 3rd party onscreen keyboard to utilize every provided
 activity.
 
 ## Additional Background Noise
