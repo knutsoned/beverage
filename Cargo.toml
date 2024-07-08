@@ -41,18 +41,15 @@ fluent_content = "0.0.5"
 unic-langid = { version = "0.9", features = ["macros"] }
 
 # bevy_remote (BRP) core deps (mostly imported by bevy_defer_http)
-ehttp = "0.5.0"
+ehttp = "0.5"
 http-body-util = "0.1.1"
-hyper = { version = "1.2", features = ["full"] }
-hyper-util = { version = "0.1", features = ["full"] }
-macro_rules_attribute = "0.2"
+hyper = { version = "1.4", features = ["full"] }
 smol = "2"
 smol-hyper = { version = "0.1.1", default-features = false, features = ["async-io","smol"] }
-smol-macros = "0.1"
 
 # editor core (Rust)
 anyhow = "1"
-futures-signals = "0.3.30" # matches bevy_defer
+futures-signals = "0.3.30"
 native-dialog = "0.7"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
@@ -64,11 +61,11 @@ bevy_rand = "0.7"
 
 # editor core (Bevy ecosystem)
 aery = "0.7.3"
-bevy_defer = { version = "0.12.1" }
-bevy_defer_http = { version = "0.0.4" }
-bevy_simple_text_input = "0.8.0"
-leafwing-input-manager = { version = "0.14.0", git = "https://github.com/LeafWing-Studios/leafwing-input-manager", branch = "v0.14-rc" }
+#bevy_defer = { version = "0.12.1" }
+#bevy_defer_http = { version = "0.0.4" }
 bevy_mod_picking = "0.20.0"
+bevy_simple_text_input = "0.8.0"
+leafwing-input-manager = { version = "0.14.0" }
 
 [features]
 default = [ "bevy_dev_tools" ]
