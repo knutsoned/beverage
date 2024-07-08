@@ -4,8 +4,8 @@ use bevy_fluent::Localization;
 
 use sickle_ui::prelude::*;
 
-use crate::framework::*;
-use super::{ ExitAppButton, LocaleSelect, Page, ThemeContrastSelect, ThemeSwitch };
+use crate::{ framework::*, ThemeContrastSelect, ThemeSwitch };
+use super::{ ExitAppButton, LocaleSelect, Page };
 
 pub fn build_menu(
     column: &mut UiBuilder<'_, Entity>,

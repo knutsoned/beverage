@@ -453,6 +453,7 @@ dependencies = [
  "bevy_fluent",
  "bevy_mod_picking",
  "bevy_nine_slice_ui",
+ "bevy_quill",
  "bevy_rand",
  "bevy_simple_text_input",
  "ehttp",
@@ -1091,6 +1092,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_mod_stylebuilder"
+version = "0.1.0"
+source = "git+https://github.com/knutsoned/quill.git#14f4d80d49bf3265d7c0a85b9c08935b56e5320a"
+dependencies = [
+ "bevy",
+ "bevy_mod_picking",
+ "impl-trait-for-tuples",
+]
+
+[[package]]
 name = "bevy_nine_slice_ui"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1269,6 +1280,17 @@ name = "bevy_ptr"
 version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c115c97a5c8a263bd0aa7001b999772c744ac5ba797d07c86f25734ce381ea69"
+
+[[package]]
+name = "bevy_quill"
+version = "0.1.0"
+source = "git+https://github.com/knutsoned/quill.git#14f4d80d49bf3265d7c0a85b9c08935b56e5320a"
+dependencies = [
+ "bevy",
+ "bevy_mod_stylebuilder",
+ "impl-trait-for-tuples",
+ "smallvec",
+]
 
 [[package]]
 name = "bevy_rand"
@@ -2929,6 +2951,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4419f022e55cc63d5bbd6b44b71e1d226b9c9480a47824c706e9d54e5c40c5eb"
 dependencies = [
  "arrayvec",
+]
+
+[[package]]
+name = "impl-trait-for-tuples"
+version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "11d7a9f6330b71fea57921c9b61c47ee6e84f72d394754eff6163ae67e7395eb"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 1.0.109",
 ]
 
 [[package]]

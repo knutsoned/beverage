@@ -44,6 +44,11 @@ sickle and switch the UI language using the asset-driven workflow of bevy_fluent
 Controls are mapped via leafwing-input-manager, except for the UI debug outlines which appear to be
 hard-wired to the space bar.
 
+## Design Questions
+
+- How do we represent common entities over a BRP connection? The current impl just uses the u64
+  EntityId bits serialized as a decimal integer string. This is not network safe.
+
 ## Roadmap
 
 Three main things are on the horizon: managing assets for scenes and UI layouts and widgets;

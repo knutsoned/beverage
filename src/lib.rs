@@ -12,6 +12,7 @@ use theme::*;
 
 pub mod construct;
 pub mod framework;
+pub mod history;
 pub mod input;
 pub mod locale;
 pub mod layout;
@@ -22,7 +23,6 @@ pub mod service;
 pub mod setup;
 pub mod signals;
 pub mod theme;
-pub mod undo;
 pub mod widget;
 
 pub(crate) mod demo;

@@ -1,4 +1,6 @@
-use bevy::prelude::*;
+use bevy::{ prelude::*, utils::HashMap };
+
+use crate::framework::*;
 
 /// The service resource provides a set of objects representing the internal capabilities of the editor framework.
 ///
@@ -11,6 +13,7 @@ use bevy::prelude::*;
 /// - widget
 ///
 /// The following optional servies may also be present:
+/// - construct
 /// - locale
 /// - remote
 /// - router
@@ -26,6 +29,7 @@ pub struct EditorService {
     pub input: InputService,
     pub layout: LayoutService,
     pub widget: WidgetService,
+    pub construct: ConstructService,
     pub locale: Option<LocaleService>,
     pub remote: Option<RemoteService>,
     pub router: Option<RouterService>,
@@ -38,12 +42,48 @@ pub struct EditorService {
 /// "mmanage an asset" or "preview a scene." It can track multiple instances of the same
 /// activity and manages a stack of all activities.
 #[derive(Resource, Debug)]
-pub struct ActivityService {}
+pub struct ActivityService;
+
+impl ActivityService {
+    pub fn start(&self, activity: impl Activity) -> EditorId {
+        activity.start()
+    }
+}
+
+pub trait Activity {
+    fn start(&self) -> EditorId;
+}
 
 /// The asset service provides integration between internal metadata used by the editor and the
 /// regular Bevy asset infrastructure.
 #[derive(Resource, Debug)]
-pub struct AssetService {}
+pub struct AssetService {
+    atlas_map: HashMap<EditorId, EditorAtlas>,
+}
+
+impl AssetService {
+    pub fn get_atlas(&mut self, id: EditorId) -> EditorAtlas {
+        if let Some(atlas) = self.atlas_map.get(&id) {
+            return atlas.clone();
+        }
+
+        let atlas = EditorAtlas { id: id.clone() };
+        self.atlas_map.insert(id.clone(), atlas.clone());
+        atlas.clone()
+    }
+}
+
+#[derive(Clone, Debug)]
+pub struct EditorAtlas {
+    id: EditorId,
+}
+
+impl EditorAtlas {
+    pub fn id(&self) -> EditorId {
+        let id = self.id.clone_value();
+        <EditorId as FromReflect>::from_reflect(&*id).unwrap()
+    }
+}
 
 /// The history service manages action histories.
 #[derive(Resource, Debug)]
@@ -65,6 +105,10 @@ pub struct WidgetService {}
 
 /// Optional services.
 ///
+/// The construct service manages templates and instances for prefabs, blueprints, etc.
+#[derive(Resource, Debug)]
+pub struct ConstructService {}
+
 /// The locale service provides localization for the core UI and allows plugins to register their
 /// own string template assets.
 #[derive(Resource, Debug)]

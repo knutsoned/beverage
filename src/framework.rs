@@ -1,4 +1,19 @@
+use std::borrow::Cow;
+
 use bevy::{ asset::LoadedFolder, prelude::*, tasks::Task };
+
+// eventually this will be whatever we use for permanent IDs that can be passed around a network
+
+// for now it's just an arbitrary string
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Reflect)]
+pub struct EditorId(pub String);
+
+// this allows an EditorId to be used as a bevy_core::name::Name
+impl From<EditorId> for Cow<'static, str> {
+    fn from(val: EditorId) -> Self {
+        val.0.into()
+    }
+}
 
 pub trait Translator {
     fn lbl(&self, str: &str) -> String;
@@ -115,10 +130,3 @@ pub enum RemoteConnectionState {
     // not a persistent connection, but "connected" as in, able to map to the remote camera
     Connected,
 }
-
-// theme handling widgets
-#[derive(Component, Debug)]
-pub struct ThemeSwitch;
-
-#[derive(Component, Debug)]
-pub struct ThemeContrastSelect;

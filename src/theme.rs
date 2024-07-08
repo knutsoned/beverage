@@ -4,7 +4,12 @@ use bevy::prelude::*;
 
 use sickle_ui::prelude::*;
 
-use crate::prelude::*;
+// theme handling widgets
+#[derive(Component, Debug)]
+pub struct ThemeSwitch;
+
+#[derive(Component, Debug)]
+pub struct ThemeContrastSelect;
 
 pub fn handle_theme_data_update(
     theme_data: Res<ThemeData>,
