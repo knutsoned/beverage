@@ -12,7 +12,11 @@ pub struct CameraControlRemotePlugin;
 // TODO create in_running_state which also checks for EditorState::Running
 impl Plugin for CameraControlRemotePlugin {
     fn build(&self, app: &mut App) {
+        // FIXME BrpClient should be handled by remote service
         app.init_resource::<BrpClient>()
+            .register_type::<RemoteFpsCounter>()
+            .register_type::<DespawnRemoteFpsCounter>()
+
             .add_systems(Update, init_connect.run_if(in_state(RemoteConnectionState::Disconnected)))
             .add_systems(
                 Update,

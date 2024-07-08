@@ -4,6 +4,15 @@
 
 ---
 
+## Overview
+
+This is a framework for developing an editor for [Bevy](https://github.com/bevyengine/bevy).
+
+This project is under heavy developmment. For now, the following demo showcases integration of
+sickle_ui, bevy_fluent, leafwing-input-manager, and BRP (the unreleased bevy_remote protocol).
+
+## Demo
+
 In one terminal, cargo run --example server
 
 ![Initial Server Window State](./docs/bev1a.png)
@@ -35,30 +44,40 @@ sickle and switch the UI language using the asset-driven workflow of bevy_fluent
 Controls are mapped via leafwing-input-manager, except for the UI debug outlines which appear to be
 hard-wired to the space bar.
 
-This is what I originally set out to do: make a sickle demo where the editor chrome was starting to
-get hooked up to some actual functions, including the Bevy Remote Protocol (BRP), explore
-asset-driven localization and how to manage inputs. In the very short term, I'm going to look at
-serialization as it applies to sickle, to see if we can get the UI layouts themselves into assets,
-and start hot-reloading our widgets. Next step from there is a widget editor that would allow
-building the layout of an arbitrary, new editor widget and then serializing it to a file.
+## Roadmap
 
-Well, the way these things work, mapping "event handlers" (actual events, observers, signals, etc)
-from within a deflated widget to actual working systems defined elsewhere can be somewhat
-straightforward. Just as we might add a SpawnMyWidget marker to a layout container and then have a
-widget internal system scan for that marker and replace it with the actual widget bundle, so we can
-also have a SpawnHandler or equivalent that describes which events should be handled in what way.
-Then the system that handles them can react to its sudden presence in the ECS, and do what must be
-done to wire things up behind the scenes.
+Three main things are on the horizon: managing assets for scenes and UI layouts and widgets;
+providing an SDK and programming guide for editor plugin development; and bevy_mod_picking.
 
-This all depends on the editor framework having a basic way of providing access to its standard
-components, so that's where we're going next. The basic idea is to expand on [how sickle itself
-supports plugins](https://github.com/UmbraLuminosa/sickle_ui?tab=readme-ov-file#extending-sickle-ui)
-and add some things like localization, input management, and other reactive properties.
+### Managing Assets
 
-In addition to basic UI editing capabilities, we would also like to implement the
-[Caffeine Phase 1](https://hackmd.io/Oj7KqBOlRqGrFLxwyfYFCw) proposal for docks (activities). Part of this
-involves adapting the popular
-[Blender_bevy_components_workflow](https://github.com/kaosat-dev/Blender_bevy_components_workflow).
+It should be possible now to integrate the asset-driven workflows for Blender and other 3D editors.
+In addition, space_editor has a prefab system that can also serve as a reference. All file types,
+least of all glTF, that have a supported viewer should have preview built in to the asset explorer.
+Assets must have a way to be tagged for internal use i.e. atlases.
+
+### Editor SDK
+
+The basic internal architecture of the editor is designed to support various scenarios in game
+development. It should provide services that allow a 3rd party plugin to build new functionality
+that integrates with the core editor without altering the editor code.
+
+Just make a Bevy app object, add the EditorPlugin after the DefaultPlugins, and then your own
+plugins to get a fully customized editor.
+
+### Picking
+
+Being able to select and manipulate objects throughout the UI and within any scene editor views
+in a consistent way is crucial to the above experience. Focus and selection are core parts of the
+activity context that every editor plugin has access to as a regular resource. In addition some
+care will be taken to ensure that accessibility is a priority, and there should always be a way
+for a user with a single axis controller and 3rd party onscreen keyboard to utilize every provided
+activity.
+
+## Additional Background Noise
+
+I started writing out a [rationale](rationale.md) and then decided to put my ongoing play-by-play
+over [here](commentary.md).
 
 ## 🕊 Bevy Compatibility
 

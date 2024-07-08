@@ -18,6 +18,7 @@ pub mod layout;
 pub mod logging;
 pub mod remote;
 pub mod router;
+pub mod service;
 pub mod setup;
 pub mod signals;
 pub mod theme;
@@ -57,10 +58,13 @@ impl Plugin for EditorPlugin {
             .init_state::<EditorState>()
             .init_state::<Page>()
             .init_state::<RemoteConnectionState>()
+
             // initialize custom types for reflection
             // (anything that needs to go over BRP, be saved to a file, or be otherwise serialized)
-            .register_type::<RemoteFpsCounter>()
-            .register_type::<DespawnRemoteFpsCounter>()
+
+            // these actually belong with the camera control plugin
+            //.register_type::<RemoteFpsCounter>()
+            //.register_type::<DespawnRemoteFpsCounter>()
 
             // FIXME why doesn't this work?
             //.add_systems(PreStartup, set_window_icon)
