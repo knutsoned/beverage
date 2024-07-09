@@ -33,10 +33,10 @@ unic-langid = { version = "0.9", features = ["macros"] }
 
 # bevy_remote (BRP) core deps (mostly imported by bevy_defer_http)
 ehttp = "0.5"
-http-body-util = "0.1.1"
+http-body-util = "0.1"
 hyper = { version = "1.4", features = ["full"] }
 smol = "2"
-smol-hyper = { version = "0.1.1", default-features = false, features = ["async-io","smol"] }
+smol-hyper = { version = "0.1", default-features = false, features = ["async-io","smol"] }
 
 # future stuff?
 # haalka deps
@@ -51,8 +51,21 @@ bevy_rand = "0.7"
 # this is a placeholder (just a reminder to find or build a non-egui thing like this)
 #bevy_console = { version = "0.12.0", git = "https://github.com/RichoDemus/bevy-console" }
 
+# -make this an activity feature
+bevy_ecs_tilemap = { version = "0.14.0", git = "https://github.com/StarArawn/bevy_ecs_tilemap" }
+
 # FPS widget demo (dead-money)
+# -move this into core (possible sickle and quill variants)
 sickle_example = { version = "0.2.0", git = "https://github.com/knutsoned/sickle_example" }
+
+# quartz (tomara-x)
+# -make this an activity feature
+quartz = { version = "0.6.0", git = "https://github.com/knutsoned/quartz", default-features = false }
+bevy_pancam = { version = "0.11.1", git = "https://github.com/tomara-x/bevy_pancam" }
+
+# Quill support (viridia)
+# -make this a widget feature
+bevy_quill = { version = "0.1.0", git = "https://github.com/knutsoned/quill" }
 
 # editor core (Rust)
 anyhow = "1"
@@ -64,14 +77,8 @@ serde_json = "1"
 # editor core (Bevy ecosystem)
 aery = "0.7.3"
 bevy_mod_picking = "0.20"
-bevy_simple_text_input = "0.8.0"
-leafwing-input-manager = { version = "0.14.0" }
-
-# Quill support (viridia)
-bevy_quill = { version = "0.1.0", git = "https://github.com/knutsoned/quill.git" }
-
-# quartz 
-quartz = { version = "0.6.0", git = "https://github.com/knutsoned/quartz", default-features = false }
+bevy_simple_text_input = "0.8"
+leafwing-input-manager = "0.14"
 
 [features]
 default = [ "bevy_dev_tools" ]
