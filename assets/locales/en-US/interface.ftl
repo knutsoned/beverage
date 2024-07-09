@@ -29,3 +29,7 @@ lbl_File = File
 lbl_Open = Open
 lbl_Save = Save
 lbl_Close = Close
+lbl_Disconnected = Disconnected
+lbl_Connecting = Connecting
+lbl_Checking = Checking
+lbl_Connected = Connected

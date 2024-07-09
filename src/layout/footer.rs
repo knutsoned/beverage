@@ -49,6 +49,16 @@ impl UiFooterRootNode {
     }
 }
 
+#[derive(Component, Clone, Debug, Default, Reflect, UiContext)]
+#[reflect(Component)]
+pub struct UiFooterElement;
+
+impl UiFooterElement {
+    fn frame() -> impl Bundle {
+        (Name::new("UiFooterElement"), NodeBundle::default())
+    }
+}
+
 pub trait UiUiFooterRootNodeExt {
     fn ui_footer(
         &mut self,
@@ -72,6 +82,7 @@ pub fn spawn_footer(
     remote_state: Res<State<RemoteConnectionState>>,
     mut commands: Commands
 ) {
+    // FIXME trying to get the connection status label to center in itself but justify end as a whole
     warn!("spawn_footer");
     if let Ok(footer_container) = footer_container.get_single() {
         if let Ok(footer_root) = footer_root.get_single() {
@@ -86,16 +97,39 @@ pub fn spawn_footer(
                     ..default()
                 })
                 .style()
-                .font_color(Color::BLACK)
+                .margin(UiRect::all(Val::Px(10.0)))
+                .width(Val::Px(80.0));
+
+            builder.spawn((UiFooterElement::frame(), UiFooterElement));
+
+            builder
+                .container((UiFooterElement::frame(), UiFooterElement), |container| {
+                    container
+                        .label(LabelConfig {
+                            label: l10n.lbl(match remote_state.get() {
+                                RemoteConnectionState::Disconnected => "Disconnected",
+                                RemoteConnectionState::Connecting => "Connecting",
+                                RemoteConnectionState::Checking => "Checking",
+                                RemoteConnectionState::Connected => "Connected",
+                            }),
+                            ..default()
+                        })
+                        .style()
+                        .font_color(Color::Srgba(palettes::css::BLUE_VIOLET))
+                        .align_self(AlignSelf::Center)
+                        .margin(UiRect::all(Val::Px(10.0)))
+                        .width(Val::Px(180.0));
+                })
+                .style()
+                .justify_content(JustifyContent::Center)
+                .width(Val::Percent(100.0))
                 .background_color(match remote_state.get() {
                     RemoteConnectionState::Disconnected => Color::Srgba(palettes::css::LIGHT_CORAL),
                     RemoteConnectionState::Connecting =>
                         Color::Srgba(palettes::css::PALE_GOLDENROD),
                     RemoteConnectionState::Checking => Color::Srgba(palettes::css::PALE_GOLDENROD),
                     RemoteConnectionState::Connected => Color::Srgba(palettes::css::CHARTREUSE),
-                })
-                .margin(UiRect::all(Val::Px(5.0)))
-                .width(Val::Px(80.0));
+                });
         });
     }
 }

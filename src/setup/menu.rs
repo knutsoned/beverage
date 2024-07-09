@@ -31,6 +31,15 @@ pub fn build_menu(
 
                 menu.separator();
 
+                menu.menu_item(MenuItemConfig {
+                    name: l10n.lbl("QuillDemo"),
+                    shortcut: vec![KeyCode::KeyQ].into(),
+                    alt_code: KeyCode::KeyQ.into(),
+                    ..default()
+                }).insert(Page::QuillDemo);
+
+                menu.separator();
+
                 let icons = ThemeData::default().icons;
                 menu.menu_item(MenuItemConfig {
                     name: l10n.lbl("Exit"),

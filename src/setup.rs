@@ -120,7 +120,11 @@ fn build(commands: &mut Commands, l10n: &Res<Localization>, context: &Entity, lo
         ))
         .id();
 
-    commands.ui_builder(context).container((UiFooterContainer, NodeBundle::default()), |_| {});
+    commands
+        .ui_builder(context)
+        .container((UiFooterContainer, NodeBundle::default()), |_| {})
+        .style()
+        .width(Val::Percent(100.0));
 
     // Use the UI builder of the root entity with styling applied via commands
     commands.ui_builder(root_entity).column(|builder| {
@@ -139,6 +143,6 @@ fn build(commands: &mut Commands, l10n: &Res<Localization>, context: &Entity, lo
     info!("switching EditorState to Running");
     commands.next_state(EditorState::Running);
 
-    // this is where to set the default start page for the editor content area
-    commands.next_state(Page::CameraControl);
+    // this is where to set the default start page for the editor content area (also place marker in layout::editor::layout)
+    commands.next_state(Page::QuillDemo);
 }

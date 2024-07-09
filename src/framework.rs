@@ -56,8 +56,9 @@ pub enum Page {
     #[default]
     None,
     CameraControl,
-    SceneEditor,
     Playground,
+    QuillDemo,
+    SceneEditor,
 }
 
 #[derive(Component, Clone, Copy, Debug, Default, Reflect)]

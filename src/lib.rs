@@ -6,8 +6,9 @@ use sickle_ui::{ prelude::*, ui_commands::SetCursorExt, SickleUiPlugin };
 
 use framework::*;
 use input::EditorInputPlugin;
-use layout::{ editor, footer::spawn_footer };
+use layout::footer::spawn_footer;
 use locale::EditorLocalePlugin;
+use router::EditorRouterPlugin;
 use theme::*;
 
 pub mod construct;
@@ -36,7 +37,7 @@ pub struct EditorPlugin;
 
 impl Plugin for EditorPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins((EditorLocalePlugin, SickleUiPlugin))
+        app.add_plugins((SickleUiPlugin, EditorLocalePlugin, EditorRouterPlugin))
             // this section sets up all the primary functionality of the editor
 
             // the convention of beginning a symbol with `Editor` signifies it is provided internally
@@ -101,12 +102,6 @@ impl Plugin for EditorPlugin {
                 spawn_footer.run_if(in_state(EditorState::Running))
             )
 
-            // TODO these 2 things belong in the router
-            // layout the editor content when a page is selected
-            .add_systems(OnEnter(Page::CameraControl), editor::layout)
-
-            // clean up after a different page is selected
-            .add_systems(OnExit(Page::CameraControl), clear_content_on_menu_change)
             // TODO needs to be a way to just change the content area and not the entire editor
 
             // the basic idea of an activity is defining a collection of widgets that can go in each pane

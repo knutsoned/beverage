@@ -1,3 +1,5 @@
+use std::marker::PhantomData;
+
 use bevy::{ prelude::*, tasks::{ block_on, poll_once } };
 
 use leafwing_input_manager::action_state::ActionState;
@@ -5,27 +7,39 @@ use leafwing_input_manager::action_state::ActionState;
 use sickle_ui::ui_commands::UpdateStatesExt;
 
 use crate::{ input::{ InputAction, InputConfig }, prelude::*, remote::brp_client::BrpClient };
-use camera_control::widget::CameraControl;
 
-pub struct CameraControlRemotePlugin;
+pub struct CameraControlRemotePlugin<T: Component>(PhantomData<T>);
 
+impl<T: Component> Default for CameraControlRemotePlugin<T> {
+    fn default() -> Self {
+        Self(Default::default())
+    }
+}
+
+// FIXME there can be only one of these at a time
 // TODO create in_running_state which also checks for EditorState::Running
-impl Plugin for CameraControlRemotePlugin {
+impl<T: Component> Plugin for CameraControlRemotePlugin<T> {
     fn build(&self, app: &mut App) {
         // FIXME BrpClient should be handled by remote service
         app.init_resource::<BrpClient>()
             .register_type::<RemoteFpsCounter>()
             .register_type::<DespawnRemoteFpsCounter>()
 
-            .add_systems(Update, init_connect.run_if(in_state(RemoteConnectionState::Disconnected)))
             .add_systems(
                 Update,
-                connect_to_camera.run_if(in_state(RemoteConnectionState::Connecting))
+                init_connect::<T>.run_if(in_state(RemoteConnectionState::Disconnected))
             )
-            .add_systems(Update, poll_responses.run_if(in_state(RemoteConnectionState::Checking)))
             .add_systems(
                 Update,
-                (check_toggle_fps, check_toggle_fps_response, sync_camera).run_if(
+                connect_to_camera::<T>.run_if(in_state(RemoteConnectionState::Connecting))
+            )
+            .add_systems(
+                Update,
+                poll_responses::<T>.run_if(in_state(RemoteConnectionState::Checking))
+            )
+            .add_systems(
+                Update,
+                (check_toggle_fps::<T>, check_toggle_fps_response::<T>, sync_camera).run_if(
                     in_state(RemoteConnectionState::Connected)
                 )
             );
@@ -34,8 +48,8 @@ impl Plugin for CameraControlRemotePlugin {
 
 type RemoteActionQuery<'a> = (Entity, &'a ActionState<InputAction>, Option<&'a RemoteRequest>);
 
-fn check_toggle_fps(
-    q_action: Query<RemoteActionQuery, With<CameraControl>>,
+fn check_toggle_fps<T: Component>(
+    q_action: Query<RemoteActionQuery, With<T>>,
     type_registry: Res<AppTypeRegistry>,
     mut input: ResMut<InputConfig>,
     mut brp: ResMut<BrpClient>,
@@ -60,8 +74,8 @@ fn check_toggle_fps(
     }
 }
 
-fn check_toggle_fps_response(
-    mut q_action: Query<(Entity, &mut RemoteRequest), With<CameraControl>>,
+fn check_toggle_fps_response<T: Component>(
+    mut q_action: Query<(Entity, &mut RemoteRequest), With<T>>,
     mut commands: Commands
 ) {
     for (entity, mut request) in q_action.iter_mut() {
@@ -72,8 +86,8 @@ fn check_toggle_fps_response(
 }
 
 // step 1: wait for a key press
-fn init_connect(
-    q_action: Query<&ActionState<InputAction>, (With<CameraControl>, Without<RemoteRequest>)>,
+fn init_connect<T: Component>(
+    q_action: Query<&ActionState<InputAction>, (With<T>, Without<RemoteRequest>)>,
     mut commands: Commands
 ) {
     for action_state in &q_action {
@@ -89,8 +103,8 @@ fn init_connect(
 }
 
 // step 2: run a query to get the entity ID of the remote camera
-fn connect_to_camera(
-    mut camera: Query<RemoteTransformArgs, With<CameraControl>>,
+fn connect_to_camera<T: Component>(
+    mut camera: Query<RemoteTransformArgs, With<T>>,
     mut brp: ResMut<BrpClient>,
     mut commands: Commands
 ) {
@@ -109,8 +123,8 @@ fn connect_to_camera(
 }
 
 // step 3: see if the Camera entity has returned yet
-fn poll_responses(
-    mut camera: Query<RemoteTransformArgs, With<CameraControl>>,
+fn poll_responses<T: Component>(
+    mut camera: Query<RemoteTransformArgs, With<T>>,
     brp: Res<BrpClient>,
     mut commands: Commands
 ) {

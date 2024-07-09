@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 
 use beverage::{
-    prelude::camera_control::{ remote::CameraControlRemotePlugin, widget::CameraControlPlugin },
+    prelude::quill::widget::{ QuillDemo, QuillDemoPlugin },
+    remote::camera_control::CameraControlRemotePlugin,
     EditorPlugin,
 };
 
@@ -20,7 +21,7 @@ fn main() {
         .add_plugins((
             DefaultPlugins.set(WindowPlugin {
                 primary_window: Some(Window {
-                    title: "Camera Control".into(),
+                    title: "Quill Demo".into(),
                     resolution: (1280.0, 720.0).into(),
                     ..default()
                 }),
@@ -33,12 +34,11 @@ fn main() {
             // TODO implement this fully and write the documentation
             EditorPlugin,
         ))
-
         // sickle widget plugin for the remote camera demo
-        .add_plugins(CameraControlPlugin)
-
-        // BRP plugin to sync server camera with local viewport
-        .add_plugins(CameraControlRemotePlugin)
+        //.add_plugins(CameraControlPlugin)
+        .add_plugins(QuillDemoPlugin)
+        // BRP plugin to sync server camera with local viewport (needs type of camera control component to be able to find camera to sync)
+        .add_plugins(CameraControlRemotePlugin::<QuillDemo>::default())
 
         .run();
 }
