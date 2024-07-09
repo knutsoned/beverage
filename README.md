@@ -54,6 +54,18 @@ hard-wired to the space bar.
 Three main things are on the horizon: managing assets for scenes and UI layouts and widgets;
 providing an SDK and programming guide for editor plugin development; and bevy_mod_picking.
 
+- [ ] Asset loading and viewing
+- [ ] Serializing UI layouts
+- [ ] Inflating serialized layouts
+- [ ] Basic service framework
+- [ ] Basic activity impl
+- [ ] Focus and selection management
+- [ ] Blender workflow integration
+- [ ] UI widget editor
+- [ ] Tree widget
+- [ ] ECS property editor
+- [ ] Scene editor
+
 ### Managing Assets
 
 It should be possible now to integrate the asset-driven workflows for Blender and other 3D editors.
