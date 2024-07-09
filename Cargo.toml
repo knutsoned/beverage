@@ -63,12 +63,15 @@ serde_json = "1"
 
 # editor core (Bevy ecosystem)
 aery = "0.7.3"
-bevy_mod_picking = "0.20.0-rc.1" # Quill currently uses this version
+bevy_mod_picking = "0.20"
 bevy_simple_text_input = "0.8.0"
 leafwing-input-manager = { version = "0.14.0" }
 
 # Quill support (viridia)
 bevy_quill = { version = "0.1.0", git = "https://github.com/knutsoned/quill.git" }
+
+# quartz 
+quartz = { version = "0.6.0", git = "https://github.com/knutsoned/quartz", default-features = false }
 
 [features]
 default = [ "bevy_dev_tools" ]
