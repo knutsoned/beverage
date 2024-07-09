@@ -143,7 +143,7 @@ fn poll_responses<T: Component>(
                     };
 
                     // change the RemoteConnectionState to Connected
-                    info!("connected to BRP server");
+                    info!("BRP request completed");
                     if entity {
                         info!("...and found a camera!");
                         commands.next_state(RemoteConnectionState::Connected);
