@@ -83,7 +83,7 @@ pub fn spawn_footer(
     mut commands: Commands
 ) {
     // FIXME trying to get the connection status label to center in itself but justify end as a whole
-    warn!("spawn_footer");
+    trace!("spawn_footer");
     if let Ok(footer_container) = footer_container.get_single() {
         if let Ok(footer_root) = footer_root.get_single() {
             // despawn the footer that floats on top (at the bottom?)
