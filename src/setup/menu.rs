@@ -23,6 +23,15 @@ pub fn build_menu(
             },
             |menu| {
                 menu.menu_item(MenuItemConfig {
+                    name: l10n.lbl("About"),
+                    shortcut: vec![KeyCode::KeyA].into(),
+                    alt_code: KeyCode::KeyA.into(),
+                    ..default()
+                }).insert(Page::CameraControl);
+
+                menu.separator();
+
+                menu.menu_item(MenuItemConfig {
                     name: l10n.lbl("CameraControl"),
                     shortcut: vec![KeyCode::KeyC].into(),
                     alt_code: KeyCode::KeyC.into(),
@@ -31,6 +40,7 @@ pub fn build_menu(
 
                 menu.separator();
 
+                /*
                 menu.menu_item(MenuItemConfig {
                     name: l10n.lbl("QuillDemo"),
                     shortcut: vec![KeyCode::KeyQ].into(),
@@ -39,10 +49,12 @@ pub fn build_menu(
                 }).insert(Page::QuillDemo);
 
                 menu.separator();
+                */
 
                 let icons = ThemeData::default().icons;
                 menu.menu_item(MenuItemConfig {
                     name: l10n.lbl("Exit"),
+                    shortcut: vec![KeyCode::KeyX].into(),
                     leading_icon: icons.exit_to_app,
                     ..default()
                 }).insert(ExitAppButton);
@@ -62,21 +74,21 @@ pub fn build_menu(
                     shortcut: vec![KeyCode::KeyO].into(),
                     alt_code: KeyCode::KeyO.into(),
                     ..default()
-                }).insert(Page::CameraControl);
+                });
 
                 menu.menu_item(MenuItemConfig {
                     name: l10n.lbl("Save"),
                     shortcut: vec![KeyCode::KeyS].into(),
                     alt_code: KeyCode::KeyS.into(),
                     ..default()
-                }).insert(ExitAppButton);
+                });
 
                 menu.menu_item(MenuItemConfig {
                     name: l10n.lbl("Close"),
                     shortcut: vec![KeyCode::KeyC].into(),
                     alt_code: KeyCode::KeyC.into(),
                     ..default()
-                }).insert(ExitAppButton);
+                });
             }
         );
 
