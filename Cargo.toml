@@ -66,7 +66,7 @@ quartz = { version = "0.6", git = "https://github.com/knutsoned/quartz", default
 bevy_pancam = { version = "0.11", git = "https://github.com/tomara-x/bevy_pancam" }
 
 # Quill support (viridia)
-bevy_quill = { version = "0.1", git = "https://github.com/knutsoned/quill", optional = true }
+#bevy_quill = { version = "0.1", git = "https://github.com/knutsoned/quill", optional = true }
 
 # editor core (Rust)
 anyhow = "1"
@@ -86,7 +86,7 @@ default = [ "bevy_dev_tools" ]
 bevy_dev_tools = ["dep:bevy_dev_tools"]
 bevy_ecs_tilemap = ["dep:bevy_ecs_tilemap"]
 bevy_mesh_terrain = ["dep:bevy_mesh_terrain"]
-bevy_quill = ["dep:bevy_quill"]
+#bevy_quill = ["dep:bevy_quill"]
 quartz = ["dep:quartz"]
 
 [[example]]
