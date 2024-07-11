@@ -8,10 +8,12 @@ use crate::{
         despawn_camera_tree_view as despawn_camera_control,
         SpawnCameraControlPreUpdate,
     },
+    /*
     demo::quill::widget::{
         despawn_camera_tree_view as despawn_quill_demo,
         SpawnQuillDemoPreUpdate,
     },
+    */
     framework::*,
     layout::editor,
 };
@@ -42,13 +44,14 @@ impl Plugin for EditorRouterPlugin {
                     /*, spawn_camera_tree_view*/ .after(SpawnCameraControlPreUpdate)
                     // need a run condition to check current page value against registered plugins
                     .run_if(in_state(EditorState::Running))
-            )
+            );
+        /*
             .add_systems(
                 PreUpdate,
                 despawn_quill_demo
                     /*, spawn_camera_tree_view*/ .after(SpawnQuillDemoPreUpdate)
                     // need a run condition to check current page value against registered plugins
                     .run_if(in_state(EditorState::Running))
-            );
+        */
     }
 }

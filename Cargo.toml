@@ -86,7 +86,7 @@ default = [ "bevy_dev_tools" ]
 bevy_dev_tools = ["dep:bevy_dev_tools"]
 bevy_ecs_tilemap = ["dep:bevy_ecs_tilemap"]
 bevy_mesh_terrain = ["dep:bevy_mesh_terrain"]
-bevy_quill = ["dep:bevy_quill"]
+#bevy_quill = ["dep:bevy_quill"]
 quartz = ["dep:quartz"]
 
 [[example]]

@@ -4,7 +4,11 @@ use bevy_fluent::Localization;
 
 use sickle_ui::prelude::*;
 
-use crate::{ framework::*, demo::quill::widget::UiQuillDemoExt };
+use crate::{
+    //demo::quill::widget::UiQuillDemoExt,
+    framework::*,
+    prelude::camera_control::widget::UiCameraControlExt,
+};
 
 pub fn layout(
     root_node: Query<Entity, With<EditorContainer>>,
@@ -50,7 +54,7 @@ pub fn layout(
                                 |tab_container| {
                                     // this is where to spawn the default start widget for the editor content area (also set Page in setup::build)
                                     tab_container.add_tab(l10n.lbl("CameraControl"), |panel| {
-                                        panel.quill_demo();
+                                        panel.camera_control();
                                     });
                                 }
                             );
