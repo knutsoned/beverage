@@ -5,7 +5,7 @@ use bevy::{ asset::LoadedFolder, prelude::*, tasks::Task };
 // eventually this will be whatever we use for permanent IDs that can be passed around a network
 
 // for now it's just an arbitrary string
-#[derive(Debug, PartialEq, Eq, Hash, Clone, Reflect)]
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Default, Reflect)]
 pub struct EditorId(pub String);
 
 // this allows an EditorId to be used as a bevy_core::name::Name

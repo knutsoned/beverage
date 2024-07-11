@@ -1,3 +1,5 @@
+use core::fmt;
+
 use bevy::{ prelude::*, utils::HashMap };
 
 use crate::framework::*;
@@ -42,16 +44,45 @@ pub struct EditorService {
 /// "mmanage an asset" or "preview a scene." It can track multiple instances of the same
 /// activity and manages a stack of all activities.
 #[derive(Resource, Debug)]
-pub struct ActivityService;
+pub struct ActivityService {
+    pub current_activity: Box<dyn Activity>,
+}
 
 impl ActivityService {
-    pub fn start(&self, activity: impl Activity) -> EditorId {
+    pub fn start(&mut self) -> EditorId {
+        self.current_activity.start()
+    }
+
+    pub fn stop(&mut self) {
+        self.current_activity.stop();
+    }
+
+    pub fn restart(&mut self, mut activity: impl Activity) -> EditorId {
+        activity.stop();
         activity.start()
     }
 }
 
-pub trait Activity {
-    fn start(&self) -> EditorId;
+impl Default for ActivityService {
+    fn default() -> Self {
+        Self { current_activity: Box::new(DefaultActivity) }
+    }
+}
+
+pub trait Activity: Reflect + fmt::Debug {
+    fn start(&mut self) -> EditorId;
+    fn stop(&mut self);
+}
+
+#[derive(Reflect, Debug, Default)]
+pub struct DefaultActivity;
+
+impl Activity for DefaultActivity {
+    fn start(&mut self) -> EditorId {
+        EditorId::default()
+    }
+
+    fn stop(&mut self) {}
 }
 
 /// The asset service provides integration between internal metadata used by the editor and the
@@ -85,7 +116,7 @@ impl EditorAtlas {
     }
 }
 
-/// The history service manages action histories.
+/// The history service manages action histories for activities.
 #[derive(Resource, Debug)]
 pub struct HistoryService {}
 
@@ -120,7 +151,7 @@ pub struct LocaleService {}
 pub struct RemoteService {}
 
 /// The router service provides navigation and data transfer between plugins. It maps strings
-/// to logical endpoints that could be navigation (i.e. web pages) or update endpoints (i.e. web
+/// to logical endpoints that could be navigation (like web pages) or update endpoints (like web
 /// API endpoints)
 #[derive(Resource, Debug)]
 pub struct RouterService {}
