@@ -1,16 +1,19 @@
-use bevy::prelude::*;
+use bevy::{ core::NonSendMarker, prelude::* };
 
 //use bevy_defer::AsyncPlugin;
 
+use native_dialog::FileDialog;
 use sickle_ui::{ prelude::*, ui_commands::SetCursorExt, SickleUiPlugin };
 
 use framework::*;
 use input::EditorInputPlugin;
 use layout::footer::spawn_footer;
 use locale::EditorLocalePlugin;
+use remote::*;
 use router::EditorRouterPlugin;
 use theme::*;
 
+pub mod activity;
 pub mod construct;
 pub mod framework;
 pub mod history;
@@ -119,8 +122,8 @@ impl Plugin for EditorPlugin {
 
             // also need to support adding new tabs to the containers and removing them
 
-            // handle selecting Exit from the Editor menu
-            .add_systems(PreUpdate, exit_app_on_menu_item)
+            // handle selecting New, Open, Exit, etc from the menu
+            .add_systems(PreUpdate, (exit_app_on_menu_item, new_project, open_file))
 
             // update_current_page checks the menu for updates while the rest handle radios and dropdowns
             .add_systems(
@@ -139,7 +142,36 @@ impl Plugin for EditorPlugin {
     }
 }
 
-// TODO move these to the router
+// TODO move all these to the router?
+fn new_project(
+    q_menu_items: Query<&MenuItem, (With<NewProjectButton>, Changed<MenuItem>)>,
+    mut _commands: Commands
+) {
+    let Ok(item) = q_menu_items.get_single() else {
+        return;
+    };
+
+    if item.interacted() {
+        info!("NEW PROJECT");
+    }
+}
+
+fn open_file(
+    q_menu_items: Query<&MenuItem, (With<OpenFileButton>, Changed<MenuItem>)>,
+    _native_dialogs_on_main_thread: Option<NonSend<NonSendMarker>>,
+    mut _commands: Commands
+) {
+    let Ok(item) = q_menu_items.get_single() else {
+        return;
+    };
+
+    if item.interacted() {
+        info!("OPEN FILE");
+        let file = FileDialog::new().set_location("~").show_open_single_file().unwrap();
+        info!("file: {:?}", &file);
+    }
+}
+
 // BEGIN: sickle editor example systems (menu navigation)
 fn exit_app_on_menu_item(
     q_menu_items: Query<&MenuItem, (With<ExitAppButton>, Changed<MenuItem>)>,

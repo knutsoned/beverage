@@ -5,7 +5,7 @@ use bevy::{ color::palettes, prelude::* };
 use bevy_fluent::Localization;
 use sickle_ui::prelude::*;
 
-use crate::{ framework::*, prelude::{ RemoteConnectionState, UiFooterContainer } };
+use crate::{ layout::UiFooterContainer, locale::Translator, remote::RemoteConnectionState };
 
 pub struct UiFooterRootNodePlugin;
 

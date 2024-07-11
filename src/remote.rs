@@ -82,6 +82,7 @@
 use std::net::{ TcpListener, TcpStream };
 use std::sync::{ Arc, Mutex };
 
+use bevy::tasks::Task;
 use bevy::{ ecs::system::SystemId, prelude::*, tasks::IoTaskPool, utils::HashMap };
 
 use anyhow::{ anyhow, Result as AnyhowResult };
@@ -108,6 +109,51 @@ const CHANNEL_SIZE: usize = 16;
 pub struct EditorRemotePlugin {
     /// The port that Bevy will listen on.
     pub port: u16,
+}
+
+// marker for a local entity whose transform may control a remote camera
+#[derive(Component)]
+pub struct RemoteCamera;
+
+// marker for an FPS counter on a remote server
+#[derive(Component, Reflect)]
+#[reflect(Component)]
+pub struct RemoteFpsCounter;
+
+// marker to remove an FPS counter on a remote server
+#[derive(Component, Reflect)]
+#[reflect(Component)]
+pub struct DespawnRemoteFpsCounter;
+
+// marker for an entity with updates that can't be sent yet
+// (probably because the previous update is still running)
+#[derive(Component)]
+pub struct RemotePending;
+
+#[derive(Component, Debug)]
+pub struct RemoteRequest {
+    pub task: Task<()>,
+}
+
+// query args to help remotely query or update an entity's transform
+pub type RemoteTransformArgs<'a> = (
+    Entity,
+    &'a mut Transform,
+    Option<&'a mut RemoteRequest>,
+    Option<&'a RemotePending>,
+);
+
+// need states to prevent updates from sending before the remote camera entity ID is known
+#[derive(States, Default, Debug, Clone, PartialEq, Eq, Hash)]
+pub enum RemoteConnectionState {
+    #[default]
+    Disconnected,
+    // getting the remote camera entity...
+    Connecting,
+    // checking the response, do not pass go, do not collect $200
+    Checking,
+    // not a persistent connection, but "connected" as in, able to map to the remote camera
+    Connected,
 }
 
 /// A resource containing the port number that Bevy will listen on.

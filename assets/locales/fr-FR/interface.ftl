@@ -26,6 +26,7 @@ lbl_CameraControl = Contrôle de la caméra
 lbl_Console = Console
 lbl_Status = Situation
 lbl_File = Fichier
+lbl_New = Nouveau
 lbl_Open = Ouvrir
 lbl_Save = Enregistrer
 lbl_Close = Fermer

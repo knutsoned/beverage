@@ -6,7 +6,7 @@ use sickle_ui::{ prelude::*, ui_commands::{ SetTextExt, UpdateStatesExt } };
 
 use sickle_example::fps_widget::*;
 
-use beverage::{ framework::*, remote::EditorRemotePlugin };
+use beverage::{ layout::UiCamera, remote::* };
 
 fn main() {
     let mut app = App::new();

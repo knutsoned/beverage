@@ -7,6 +7,7 @@ use sickle_ui::prelude::*;
 use crate::{
     //demo::quill::widget::UiQuillDemoExt,
     framework::*,
+    locale::Translator,
     prelude::camera_control::widget::UiCameraControlExt,
 };
 

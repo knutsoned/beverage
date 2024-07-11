@@ -6,7 +6,7 @@ use leafwing_input_manager::action_state::ActionState;
 
 use sickle_ui::ui_commands::UpdateStatesExt;
 
-use crate::{ input::{ InputAction, InputConfig }, prelude::*, remote::brp_client::BrpClient };
+use crate::{ input::{ InputAction, InputConfig }, remote::{ *, brp_client::BrpClient } };
 
 pub struct CameraControlRemotePlugin<T: Component>(PhantomData<T>);
 

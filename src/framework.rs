@@ -1,6 +1,6 @@
 use std::borrow::Cow;
 
-use bevy::{ asset::LoadedFolder, prelude::*, tasks::Task };
+use bevy::prelude::*;
 
 // eventually this will be whatever we use for permanent IDs that can be passed around a network
 
@@ -14,20 +14,6 @@ impl From<EditorId> for Cow<'static, str> {
         val.0.into()
     }
 }
-
-pub trait Translator {
-    fn lbl(&self, str: &str) -> String;
-    fn t(&self, string: String) -> String;
-}
-
-#[derive(Component)]
-pub struct UiCamera;
-
-#[derive(Component)]
-pub struct UiFooterContainer;
-
-#[derive(Component)]
-pub struct UiMainRootNode;
 
 #[derive(SystemSet, Clone, Hash, Debug, Eq, PartialEq)]
 pub struct UiStartupSet;
@@ -55,7 +41,9 @@ pub enum EditorState {
 pub enum Page {
     #[default]
     None,
+    About,
     CameraControl,
+    Help,
     Playground,
     QuillDemo,
     SceneEditor,
@@ -64,6 +52,14 @@ pub enum Page {
 #[derive(Component, Clone, Copy, Debug, Default, Reflect)]
 #[reflect(Component)]
 pub struct ExitAppButton;
+
+#[derive(Component, Clone, Copy, Debug, Default, Reflect)]
+#[reflect(Component)]
+pub struct NewProjectButton;
+
+#[derive(Component, Clone, Copy, Debug, Default, Reflect)]
+#[reflect(Component)]
+pub struct OpenFileButton;
 
 #[derive(Component, Debug, Default, Reflect)]
 #[reflect(Component)]
@@ -77,57 +73,7 @@ pub struct TreeViewPanel;
 #[reflect(Resource)]
 pub struct CurrentPage(Page);
 
-// l10n stuff
-#[derive(Resource)]
-pub struct LocaleFolder(pub Handle<LoadedFolder>);
-
-#[derive(Component)]
-pub struct LocaleRoot;
-
-#[derive(Component, Debug)]
-pub struct LocaleSelect;
-
-// marker for a local entity whose transform may control a remote camera
-#[derive(Component)]
-pub struct RemoteCamera;
-
-// marker for an FPS counter on a remote server
-#[derive(Component, Reflect)]
-#[reflect(Component)]
-pub struct RemoteFpsCounter;
-
-// marker to remove an FPS counter on a remote server
-#[derive(Component, Reflect)]
-#[reflect(Component)]
-pub struct DespawnRemoteFpsCounter;
-
-// marker for an entity with updates that can't be sent yet
-// (probably because the previous update is still running)
-#[derive(Component)]
-pub struct RemotePending;
-
-#[derive(Component, Debug)]
-pub struct RemoteRequest {
-    pub task: Task<()>,
-}
-
-// query args to help remotely query or update an entity's transform
-pub type RemoteTransformArgs<'a> = (
-    Entity,
-    &'a mut Transform,
-    Option<&'a mut RemoteRequest>,
-    Option<&'a RemotePending>,
-);
-
-// need states to prevent updates from sending before the remote camera entity ID is known
-#[derive(States, Default, Debug, Clone, PartialEq, Eq, Hash)]
-pub enum RemoteConnectionState {
-    #[default]
-    Disconnected,
-    // getting the remote camera entity...
-    Connecting,
-    // checking the response, do not pass go, do not collect $200
-    Checking,
-    // not a persistent connection, but "connected" as in, able to map to the remote camera
-    Connected,
+#[derive(Clone, Debug)]
+pub struct EditorAtlas {
+    pub id: EditorId,
 }

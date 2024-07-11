@@ -4,8 +4,8 @@ use bevy_fluent::Localization;
 
 use sickle_ui::prelude::*;
 
-use crate::{ framework::*, ThemeContrastSelect, ThemeSwitch };
-use super::{ ExitAppButton, LocaleSelect, Page };
+use crate::{ framework::*, locale::*, ThemeContrastSelect, ThemeSwitch };
+use super::{ ExitAppButton, Page };
 
 pub fn build_menu(
     column: &mut UiBuilder<'_, Entity>,
@@ -27,16 +27,14 @@ pub fn build_menu(
                     shortcut: vec![KeyCode::KeyA].into(),
                     alt_code: KeyCode::KeyA.into(),
                     ..default()
-                }).insert(Page::CameraControl);
-
-                menu.separator();
+                }).insert(Page::About);
 
                 menu.menu_item(MenuItemConfig {
                     name: l10n.lbl("Help"),
                     shortcut: vec![KeyCode::KeyH].into(),
                     alt_code: KeyCode::KeyH.into(),
                     ..default()
-                }).insert(Page::CameraControl);
+                }).insert(Page::Help);
 
                 menu.separator();
 
@@ -79,11 +77,18 @@ pub fn build_menu(
             },
             |menu| {
                 menu.menu_item(MenuItemConfig {
+                    name: l10n.lbl("New"),
+                    shortcut: vec![KeyCode::KeyN].into(),
+                    alt_code: KeyCode::KeyN.into(),
+                    ..default()
+                }).insert(NewProjectButton);
+
+                menu.menu_item(MenuItemConfig {
                     name: l10n.lbl("Open"),
                     shortcut: vec![KeyCode::KeyO].into(),
                     alt_code: KeyCode::KeyO.into(),
                     ..default()
-                });
+                }).insert(OpenFileButton);
 
                 menu.menu_item(MenuItemConfig {
                     name: l10n.lbl("Save"),
@@ -158,6 +163,7 @@ pub fn build_menu(
 
         bar.separator();
 
+        /*
         bar.menu(
             MenuConfig {
                 name: l10n.lbl("View"),
@@ -167,6 +173,7 @@ pub fn build_menu(
         );
 
         bar.separator();
+        */
 
         bar.menu(
             MenuConfig {
@@ -213,12 +220,13 @@ pub fn build_menu(
                 });
 
                 menu.menu_item(MenuItemConfig {
-                    name: l10n.lbl("Stop debugging"),
+                    name: l10n.lbl("StopDebugging"),
                     shortcut: vec![KeyCode::KeyS].into(),
                     alt_code: KeyCode::KeyS.into(),
                     ..default()
                 });
 
+                /*
                 menu.menu_item(MenuItemConfig {
                     name: l10n.lbl("Build release"),
                     shortcut: vec![KeyCode::KeyR].into(),
@@ -232,9 +240,11 @@ pub fn build_menu(
                     alt_code: KeyCode::KeyP.into(),
                     ..default()
                 });
+                */
             }
         );
 
+        /*
         bar.separator();
 
         bar.menu(
@@ -244,6 +254,7 @@ pub fn build_menu(
             },
             |_menu| {}
         );
+        */
 
         bar.extra_menu(|extra| {
             extra

@@ -1,8 +1,6 @@
-use core::fmt;
-
 use bevy::{ prelude::*, utils::HashMap };
 
-use crate::framework::*;
+use crate::{ activity::ActivityService, framework::* };
 
 /// The service resource provides a set of objects representing the internal capabilities of the editor framework.
 ///
@@ -40,51 +38,8 @@ pub struct EditorService {
 
 /// Core services.
 ///
-/// The activity service provides a persistent context for a particular editor function like
-/// "mmanage an asset" or "preview a scene." It can track multiple instances of the same
-/// activity and manages a stack of all activities.
-#[derive(Resource, Debug)]
-pub struct ActivityService {
-    pub current_activity: Box<dyn Activity>,
-}
-
-impl ActivityService {
-    pub fn start(&mut self) -> EditorId {
-        self.current_activity.start()
-    }
-
-    pub fn stop(&mut self) {
-        self.current_activity.stop();
-    }
-
-    pub fn restart(&mut self, mut activity: impl Activity) -> EditorId {
-        activity.stop();
-        activity.start()
-    }
-}
-
-impl Default for ActivityService {
-    fn default() -> Self {
-        Self { current_activity: Box::new(DefaultActivity) }
-    }
-}
-
-pub trait Activity: Reflect + fmt::Debug {
-    fn start(&mut self) -> EditorId;
-    fn stop(&mut self);
-}
-
-#[derive(Reflect, Debug, Default)]
-pub struct DefaultActivity;
-
-impl Activity for DefaultActivity {
-    fn start(&mut self) -> EditorId {
-        EditorId::default()
-    }
-
-    fn stop(&mut self) {}
-}
-
+/// See activity.rs for ActivityService.
+///
 /// The asset service provides integration between internal metadata used by the editor and the
 /// regular Bevy asset infrastructure.
 #[derive(Resource, Debug)]
@@ -101,18 +56,6 @@ impl AssetService {
         let atlas = EditorAtlas { id: id.clone() };
         self.atlas_map.insert(id.clone(), atlas.clone());
         atlas.clone()
-    }
-}
-
-#[derive(Clone, Debug)]
-pub struct EditorAtlas {
-    id: EditorId,
-}
-
-impl EditorAtlas {
-    pub fn id(&self) -> EditorId {
-        let id = self.id.clone_value();
-        <EditorId as FromReflect>::from_reflect(&*id).unwrap()
     }
 }
 

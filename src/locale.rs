@@ -2,7 +2,7 @@
 
 // main difference is we don't store the locales in a hash. we just ask the AssetServer for the next one.
 
-use bevy::{ asset::LoadState, prelude::* };
+use bevy::{ asset::{ LoadState, LoadedFolder }, prelude::* };
 
 use bevy_fluent::{ FluentPlugin, Locale, Localization, LocalizationBuilder };
 use fluent_content::Content;
@@ -38,6 +38,40 @@ impl Plugin for EditorLocalePlugin {
 
             // check for a new selection from the language dropdown
             .add_systems(Update, handle_locale_select.run_if(in_state(EditorState::Running)));
+    }
+}
+
+#[derive(Resource)]
+pub struct LocaleFolder(pub Handle<LoadedFolder>);
+
+#[derive(Component)]
+pub struct LocaleRoot;
+
+#[derive(Component, Debug)]
+pub struct LocaleSelect;
+
+// you can not add two pointers because two pointers can not be added
+fn concat(prefix: &str, str: &str) -> String {
+    prefix.to_string() + str
+}
+
+pub trait Translator {
+    fn lbl(&self, str: &str) -> String;
+    fn t(&self, string: String) -> String;
+}
+
+impl Translator for Localization {
+    // we also add a t function to the Localization resource. this style is familiar to many developers who work with i18n and l10n.
+    fn t(&self, string: String) -> String {
+        match self.content(&string) {
+            Some(string) => string,
+            None => "XX".to_string(),
+        }
+    }
+
+    // convenience function so the resource can be called with a short, arbitrarily-named method
+    fn lbl(&self, str: &str) -> String {
+        self.t(concat("lbl_", str))
     }
 }
 
@@ -134,26 +168,6 @@ pub fn handle_locale_select(
             commands.next_state(EditorState::SwitchLocale);
             commands.next_state(Page::None);
         }
-    }
-}
-
-// you can not add two pointers because two pointers can not be added
-fn concat(prefix: &str, str: &str) -> String {
-    prefix.to_string() + str
-}
-
-impl Translator for Localization {
-    // we also add a t function to the Localization resource. this style is familiar to many developers who work with i18n and l10n.
-    fn t(&self, string: String) -> String {
-        match self.content(&string) {
-            Some(string) => string,
-            None => "XX".to_string(),
-        }
-    }
-
-    // convenience function so the resource can be called with a short, arbitrarily-named method
-    fn lbl(&self, str: &str) -> String {
-        self.t(concat("lbl_", str))
     }
 }
 
