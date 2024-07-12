@@ -111,6 +111,11 @@ pub struct EditorRemotePlugin {
     pub port: u16,
 }
 
+/// The remote service provides connectivity and manages syncing state with a remote server.
+/// For now the remote server is the in-game portion of the editor in a separate window.
+#[derive(Resource, Default, Debug)]
+pub struct RemoteService {}
+
 // marker for a local entity whose transform may control a remote camera
 #[derive(Component)]
 pub struct RemoteCamera;

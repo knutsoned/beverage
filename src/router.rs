@@ -55,3 +55,9 @@ impl Plugin for EditorRouterPlugin {
         */
     }
 }
+
+/// The router service provides navigation and data transfer between plugins. It maps strings
+/// to logical endpoints that could be navigation (like web pages) or update endpoints (like web
+/// API endpoints)
+#[derive(Resource, Default, Debug)]
+pub struct RouterService {}

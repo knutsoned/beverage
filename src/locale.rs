@@ -41,6 +41,11 @@ impl Plugin for EditorLocalePlugin {
     }
 }
 
+/// The locale service provides localization for the core UI and allows plugins to register their
+/// own string template assets.
+#[derive(Resource, Default, Debug)]
+pub struct LocaleService {}
+
 #[derive(Resource)]
 pub struct LocaleFolder(pub Handle<LoadedFolder>);
 

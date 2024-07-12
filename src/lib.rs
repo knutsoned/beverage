@@ -3,6 +3,7 @@ use bevy::{ core::NonSendMarker, prelude::* };
 //use bevy_defer::AsyncPlugin;
 
 use native_dialog::FileDialog;
+use service::EditorService;
 use sickle_ui::{ prelude::*, ui_commands::SetCursorExt, SickleUiPlugin };
 
 use framework::*;
@@ -14,6 +15,7 @@ use router::EditorRouterPlugin;
 use theme::*;
 
 pub mod activity;
+pub mod asset;
 pub mod construct;
 pub mod framework;
 pub mod history;
@@ -54,10 +56,10 @@ impl Plugin for EditorPlugin {
             // set up bevy_defer
             //.add_plugins(AsyncPlugin::default_settings())
 
+            // add resource to manage access to internal services
+            .init_resource::<EditorService>()
             // page widgets (i.e. "main" content)
             // TODO put this in the router
-
-            // the next few are tracking navigation
             .init_resource::<CurrentPage>()
             .init_state::<EditorState>()
             .init_state::<Page>()

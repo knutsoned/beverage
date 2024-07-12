@@ -4,6 +4,10 @@ use bevy::prelude::*;
 
 use sickle_ui::prelude::*;
 
+/// The theme service provides user-selectable color palettes and lets plugins define their own.
+#[derive(Resource, Default, Debug)]
+pub struct ThemeService {}
+
 // theme handling widgets
 #[derive(Component, Debug)]
 pub struct ThemeSwitch;

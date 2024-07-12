@@ -28,6 +28,11 @@ impl Plugin for EditorInputPlugin {
     }
 }
 
+/// The input service allows plugins to inspect the control layout and provide mappings for when
+/// they have focus.
+#[derive(Resource, Default, Debug)]
+pub struct InputService {}
+
 // This is the list of "things in the game I want to be able to do based on input"
 #[derive(Actionlike, PartialEq, Eq, Hash, Clone, Copy, Debug, Reflect)]
 pub enum InputAction {
