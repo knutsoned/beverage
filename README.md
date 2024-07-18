@@ -11,9 +11,9 @@ This is a framework for developing an editor for [Bevy](https://github.com/bevye
 This project is under heavy developmment. For now, the following demo showcases integration of
 sickle_ui, bevy_fluent, leafwing-input-manager, and BRP (the unreleased bevy_remote protocol).
 
-NOTE: This project uses bevy_quill which currently requires nightly rustc. This requirement is
-expected to be resolved in Q4 2024. Around the same time we'll ~~probably~~ maybe have a
-prototype ready for widespread consumption.
+NOTE: This project has an optional feature that uses bevy_quill which currently requires nightly
+rustc. This requirement is expected to be resolved in Q4 2024. Around the same time we'll
+~~probably~~ maybe have a prototype ready for widespread consumption.
 
 ## Demo
 
